@@ -1,0 +1,2 @@
+- This is the default package, you can put all entity in this package
+- When you create a new entity with the same name and type as the existing entity, you must add @Entity annotation and @Table annotation
