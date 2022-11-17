@@ -22,7 +22,7 @@ public class Users {
 
     private String password;
 
-    private int enabled;
+    private boolean enabled;
 
     @Size(min = 1, max = 10)
     private String firstName;
@@ -47,7 +47,7 @@ public class Users {
     private Date createdDate = new Date();
     private Date updatedDate;
 
-    public Users(String username, String password, int enabled, String firstName, String lastName , boolean gender,  Date dob, String location, Date joinedDate, String role, String code) {
+    public Users(String username, String password, boolean enabled, String firstName, String lastName , boolean gender,  Date dob, String location, Date joinedDate, String role, String code) {
         this.username = username;
         this.password = password;
         this.enabled = enabled;
