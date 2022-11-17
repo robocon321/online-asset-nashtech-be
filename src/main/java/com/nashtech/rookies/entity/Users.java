@@ -30,6 +30,8 @@ public class Users {
     @Size(min = 1, max = 50)
     private String lastName;
 
+    private String fullName;
+
     private Date dob;
 
     private String location;
@@ -41,6 +43,9 @@ public class Users {
     private String role;
 
     private String code;
+
+    private Date createdDate = new Date();
+    private Date updatedDate;
 
     public Users(String username, String password, int enabled, String firstName, String lastName , boolean gender,  Date dob, String location, Date joinedDate, String role, String code) {
         this.username = username;
