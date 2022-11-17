@@ -38,7 +38,7 @@ public class Users {
 
     private Date joinedDate;
 
-    private boolean gender;
+    private int gender;
 
     private String role;
 
@@ -47,7 +47,7 @@ public class Users {
     private Date createdDate = new Date();
     private Date updatedDate;
 
-    public Users(String username, String password, boolean enabled, String firstName, String lastName , boolean gender,  Date dob, String location, Date joinedDate, String role, String code) {
+    public Users(String username, String password, boolean enabled, String firstName, String lastName , int gender,  Date dob, String location, Date joinedDate, String role, String code) {
         this.username = username;
         this.password = password;
         this.enabled = enabled;
