@@ -1,10 +1,20 @@
 package com.nashtech.rookies.entity;
 
-import lombok.*;
-
-import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.validation.constraints.Size;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 
 @Entity
 @AllArgsConstructor
@@ -13,40 +23,43 @@ import java.util.Date;
 @Setter
 @Builder
 public class Users {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(unique=true)
-    @Size(max = 15)
-    private String username;
+	@Column(unique = true)
+	@Size(max = 15)
+	private String username;
 
-    private String password;
+	private String password;
 
-    private boolean enabled;
+	private boolean enabled;
 
-    @Size(min = 1, max = 10)
-    private String firstName;
+	@Size(min = 1, max = 10)
+	private String firstName;
 
-    @Size(min = 1, max = 50)
-    private String lastName;
+	@Size(min = 1, max = 50)
+	private String lastName;
+
+	private Date dob;
+
+	private String location;
 
     private String fullName;
 
-    private Date dob;
+	private Date joinedDate;
 
-    private String location;
+	private boolean gender;
 
-    private Date joinedDate;
+	private String role;
 
-    private boolean gender;
+	private String code;
 
-    private String role;
+	private Date createdDate;
 
-    private String code;
+	private Date updatedDate;
 
-    private Date createdDate = new Date();
-    private Date updatedDate;
+
 
     public Users(String username, String password, boolean enabled, String firstName, String lastName , boolean gender,  Date dob, String location, Date joinedDate, String role, String code) {
         this.username = username;
