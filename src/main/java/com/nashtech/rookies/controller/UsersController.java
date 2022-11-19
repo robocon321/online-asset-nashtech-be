@@ -54,24 +54,34 @@ public class UsersController {
 
     @GetMapping("/sort-asc")
     public ResponseEntity<?> sortAsc(@RequestParam String type, @RequestParam int pageNo) throws Exception {
-        return switch (type) {
-            case "joinedDate" -> ResponseEntity.ok().body(usersService.sortByJoinedDateAsc(pageNo));
-            case "code" -> ResponseEntity.ok().body(usersService.sortByCodeAsc(pageNo));
-            case "fullName" -> ResponseEntity.ok().body(usersService.sortByFullNameAsc(pageNo));
-            case "role" -> ResponseEntity.ok().body(usersService.sortByRoleAsc(pageNo));
-            default -> ResponseEntity.badRequest().body("Invalid type");
-        };
+        switch (type) {
+            case "code":
+                return ResponseEntity.ok().body(usersService.sortByCodeAsc(pageNo));
+            case "joinDate":
+                return ResponseEntity.ok().body(usersService.sortByJoinedDateAsc(pageNo));
+            case "fullName":
+                return ResponseEntity.ok().body(usersService.sortByFullNameAsc(pageNo));
+            case "role":
+                return ResponseEntity.ok().body(usersService.sortByRoleAsc(pageNo));
+            default:
+                return ResponseEntity.ok().body("Invalid type");
+        }
     }
 
     @GetMapping("/sort-desc")
     public ResponseEntity<?> sortDesc(@RequestParam String type, int pageNo){
-        return switch (type) {
-            case "joinedDate" -> ResponseEntity.ok().body(usersService.sortByJoinedDateDesc(pageNo));
-            case "code" -> ResponseEntity.ok().body(usersService.sortByCodeDesc(pageNo));
-            case "fullName" -> ResponseEntity.ok().body(usersService.sortByFullNameDesc(pageNo));
-            case "role" -> ResponseEntity.ok().body(usersService.sortByRoleDesc(pageNo));
-            default -> ResponseEntity.badRequest().body("Invalid type");
-        };
+        switch (type) {
+            case "joinedDate":
+                return ResponseEntity.ok().body(usersService.sortByJoinedDateDesc(pageNo));
+            case "code":
+                return ResponseEntity.ok().body(usersService.sortByCodeDesc(pageNo));
+            case "fullName":
+                return ResponseEntity.ok().body(usersService.sortByFullNameDesc(pageNo));
+            case "role":
+                return ResponseEntity.ok().body(usersService.sortByRoleDesc(pageNo));
+            default:
+                return ResponseEntity.badRequest().body("Invalid type");
+        }
     }
 
 
