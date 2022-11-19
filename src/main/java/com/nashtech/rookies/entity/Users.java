@@ -1,59 +1,77 @@
 package com.nashtech.rookies.entity;
 
-import lombok.*;
-
-import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.validation.constraints.Size;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Builder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class Users {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(unique=true)
-    @Size(max = 15)
-    private String username;
+	@Column(unique = true)
+	@Size(max = 15)
+	private String username;
 
-    private String password;
+	private String password;
 
-    private int enabled;
+	private boolean enabled;
 
-    @Size(min = 1, max = 10)
-    private String firstName;
+	@Size(min = 1, max = 10)
+	private String firstName;
 
-    @Size(min = 1, max = 50)
-    private String lastName;
+	@Size(min = 1, max = 50)
+	private String lastName;
 
-    private Date dob;
+	private String fullName;
 
-    private String location;
+	private Date dob;
 
-    private Date joinedDate;
+	private String location;
 
-    private boolean gender;
+	private Date joinedDate;
 
-    private String role;
+	private boolean gender;
 
-    private String code;
+	private String role;
 
-    public Users(String username, String password, int enabled, String firstName, String lastName , boolean gender,  Date dob, String location, Date joinedDate, String role, String code) {
-        this.username = username;
-        this.password = password;
-        this.enabled = enabled;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.dob = dob;
-        this.location = location;
-        this.joinedDate = joinedDate;
-        this.gender = gender;
-        this.role = role;
-        this.code = code;
-    }
+	private String code;
+
+	private Date createdDate;
+
+	private Date updatedDate;
+
+	public Users(String username, String password, boolean enabled, String firstName, String lastName, boolean gender,
+			Date dob, String location, Date joinedDate, String role, String code) {
+		this.username = username;
+		this.password = password;
+		this.enabled = enabled;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.fullName = firstName + " " + lastName;
+		this.dob = dob;
+		this.location = location;
+		this.joinedDate = joinedDate;
+		this.gender = gender;
+		this.role = role;
+		this.code = code;
+	}
 
 }
