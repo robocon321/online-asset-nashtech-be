@@ -1,7 +1,11 @@
 package com.nashtech.rookies.services.impl;
 
+import com.nashtech.rookies.dto.request.user.UserRequestDto;
 import com.nashtech.rookies.entity.Users;
+import com.nashtech.rookies.exceptions.InvalidDataInputException;
+import com.nashtech.rookies.mapper.UserMapper;
 import com.nashtech.rookies.repository.UsersRepository;
+import com.nashtech.rookies.utils.UserUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,46 +16,34 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 @Service
 public class UsersServiceImpl implements com.nashtech.rookies.services.interfaces.UsersService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UsersServiceImpl.class);
+    UsersRepository usersRepository;
+    UserMapper userMapper;
+    UserUtil userUtil;
 
-    private final UsersRepository usersRepository;
     @Autowired
-    public UsersServiceImpl(UsersRepository usersRepository) {
+    public UsersServiceImpl(UserUtil userUtil, UsersRepository usersRepository, UserMapper userMapper) {
+        this.userUtil = userUtil;
         this.usersRepository = usersRepository;
+        this.userMapper = userMapper;
     }
 
     public static final String location = "HCM";
 
 //    Find all users by admin locations
     @Override
-    public Page<Users> showAll(int pageNo) throws Exception {
-
-        Pageable paging = PageRequest.of(pageNo - 1, 20, Sort.by("code").ascending());
-
-//        if(location.isBlank() || location.equals("null") || location.equals("undefined") || location.isEmpty()){
-//            throw new Exception("Location must not be empty");
-//        }
-//
-//
-//        if (users.isEmpty()) {
-//            throw new Exception("Can't find any user with location: " + location);
-//        }else{
-//
-//        }
-
-        return usersRepository.findByLocation(location, paging);
+    public List<Users> showAll(){
+        return usersRepository.findByLocation(location);
     }
 
     @Override
-    public Page<Users> search(String search, List<String> role, int pageNo) throws Exception {
-
-        Pageable paging = PageRequest.of(pageNo - 1, 20);
+    public List<Users> search(String search, List<String> role) throws Exception {
 
         if(search.equals("undefined") || role.contains("undefined")){
             throw new Exception("Search or role must not be undefined");
@@ -59,25 +51,22 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 
 //      Show all users
         if(search.equals("null") && role.contains("null") || role.contains("all")) {
-            LOG.error("users list full size: " + usersRepository.findByLocation(location, paging).getTotalPages());
-            return usersRepository.findByLocation(location, paging);
+            return usersRepository.findByLocation(location);
         }
 //      Show all users by search username or code
         else if((Objects.equals(role.get(0), "null") || Objects.equals(role.get(0), "all")) && !search.equals("null")){
-            LOG.error("users list size by search: " + usersRepository.findByLocationAndUsernameContainingOrCodeContaining(location, search, search, paging).getTotalPages());
-            return usersRepository.findByLocationAndUsernameContainingOrCodeContaining(location, search, search, paging);
+            return usersRepository.findByLocationAndUsernameContainingOrCodeContaining(location, search, search);
         }
 //       Show all users list by role
         else if (!role.contains("all")  && search.equals("null")){
-            LOG.error("users list size by role: " + usersRepository.findByLocationAndRoleIn(location, role, paging).getTotalPages());
-            return usersRepository.findByLocationAndRoleIn(location, role, paging);
+            return usersRepository.findByLocationAndRoleIn(location, role);
         }
 //       Show all users list by role and (username or code)
         else{
-            LOG.error("search in all size: " + usersRepository.search(location, role, search, paging).getTotalPages());
-            return usersRepository.search(location, role, search, paging);
+            return usersRepository.search(location, role, search);
         }
     }
+    
 
 //    Show information of user by id
     @Override
@@ -97,54 +86,98 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 
 //    Sort users by JoinedDate
     @Override
-    public Page<Users> sortByJoinedDateDesc(int pageNo) {
-        Pageable paging = PageRequest.of(pageNo - 1, 20);
-        return usersRepository.findByLocationOrderByJoinedDateDesc(location, paging);
+    public List<Users> sortByJoinedDateDesc() {
+        return usersRepository.findByLocationOrderByJoinedDateDesc(location);
     }
 
     @Override
-    public Page<Users> sortByJoinedDateAsc(int pageNo) {
-        Pageable paging = PageRequest.of(pageNo - 1, 20);
-        return usersRepository.findByLocationOrderByJoinedDateAsc(location, paging);
+    public List<Users> sortByJoinedDateAsc() {
+        return usersRepository.findByLocationOrderByJoinedDateAsc(location);
     }
 
 //    Sort users by code
     @Override
-    public Page<Users> sortByCodeDesc(int pageNo) {
-        Pageable paging = PageRequest.of(pageNo - 1, 20);
-        return usersRepository.findByLocationOrderByCodeDesc(location, paging);
+    public List<Users> sortByCodeDesc() {
+        return usersRepository.findByLocationOrderByCodeDesc(location);
     }
 
     @Override
-    public Page<Users> sortByCodeAsc(int pageNo) {
-        Pageable paging = PageRequest.of(pageNo - 1, 20);
-        return usersRepository.findByLocationOrderByCodeAsc(location, paging);
+    public List<Users> sortByCodeAsc() {
+        return usersRepository.findByLocationOrderByCodeAsc(location);
     }
 
 //    Sort users by full name
     @Override
-    public Page<Users> sortByFullNameDesc(int pageNo) {
-        Pageable paging = PageRequest.of(pageNo - 1, 20);
-        return usersRepository.findByLocationOrderByFullNameDesc(location, paging);
+    public List<Users> sortByFullNameDesc() {
+        return usersRepository.findByLocationOrderByFullNameDesc(location);
     }
 
     @Override
-    public Page<Users> sortByFullNameAsc(int pageNo) {
-        Pageable paging = PageRequest.of(pageNo - 1, 20);
-        return usersRepository.findByLocationOrderByFullNameAsc(location, paging);
+    public List<Users> sortByFullNameAsc() {
+        return usersRepository.findByLocationOrderByFullNameAsc(location);
     }
 
 //    Sort users by role
     @Override
-    public Page<Users> sortByRoleDesc(int pageNo) {
-        Pageable paging = PageRequest.of(pageNo - 1, 20);
-        return usersRepository.findByLocationOrderByRoleDesc(location, paging);
+    public List<Users> sortByRoleDesc() {
+        return usersRepository.findByLocationOrderByRoleDesc(location);
     }
 
     @Override
-    public Page<Users> sortByRoleAsc(int pageNo) {
-        Pageable paging = PageRequest.of(pageNo - 1, 20);
-        return usersRepository.findByLocationOrderByRoleAsc(location, paging);
+    public List<Users> sortByRoleAsc() {
+        return usersRepository.findByLocationOrderByRoleAsc(location);
+    }
+
+    @Override
+    public void createUser(UserRequestDto dto) {
+
+        if (!dto.getRole().equals("ADMIN") && !dto.getRole().equals("STAFF")) {
+            throw new InvalidDataInputException("Role is invalid");
+        }
+
+        if (!userUtil.isValidDate(dto.getDob())) {
+            throw new InvalidDataInputException("Date of birth is invalid");
+        }
+
+        if (!userUtil.isValidDate(dto.getJoinedDate())) {
+            throw new InvalidDataInputException("Join date is invalid");
+        }
+
+        Date dobDate = userUtil.convertStrDateToObDate(dto.getDob());
+
+        Date joinedDate = userUtil.convertStrDateToObDate(dto.getJoinedDate());
+
+        if (!userUtil.isValidAge(dobDate)) {
+            throw new InvalidDataInputException("User is under 18");
+        }
+
+        if (joinedDate.before(dobDate)) {
+            throw new InvalidDataInputException("Joined date is not later than Date of Birth");
+        }
+
+        dto.setFirstName(userUtil.capitalizeWord(dto.getFirstName()));
+        dto.setLastName(userUtil.capitalizeWord(dto.getLastName()));
+
+        String username = userUtil.generatePrefixUsername(dto.getFirstName(), dto.getLastName());
+
+        List<Users> users = usersRepository.findByUsernameContaining(username);
+
+        if (!users.isEmpty()) {
+            String suffix = userUtil.generateSuffixUsername(users, username);
+            username = username + suffix;
+        }
+        String password = userUtil.generatePassword(username, dto.getDob());
+
+        Long count = usersRepository.count();
+
+        String code = userUtil.generateCode(count);
+
+        Users user = userMapper.mapUserUpdateDtoToUser(dto, username, dobDate, joinedDate, code);
+
+        user.setLocation("HCM");
+        user.setPassword(password);
+        user = usersRepository.save(user);
+
     }
 
 }

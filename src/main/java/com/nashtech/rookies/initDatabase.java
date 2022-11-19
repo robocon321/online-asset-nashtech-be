@@ -16,7 +16,7 @@ public class initDatabase {
         return args -> {
             usersRepository.deleteAll();
 
-            for(int i = 1; i <= 30; i++) {
+            for(int i = 1; i <= 10; i++) {
                 usersRepository.save(new Users(
                         "adhcm" + i,
                         "123",
@@ -27,12 +27,12 @@ public class initDatabase {
                         new Date(),
                         "HCM",
                         new Date(),
-                        "admin",
+                        "ADMIN",
                         "HCMADMIN" + i
                 ));
             }
 
-            for(int i = 1; i <= 30; i++) {
+            for(int i = 1; i <= 10; i++) {
                 usersRepository.save(new Users(
                         "userhcm" + i,
                         "123",
@@ -43,12 +43,12 @@ public class initDatabase {
                         new Date(),
                         "HCM",
                         new Date(),
-                        "staff",
+                        "STAFF",
                         "HCMUSER" + i
                 ));
             }
 
-            for(int i = 1; i <= 30; i++) {
+            for(int i = 1; i <= 10; i++) {
                 usersRepository.save(new Users(
                         "userhn" + i,
                         "123",
@@ -59,12 +59,12 @@ public class initDatabase {
                         new Date(),
                         "HN",
                         new Date(),
-                        "staff",
+                        "STAFF",
                         "HNUSER" + i
                 ));
             }
 
-            for(int i = 1; i <= 30; i++) {
+            for(int i = 1; i <= 10; i++) {
                 usersRepository.save(new Users(
                         "adhn" + i,
                         "123",
@@ -75,7 +75,7 @@ public class initDatabase {
                         new Date(),
                         "HN",
                         new Date(),
-                        "admin",
+                        "ADMIN",
                         "HNADMIN" + i
                 ));
             }

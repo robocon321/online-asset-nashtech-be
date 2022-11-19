@@ -1,38 +1,39 @@
 package com.nashtech.rookies.services.interfaces;
 
+import com.nashtech.rookies.dto.request.user.UserRequestDto;
 import com.nashtech.rookies.entity.Users;
-import org.springframework.data.domain.Page;
-
 import java.util.List;
 
 public interface UsersService {
     //    Find all users by admin locations
-    Page<Users> showAll(int pageNo) throws Exception;
-
-    //    Search by username or code
-    Page<Users> search(String search, List<String> role, int pageNo) throws Exception;
+    List<Users> showAll() throws Exception;
 
     //    Show information of user by id
     Users findByUserId(Long userId) throws Exception;
 
-    //    Sort users by JoinedDate
-    Page<Users> sortByJoinedDateDesc(int pageNo);
+    //    Search by username or code
+    List<Users> search(String search, List<String> role) throws Exception;
 
-    Page<Users> sortByJoinedDateAsc(int pageNo);
+    //    Sort users by JoinedDate
+    List<Users> sortByJoinedDateDesc();
+
+    List<Users> sortByJoinedDateAsc();
 
     //    Sort users by code
-    Page<Users> sortByCodeDesc(int pageNo);
+    List<Users> sortByCodeDesc();
 
-    Page<Users> sortByCodeAsc(int pageNo);
+    List<Users> sortByCodeAsc();
 
     //    Sort users by full name
-    Page<Users> sortByFullNameDesc(int pageNo);
+    List<Users> sortByFullNameDesc();
 
-    Page<Users> sortByFullNameAsc(int pageNo);
+    List<Users> sortByFullNameAsc();
 
     //    Sort users by role with locations
 
-    Page<Users> sortByRoleDesc(int pageNo);
+    List<Users> sortByRoleDesc();
 
-    Page<Users> sortByRoleAsc(int pageNo);
+    List<Users> sortByRoleAsc();
+
+    void createUser(UserRequestDto dto);
 }
