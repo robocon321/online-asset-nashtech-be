@@ -1,6 +1,5 @@
 package com.nashtech.rookies.controller;
 
-import com.nashtech.rookies.entity.Users;
 import com.nashtech.rookies.services.interfaces.UsersService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
