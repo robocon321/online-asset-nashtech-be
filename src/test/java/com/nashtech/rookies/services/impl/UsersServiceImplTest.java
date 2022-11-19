@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Date;
 
+import com.nashtech.rookies.repository.UsersRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,24 +14,23 @@ import com.nashtech.rookies.dto.request.user.UserRequestDto;
 import com.nashtech.rookies.entity.Users;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
 import com.nashtech.rookies.mapper.UserMapper;
-import com.nashtech.rookies.repository.UserRepository;
 import com.nashtech.rookies.utils.UserUtil;
 
-public class AuthServiceImplTest {
+public class UsersServiceImplTest {
 
 	UserUtil userUtil;
-	UserRepository userRepository;
+	UsersRepository userRepository;
 	UserMapper userMapper;
 
-	AuthServiceImpl authServiceImpl;
+	UsersServiceImpl usersServiceImpl;
 
 	@BeforeEach
 	void beforeEach() {
 		userUtil = mock(UserUtil.class);
-		userRepository = mock(UserRepository.class);
+		userRepository = mock(UsersRepository.class);
 		userMapper = mock(UserMapper.class);
 
-		authServiceImpl = new AuthServiceImpl(userUtil, userRepository, userMapper);
+		usersServiceImpl = new UsersServiceImpl(userUtil, userRepository, userMapper);
 	}
 
 	@Test
@@ -38,7 +38,7 @@ public class AuthServiceImplTest {
 		UserRequestDto dto = UserRequestDto.builder().role("USER").build();
 
 		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
-			authServiceImpl.createUser(dto);
+			usersServiceImpl.createUser(dto);
 		});
 		Assertions.assertEquals("Role is invalid", actualException.getMessage());
 	}
@@ -50,7 +50,7 @@ public class AuthServiceImplTest {
 		when(userUtil.isValidDate(dto.getDob())).thenReturn(false);
 
 		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
-			authServiceImpl.createUser(dto);
+			usersServiceImpl.createUser(dto);
 		});
 		Assertions.assertEquals("Date of birth is invalid", actualException.getMessage());
 	}
@@ -62,7 +62,7 @@ public class AuthServiceImplTest {
 		when(userUtil.isValidDate(dto.getDob())).thenReturn(true);
 
 		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
-			authServiceImpl.createUser(dto);
+			usersServiceImpl.createUser(dto);
 		});
 		Assertions.assertEquals("Join date is invalid", actualException.getMessage());
 	}
@@ -86,7 +86,7 @@ public class AuthServiceImplTest {
 		when(userUtil.isValidAge(dobDate)).thenReturn(false);
 
 		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
-			authServiceImpl.createUser(dto);
+			usersServiceImpl.createUser(dto);
 		});
 		Assertions.assertEquals("User is under 18", actualException.getMessage());
 	}
@@ -109,7 +109,7 @@ public class AuthServiceImplTest {
 		when(joinedDate.before(dobDate)).thenReturn(true);
 
 		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
-			authServiceImpl.createUser(dto);
+			usersServiceImpl.createUser(dto);
 		});
 		Assertions.assertEquals("Joined date is not later than Date of Birth", actualException.getMessage());
 	}
@@ -151,7 +151,7 @@ public class AuthServiceImplTest {
 
 		when(userRepository.save(user)).thenReturn(user);
 
-//		authServiceImpl.createUser(dto);
+//		usersServiceImpl.createUser(dto);
 	}
 
 }
