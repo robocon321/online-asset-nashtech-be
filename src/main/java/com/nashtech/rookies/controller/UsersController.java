@@ -1,16 +1,12 @@
 package com.nashtech.rookies.controller;
 
-import com.nashtech.rookies.entity.Users;
+import com.nashtech.rookies.dto.request.user.UserRequestDto;
 import com.nashtech.rookies.services.interfaces.UsersService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -18,7 +14,6 @@ import java.util.List;
 @RestController
 public class UsersController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UsersController.class);
     @Autowired
     UsersService usersService;
 
@@ -32,27 +27,45 @@ public class UsersController {
         return ResponseEntity.ok().body(usersService.findByUserId(id));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<?> search(@RequestParam String search, @RequestParam List<String> role) throws Exception {
+        return ResponseEntity.ok().body(usersService.search(search, role));
+    }
+
     @GetMapping("/sort-asc")
     public ResponseEntity<?> sortAsc(@RequestParam String type) throws Exception {
-        return switch (type) {
-            case "joinedDate" -> ResponseEntity.ok().body(usersService.sortByJoinedDateAsc());
-            case "code" -> ResponseEntity.ok().body(usersService.sortByCodeAsc());
-            case "fullName" -> ResponseEntity.ok().body(usersService.sortByFullNameAsc());
-            case "role" -> ResponseEntity.ok().body(usersService.sortByRoleAsc());
-            default -> ResponseEntity.badRequest().body("Invalid type");
-        };
+        switch (type) {
+            case "code":
+                return ResponseEntity.ok().body(usersService.sortByCodeAsc());
+            case "joinDate":
+                return ResponseEntity.ok().body(usersService.sortByJoinedDateAsc());
+            case "fullName":
+                return ResponseEntity.ok().body(usersService.sortByFullNameAsc());
+            case "role":
+                return ResponseEntity.ok().body(usersService.sortByRoleAsc());
+            default:
+                return ResponseEntity.ok().body("Invalid type");
+        }
     }
 
     @GetMapping("/sort-desc")
     public ResponseEntity<?> sortDesc(@RequestParam String type){
-        return switch (type) {
-            case "joinedDate" -> ResponseEntity.ok().body(usersService.sortByJoinedDateDesc());
-            case "code" -> ResponseEntity.ok().body(usersService.sortByCodeDesc());
-            case "fullName" -> ResponseEntity.ok().body(usersService.sortByFullNameDesc());
-            case "role" -> ResponseEntity.ok().body(usersService.sortByRoleDesc());
-            default -> ResponseEntity.badRequest().body("Invalid type");
-        };
+        switch (type) {
+            case "joinedDate":
+                return ResponseEntity.ok().body(usersService.sortByJoinedDateDesc());
+            case "code":
+                return ResponseEntity.ok().body(usersService.sortByCodeDesc());
+            case "fullName":
+                return ResponseEntity.ok().body(usersService.sortByFullNameDesc());
+            case "role":
+                return ResponseEntity.ok().body(usersService.sortByRoleDesc());
+            default:
+                return ResponseEntity.badRequest().body("Invalid type");
+        }
     }
 
-
+    @PostMapping("/create")
+    public void createUser(@Valid @RequestBody UserRequestDto dto) {
+        usersService.createUser(dto);
+    }
 }

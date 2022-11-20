@@ -1,7 +1,11 @@
 package com.nashtech.rookies.services.impl;
 
+import com.nashtech.rookies.dto.request.user.UserRequestDto;
 import com.nashtech.rookies.entity.Users;
+import com.nashtech.rookies.exceptions.InvalidDataInputException;
+import com.nashtech.rookies.mapper.UserMapper;
 import com.nashtech.rookies.repository.UsersRepository;
+import com.nashtech.rookies.utils.UserUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,29 +16,35 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 @Service
 public class UsersServiceImpl implements com.nashtech.rookies.services.interfaces.UsersService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UsersServiceImpl.class);
+    UsersRepository usersRepository;
+    UserMapper userMapper;
+    UserUtil userUtil;
 
-    private final UsersRepository usersRepository;
     @Autowired
-    public UsersServiceImpl(UsersRepository usersRepository) {
+    public UsersServiceImpl(UserUtil userUtil, UsersRepository usersRepository, UserMapper userMapper) {
+        this.userUtil = userUtil;
         this.usersRepository = usersRepository;
+        this.userMapper = userMapper;
     }
 
     public static final String location = "HCM";
 
 //    Find all users by admin locations
     @Override
-    public List<Users> showAll() throws Exception {
+    public List<Users> showAll(){
         return usersRepository.findByLocation(location);
     }
 
+    @Override
     public List<Users> search(String search, List<String> role) throws Exception {
+
         if(search.equals("undefined") || role.contains("undefined")){
             throw new Exception("Search or role must not be undefined");
         }
@@ -56,6 +66,7 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
             return usersRepository.search(location, role, search);
         }
     }
+    
 
 //    Show information of user by id
     @Override
@@ -115,6 +126,58 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
     @Override
     public List<Users> sortByRoleAsc() {
         return usersRepository.findByLocationOrderByRoleAsc(location);
+    }
+
+    @Override
+    public void createUser(UserRequestDto dto) {
+
+        if (!dto.getRole().equals("ADMIN") && !dto.getRole().equals("STAFF")) {
+            throw new InvalidDataInputException("Role is invalid");
+        }
+
+        if (!userUtil.isValidDate(dto.getDob())) {
+            throw new InvalidDataInputException("Date of birth is invalid");
+        }
+
+        if (!userUtil.isValidDate(dto.getJoinedDate())) {
+            throw new InvalidDataInputException("Join date is invalid");
+        }
+
+        Date dobDate = userUtil.convertStrDateToObDate(dto.getDob());
+
+        Date joinedDate = userUtil.convertStrDateToObDate(dto.getJoinedDate());
+
+        if (!userUtil.isValidAge(dobDate)) {
+            throw new InvalidDataInputException("User is under 18");
+        }
+
+        if (joinedDate.before(dobDate)) {
+            throw new InvalidDataInputException("Joined date is not later than Date of Birth");
+        }
+
+        dto.setFirstName(userUtil.capitalizeWord(dto.getFirstName()));
+        dto.setLastName(userUtil.capitalizeWord(dto.getLastName()));
+
+        String username = userUtil.generatePrefixUsername(dto.getFirstName(), dto.getLastName());
+
+        List<Users> users = usersRepository.findByUsernameContaining(username);
+
+        if (!users.isEmpty()) {
+            String suffix = userUtil.generateSuffixUsername(users, username);
+            username = username + suffix;
+        }
+        String password = userUtil.generatePassword(username, dto.getDob());
+
+        Long count = usersRepository.count();
+
+        String code = userUtil.generateCode(count);
+
+        Users user = userMapper.mapUserUpdateDtoToUser(dto, username, dobDate, joinedDate, code);
+
+        user.setLocation("HCM");
+        user.setPassword(password);
+        user = usersRepository.save(user);
+
     }
 
 }

@@ -39,4 +39,7 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
     List<Users> findByLocationOrderByRoleDesc(String location);
     List<Users> findByLocationOrderByRoleAsc(String location);
 
+    List<Users> findByUsernameContaining(String username);
+
+
 }

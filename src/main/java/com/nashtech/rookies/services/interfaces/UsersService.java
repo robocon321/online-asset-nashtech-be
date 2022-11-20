@@ -1,8 +1,7 @@
 package com.nashtech.rookies.services.interfaces;
 
+import com.nashtech.rookies.dto.request.user.UserRequestDto;
 import com.nashtech.rookies.entity.Users;
-import org.springframework.data.domain.Page;
-
 import java.util.List;
 
 public interface UsersService {
@@ -11,6 +10,9 @@ public interface UsersService {
 
     //    Show information of user by id
     Users findByUserId(Long userId) throws Exception;
+
+    //    Search by username or code
+    List<Users> search(String search, List<String> role) throws Exception;
 
     //    Sort users by JoinedDate
     List<Users> sortByJoinedDateDesc();
@@ -32,4 +34,6 @@ public interface UsersService {
     List<Users> sortByRoleDesc();
 
     List<Users> sortByRoleAsc();
+
+    void createUser(UserRequestDto dto);
 }
