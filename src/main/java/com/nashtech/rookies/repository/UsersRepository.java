@@ -41,5 +41,5 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 
     List<Users> findByUsernameContaining(String username);
 
-
+    Users findUsersByUsername(String username);
 }
