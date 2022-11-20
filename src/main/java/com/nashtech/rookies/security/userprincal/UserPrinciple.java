@@ -40,6 +40,9 @@ public class UserPrinciple implements UserDetails {
 		this.role = role;
 	}
 
+	public UserPrinciple() {
+	}
+
 	public static UserPrinciple build(Users user) {
 		GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole());
 		List<GrantedAuthority> authories = new ArrayList<>();

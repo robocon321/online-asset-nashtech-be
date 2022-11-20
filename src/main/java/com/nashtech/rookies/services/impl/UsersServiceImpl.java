@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.nashtech.rookies.dto.request.user.UserRequestDto;
@@ -20,12 +21,15 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 	UsersRepository usersRepository;
 	UserMapper userMapper;
 	UserUtil userUtil;
+	PasswordEncoder passwordEncoder;
 
 	@Autowired
-	public UsersServiceImpl(UserUtil userUtil, UsersRepository usersRepository, UserMapper userMapper) {
+	public UsersServiceImpl(UserUtil userUtil, UsersRepository usersRepository, UserMapper userMapper,
+			PasswordEncoder passwordEncoder) {
 		this.userUtil = userUtil;
 		this.usersRepository = usersRepository;
 		this.userMapper = userMapper;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	public static final String location = "HCM";
@@ -168,8 +172,10 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 
 		Users user = userMapper.mapUserUpdateDtoToUser(dto, username, dobDate, joinedDate, code);
 
-		user.setLocation("HCM");
-		user.setPassword(password);
+		user.setLocation(userUtil.getAddressFromUserPrinciple());
+
+		user.setPassword(passwordEncoder.encode(password));
+
 		user = usersRepository.save(user);
 
 	}
