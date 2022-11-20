@@ -175,6 +175,8 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 		user.setLocation(userUtil.getAddressFromUserPrinciple());
 
 		user.setPassword(passwordEncoder.encode(password));
+		
+		user.setEnabled(false);
 
 		user = usersRepository.save(user);
 

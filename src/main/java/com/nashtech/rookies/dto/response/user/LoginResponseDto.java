@@ -7,12 +7,13 @@ import lombok.Setter;
 @Setter
 public class LoginResponseDto {
 	public LoginResponseDto(String username, String fullName, String role,
-			String location, String token) {
+			String location, String token, boolean enabled) {
 		this.username = username;
 		this.fullName = fullName;
 		this.role = role;
 		this.location = location;
 		this.token = token;
+		this.enabled = enabled;
 	}
 
 	private String username;
@@ -20,5 +21,5 @@ public class LoginResponseDto {
 	private String location;
 	private String role;
 	private String token;
-
+	private boolean enabled;
 }
