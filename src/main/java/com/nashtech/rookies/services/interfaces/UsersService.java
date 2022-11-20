@@ -7,32 +7,29 @@ import java.util.List;
 
 public interface UsersService {
     //    Find all users by admin locations
-    Page<Users> showAll(int pageNo) throws Exception;
-
-    //    Search by username or code
-    Page<Users> search(String search, List<String> role, int pageNo) throws Exception;
+    List<Users> showAll() throws Exception;
 
     //    Show information of user by id
     Users findByUserId(Long userId) throws Exception;
 
     //    Sort users by JoinedDate
-    Page<Users> sortByJoinedDateDesc(int pageNo);
+    List<Users> sortByJoinedDateDesc();
 
-    Page<Users> sortByJoinedDateAsc(int pageNo);
+    List<Users> sortByJoinedDateAsc();
 
     //    Sort users by code
-    Page<Users> sortByCodeDesc(int pageNo);
+    List<Users> sortByCodeDesc();
 
-    Page<Users> sortByCodeAsc(int pageNo);
+    List<Users> sortByCodeAsc();
 
     //    Sort users by full name
-    Page<Users> sortByFullNameDesc(int pageNo);
+    List<Users> sortByFullNameDesc();
 
-    Page<Users> sortByFullNameAsc(int pageNo);
+    List<Users> sortByFullNameAsc();
 
     //    Sort users by role with locations
 
-    Page<Users> sortByRoleDesc(int pageNo);
+    List<Users> sortByRoleDesc();
 
-    Page<Users> sortByRoleAsc(int pageNo);
+    List<Users> sortByRoleAsc();
 }

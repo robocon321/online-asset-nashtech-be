@@ -23,54 +23,33 @@ public class UsersController {
     UsersService usersService;
 
     @GetMapping("/")
-    public ResponseEntity<?> showAllUsers(@RequestParam int page) throws Exception {
-        return ResponseEntity.ok(usersService.showAll(page));
+    public ResponseEntity<?> showAllUsers() throws Exception {
+        return ResponseEntity.ok(usersService.showAll());
     }
-
-//    @GetMapping("/search")
-//    public ResponseEntity<?> search(@RequestParam String search, @RequestParam List<String> role, @RequestParam Integer pageNo) throws Exception {
-////        LOG.error("Role from controller: " + role);
-////        LOG.error("Role size from controller: " + role.size());
-////        return ResponseEntity.ok().body("OKE");
-//        return ResponseEntity.ok().body(usersService.search(search, role, pageNo));
-//    }
-
-    @GetMapping("/search")
-    public ResponseEntity<?> search(@RequestParam String search, @RequestParam List<String> role, int pageNo) throws Exception {
-        return ResponseEntity.ok().body(usersService.search(search, role, pageNo));
-    }
-
-
 
     @GetMapping("/id")
     public ResponseEntity<?> getUserById(@RequestParam Long id) throws Exception {
         return ResponseEntity.ok().body(usersService.findByUserId(id));
     }
 
-    @GetMapping("/page")
-    public ResponseEntity<?> paginateUsers(@RequestParam Integer page, @RequestParam String sort,
-                                           @RequestParam List<String> roles, @RequestParam String search) throws Exception {
-        return ResponseEntity.ok().body(usersService.showAll(page));
-    }
-
     @GetMapping("/sort-asc")
-    public ResponseEntity<?> sortAsc(@RequestParam String type, @RequestParam int pageNo) throws Exception {
+    public ResponseEntity<?> sortAsc(@RequestParam String type) throws Exception {
         return switch (type) {
-            case "joinedDate" -> ResponseEntity.ok().body(usersService.sortByJoinedDateAsc(pageNo));
-            case "code" -> ResponseEntity.ok().body(usersService.sortByCodeAsc(pageNo));
-            case "fullName" -> ResponseEntity.ok().body(usersService.sortByFullNameAsc(pageNo));
-            case "role" -> ResponseEntity.ok().body(usersService.sortByRoleAsc(pageNo));
+            case "joinedDate" -> ResponseEntity.ok().body(usersService.sortByJoinedDateAsc());
+            case "code" -> ResponseEntity.ok().body(usersService.sortByCodeAsc());
+            case "fullName" -> ResponseEntity.ok().body(usersService.sortByFullNameAsc());
+            case "role" -> ResponseEntity.ok().body(usersService.sortByRoleAsc());
             default -> ResponseEntity.badRequest().body("Invalid type");
         };
     }
 
     @GetMapping("/sort-desc")
-    public ResponseEntity<?> sortDesc(@RequestParam String type, int pageNo){
+    public ResponseEntity<?> sortDesc(@RequestParam String type){
         return switch (type) {
-            case "joinedDate" -> ResponseEntity.ok().body(usersService.sortByJoinedDateDesc(pageNo));
-            case "code" -> ResponseEntity.ok().body(usersService.sortByCodeDesc(pageNo));
-            case "fullName" -> ResponseEntity.ok().body(usersService.sortByFullNameDesc(pageNo));
-            case "role" -> ResponseEntity.ok().body(usersService.sortByRoleDesc(pageNo));
+            case "joinedDate" -> ResponseEntity.ok().body(usersService.sortByJoinedDateDesc());
+            case "code" -> ResponseEntity.ok().body(usersService.sortByCodeDesc());
+            case "fullName" -> ResponseEntity.ok().body(usersService.sortByFullNameDesc());
+            case "role" -> ResponseEntity.ok().body(usersService.sortByRoleDesc());
             default -> ResponseEntity.badRequest().body("Invalid type");
         };
     }
