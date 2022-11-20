@@ -9,10 +9,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LoginRequestDto {
+	@Size(max = 50, message = "Max length is 50")
 	@NotBlank(message = "Username is required")
 	private String username;
 
-	@Size(min = 6, message = "Password must be at least 6 characters")
+	@Size(max = 50, message = "Max length is 50")
 	@NotBlank(message = "Password is required")
 	private String password;
 }
