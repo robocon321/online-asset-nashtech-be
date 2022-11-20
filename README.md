@@ -14,7 +14,20 @@ TODO: Guide users through getting your code up and running on their own system. 
 
 # Build and Test
 
-TODO: Describe and show how to build your code and run the tests.
+Run command below to build and test the project.
+
+    DB_HOST=locahost DB_PORT=5432 DB_DATABASE=rookies DB_USERNAME=postgres DB_PASSWORD=123 mvn spring-boot:run
+
+OR
+
+You can set up environment variables in your IDE, then run the project.
+
+- IntelliJ: Run -> Edit Configurations -> Environment Variables
+- Eclipse: Run -> Run Configurations -> Environment Variables
+
+And pass the following environment variables:
+    
+    DB_HOST=localhost;DB_PORT=5432;DB_DATABASE=rookies;DB_USERNAME=postgres;DB_PASSWORD=123
 
 # Contribute
 
