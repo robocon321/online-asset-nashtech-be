@@ -58,6 +58,11 @@ public class UsersController {
         }
     }
 
+    @GetMapping("/updated")
+    public ResponseEntity<?> sortUpdatedDateDesc(){
+        return ResponseEntity.ok().body(usersService.sortByUpdatedDateDesc());
+    }
+
     @PostMapping("/create")
     public void createUser(@Valid @RequestBody UserRequestDto dto) {
         usersService.createUser(dto);

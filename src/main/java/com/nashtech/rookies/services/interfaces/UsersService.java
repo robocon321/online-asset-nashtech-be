@@ -32,5 +32,7 @@ public interface UsersService {
 
     List<Users> sortByRoleAsc();
 
+    List<Users> sortByUpdatedDateDesc();
+
     void createUser(UserRequestDto dto);
 }
