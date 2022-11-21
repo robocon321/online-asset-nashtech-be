@@ -34,36 +34,11 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 
 	public static final String location = "HCM";
 
+//    region Show information
 //    Find all users by admin locations
 	@Override
 	public List<Users> showAll() {
 		return usersRepository.findByLocation(location);
-	}
-
-	@Override
-	public List<Users> search(String search, List<String> role) throws Exception {
-
-		if (search.equals("undefined") || role.contains("undefined")) {
-			throw new Exception("Search or role must not be undefined");
-		}
-
-//      Show all users
-		if (search.equals("null") && role.contains("null") || role.contains("all")) {
-			return usersRepository.findByLocation(location);
-		}
-//      Show all users by search username or code
-		else if ((Objects.equals(role.get(0), "null") || Objects.equals(role.get(0), "all"))
-				&& !search.equals("null")) {
-			return usersRepository.findByLocationAndUsernameContainingOrCodeContaining(location, search, search);
-		}
-//       Show all users list by role
-		else if (!role.contains("all") && search.equals("null")) {
-			return usersRepository.findByLocationAndRoleIn(location, role);
-		}
-//       Show all users list by role and (username or code)
-		else {
-			return usersRepository.search(location, role, search);
-		}
 	}
 
 //    Show information of user by id
@@ -120,14 +95,15 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 	public List<Users> sortByRoleDesc() {
 		return usersRepository.findByLocationOrderByRoleDesc(location);
 	}
+    @Override
+    public List<Users> sortByRoleAsc() {
+        return usersRepository.findByLocationOrderByRoleAsc(location);
+    }
+//    endregion
 
-	@Override
-	public List<Users> sortByRoleAsc() {
-		return usersRepository.findByLocationOrderByRoleAsc(location);
-	}
-
-	@Override
-	public void createUser(UserRequestDto dto) {
+//    region Create user
+    @Override
+    public void createUser(UserRequestDto dto) {
 
 		if (!dto.getRole().equals("ADMIN") && !dto.getRole().equals("STAFF")) {
 			throw new InvalidDataInputException("Role is invalid");
@@ -181,5 +157,8 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 		user = usersRepository.save(user);
 
 	}
+
+    
+//    endregion
 
 }

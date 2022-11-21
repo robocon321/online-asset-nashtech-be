@@ -133,7 +133,7 @@ public class UsersServiceImplTest {
 	}
 //	endregion
 
-//	region Test create user
+	//	region Test create user
 	@Test
 	void createUser_ShouldThrowInvalidDataInputException_WhenRoleInValid() {
 		UserRequestDto dto = UserRequestDto.builder().role("USER").build();

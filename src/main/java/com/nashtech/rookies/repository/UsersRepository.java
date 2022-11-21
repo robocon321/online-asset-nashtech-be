@@ -2,25 +2,14 @@ package com.nashtech.rookies.repository;
 
 import com.nashtech.rookies.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UsersRepository extends JpaRepository<Users, Long> {
 
-	Users findUsersById(Long id);
-
-//    Search by username or code
-	List<Users> findByLocationAndUsernameContainingOrCodeContaining(String location, String searchUsername,
-			String searchCode);
-
-//    Filter users by role and location and (by username or code)
-	@Query("SELECT u FROM Users u WHERE u.location = ?1 AND u.role IN ?2 AND (u.username LIKE %?3% OR u.code LIKE %?3%)")
-	List<Users> search(String location, List<String> role, String search);
-
-//    Filter with List of roles
-	List<Users> findByLocationAndRoleIn(String location, List<String> role);
+//    region Find all users by admin locations
+    Users findUsersById(Long id);
 
 //    Find all users by admin locations
 	List<Users> findByLocation(String location);
@@ -43,12 +32,18 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 //    Sort users by role
 	List<Users> findByLocationOrderByRoleDesc(String location);
 
-	List<Users> findByLocationOrderByRoleAsc(String location);
 
-	List<Users> findByUsernameContaining(String username);
+	List<Users> findByLocationOrderByRoleAsc(String location);
 
 	Users findUsersByUsername(String username);
 
 	Optional<Users> findByUsername(String username);
+
+//    endregion
+
+//    region Create users
+    List<Users> findByUsernameContaining(String username);
+//   endregion
+
 
 }

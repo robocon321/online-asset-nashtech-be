@@ -22,7 +22,7 @@ public class initDatabase {
         return args -> {
             usersRepository.deleteAll();
 
-            for(int i = 1; i <= 10; i++) {
+            for(int i = 1; i <= 30; i++) {
                 usersRepository.save(new Users(
                         "adhcm" + i,
                         passwordEncoder.encode("123456"),
@@ -43,7 +43,7 @@ public class initDatabase {
                         "userhcm" + i,
                         passwordEncoder.encode("123456"),
                         true,
-                        "admin",
+                        "admin123",
                         "cute",
                         true,
                         new Date(),

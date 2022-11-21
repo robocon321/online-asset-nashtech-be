@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("/api/v1/users")
 @RestController
 public class UsersController {
@@ -25,11 +25,6 @@ public class UsersController {
     @GetMapping("/id")
     public ResponseEntity<?> getUserById(@RequestParam Long id) throws Exception {
         return ResponseEntity.ok().body(usersService.findByUserId(id));
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<?> search(@RequestParam String search, @RequestParam List<String> role) throws Exception {
-        return ResponseEntity.ok().body(usersService.search(search, role));
     }
 
     @GetMapping("/sort-asc")
