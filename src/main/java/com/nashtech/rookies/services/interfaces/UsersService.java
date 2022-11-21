@@ -12,9 +12,6 @@ public interface UsersService {
     //    Show information of user by id
     Users findByUserId(Long userId) throws Exception;
 
-    //    Search by username or code
-    List<Users> search(String search, List<String> role) throws Exception;
-
     //    Sort users by JoinedDate
     List<Users> sortByJoinedDateDesc();
 

@@ -18,7 +18,7 @@ import lombok.Setter;
 public class UserRequestDto {
 
 	@NotBlank(message = "FirstName is required.")
-	@Size(min = 1, max = 10, message = "FirstName is invalid")
+	@Size(min = 1, max = 50, message = "FirstName is invalid")
 	private String firstName;
 
 	@NotBlank(message = "LastName is required.")

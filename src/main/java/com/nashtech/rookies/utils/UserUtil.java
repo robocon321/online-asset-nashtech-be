@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.nashtech.rookies.entity.Users;
+import com.nashtech.rookies.security.userprincal.UserPrinciple;
 
 @Component
 public class UserUtil {
@@ -70,7 +72,7 @@ public class UserUtil {
 
 	public String capitalizeWord(String str) {
 		str = str.trim();
-		str = str.replaceAll("\\s+"," ");
+		str = str.replaceAll("\\s+", " ");
 		String words[] = str.split("\\s");
 		String capitalizeWord = "";
 		for (String w : words) {
@@ -141,6 +143,17 @@ public class UserUtil {
 	public String generatePassword(String username, String dob) {
 		String passwordDate = dob.split("/")[0] + dob.split("/")[1] + dob.split("/")[2];
 		return username + "@" + passwordDate;
+	}
+
+	public String getAddressFromUserPrinciple() {
+		UserPrinciple userPrinciple = new UserPrinciple();
+
+		try {
+			userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return userPrinciple.getLocation();
 	}
 
 }

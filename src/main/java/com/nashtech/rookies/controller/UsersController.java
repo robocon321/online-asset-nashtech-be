@@ -28,11 +28,6 @@ public class UsersController {
         return ResponseEntity.ok().body(usersService.findByUserId(id));
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<?> search(@RequestParam String search, @RequestParam List<String> role) throws Exception {
-        return ResponseEntity.ok().body(usersService.search(search, role));
-    }
-
     @GetMapping("/sort-asc")
     public ResponseEntity<?> sortAsc(@RequestParam String type) throws Exception {
         switch (type) {
