@@ -1,5 +1,6 @@
 package com.nashtech.rookies.controller;
 
+import com.nashtech.rookies.dto.request.user.UpdateUserRequestDto;
 import com.nashtech.rookies.dto.request.user.UserRequestDto;
 import com.nashtech.rookies.services.interfaces.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("http://localhost:3000/")
 @RequestMapping("/api/v1/users")
 @RestController
 public class UsersController {
@@ -62,4 +64,7 @@ public class UsersController {
     public void createUser(@Valid @RequestBody UserRequestDto dto) {
         usersService.createUser(dto);
     }
+
+    @PutMapping("/update")
+    public String updateUser(@Valid @RequestBody UpdateUserRequestDto dto){ return usersService.updateUser(dto);}
 }

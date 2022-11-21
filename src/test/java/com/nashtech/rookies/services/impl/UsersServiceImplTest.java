@@ -51,6 +51,107 @@ public class UsersServiceImplTest {
 			);
 		}
 	}
+	@Test
+	void updateUser_ShouldThrowInvalidDataInputException_WhenUserNotFound(){
+
+		UpdateUserRequestDto dto = new UpdateUserRequestDto();
+		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
+			usersServiceImpl.updateUser(dto);
+		});
+		Assertions.assertEquals("Can't find any user with id: null", actualException.getMessage());
+	}
+
+	@Test
+	void updateUser_ShouldThrowInvalidDataInputException_WhenRoleInValid(){
+		Users user = mock(Users.class);
+
+		UpdateUserRequestDto dto = UpdateUserRequestDto.builder().role("USER").build();
+		when(userRepository.findUsersById(dto.getId())).thenReturn(user);
+		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
+			usersServiceImpl.updateUser(dto);
+		});
+		Assertions.assertEquals("Role is invalid", actualException.getMessage());
+	}
+
+	@Test
+	void updateUser_ShouldThrowInvalidDataInputException_WhenDobInValid(){
+		Users user = mock(Users.class);
+
+		UpdateUserRequestDto dto = UpdateUserRequestDto.builder().dob("30/02/2020").role("ADMIN").build();
+		when(userRepository.findUsersById(dto.getId())).thenReturn(user);
+		when(userUtil.isValidDate(dto.getDob())).thenReturn(false);
+		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
+			usersServiceImpl.updateUser(dto);
+		});
+		Assertions.assertEquals("Date of birth is invalid", actualException.getMessage());
+	}
+	@Test
+	void updateUser_ShouldThrowInvalidDataInputException_WhenJoinedDateInValid(){
+		Users user = mock(Users.class);
+
+		UpdateUserRequestDto dto = UpdateUserRequestDto.builder().dob("28/02/1990").joinedDate("28-02-2020").role("ADMIN").build();
+		when(userRepository.findUsersById(dto.getId())).thenReturn(user);
+		when(userUtil.isValidDate(dto.getDob())).thenReturn(true);
+		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
+			usersServiceImpl.updateUser(dto);
+		});
+		Assertions.assertEquals("Join date is invalid", actualException.getMessage());
+	}
+	@Test
+	void updateUser_ShouldSuccess_WhenDataValid(){
+		Date dobDate = mock(Date.class);
+		Date joinedDate = mock(Date.class);
+		Users user = mock(Users.class);
+		UpdateUserRequestDto dto = UpdateUserRequestDto.builder().id(1L).gender(true).dob("28/02/1990").joinedDate("28/02/2020").role("ADMIN").build();
+		when(userRepository.findUsersById(dto.getId())).thenReturn(user);
+		when(userUtil.isValidDate("28/02/1990")).thenReturn(true);
+		when(userUtil.isValidDate("28/02/2020")).thenReturn(true);
+		when(userUtil.convertStrDateToObDate("28/02/1990")).thenReturn(dobDate);
+		when(userUtil.convertStrDateToObDate("28/02/2020")).thenReturn(joinedDate);
+		when(userUtil.isValidAge(dobDate)).thenReturn(true);
+		when(joinedDate.before(dobDate)).thenReturn(false);
+		when(userRepository.save(user)).thenReturn(user);
+		String actual = usersServiceImpl.updateUser(dto);
+		Assertions.assertEquals("Update Success", actual);
+	}
+
+	@Test
+	void updateUser_ShouldThrowInvalidDataInputException_WhenDobUnder18(){
+		Users user = new Users();
+		Date dobDate = mock(Date.class);
+		Date joinedDate = mock(Date.class);
+		UpdateUserRequestDto dto = UpdateUserRequestDto.builder().dob("28/02/2010").joinedDate("28/02/2020").role("ADMIN").build();
+		when(userRepository.findUsersById(dto.getId())).thenReturn(user);
+		when(userUtil.isValidDate(dto.getDob())).thenReturn(true);
+		when(userUtil.isValidDate(dto.getJoinedDate())).thenReturn(true);
+		when(userUtil.convertStrDateToObDate(dto.getDob())).thenReturn(dobDate);
+		when(userUtil.convertStrDateToObDate(dto.getDob())).thenReturn(joinedDate);
+
+		when(userUtil.isValidAge(dobDate)).thenReturn(false);
+		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
+			usersServiceImpl.updateUser(dto);
+		});
+		Assertions.assertEquals("User is under 18", actualException.getMessage());
+	}
+
+	@Test
+	void updateUser_ShouldThrowInvalidDataInputException_WhenJoinedDateBeforeDob(){
+		Users user = new Users();
+		Date dobDate = mock(Date.class);
+		Date joinedDate = mock(Date.class);
+		UpdateUserRequestDto dto = UpdateUserRequestDto.builder().dob("28/02/1990").joinedDate("28/02/2020").role("ADMIN").build();
+		when(userRepository.findUsersById(dto.getId())).thenReturn(user);
+		when(userUtil.isValidDate("28/02/1990")).thenReturn(true);
+		when(userUtil.isValidDate("28/02/2020")).thenReturn(true);
+		when(userUtil.convertStrDateToObDate("28/02/1990")).thenReturn(dobDate);
+		when(userUtil.convertStrDateToObDate("28/02/2020")).thenReturn(joinedDate);
+		when(userUtil.isValidAge(dobDate)).thenReturn(true);
+		when(joinedDate.before(dobDate)).thenReturn(true);
+		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
+			usersServiceImpl.updateUser(dto);
+		});
+		Assertions.assertEquals("Joined date is not later than Date of Birth", actualException.getMessage());
+	}
 
 	//region	Test show all users
 	@Test
