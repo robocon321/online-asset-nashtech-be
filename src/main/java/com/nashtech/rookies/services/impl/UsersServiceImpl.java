@@ -38,6 +38,7 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 
     public static final String location = "HCM";
 
+//    region Show information
 //    Find all users by admin locations
     @Override
     public List<Users> showAll(){
@@ -103,7 +104,9 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
     public List<Users> sortByRoleAsc() {
         return usersRepository.findByLocationOrderByRoleAsc(location);
     }
+//    endregion
 
+//    region Create user
     @Override
     public void createUser(UserRequestDto dto) {
 
@@ -155,5 +158,5 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
         user = usersRepository.save(user);
 
     }
-
+//    endregion
 }
