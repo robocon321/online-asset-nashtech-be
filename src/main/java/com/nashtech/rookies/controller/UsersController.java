@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@CrossOrigin("http://localhost:3000/")
+@CrossOrigin
 @RequestMapping("/api/v1/users")
 @RestController
 public class UsersController {
@@ -58,6 +58,11 @@ public class UsersController {
             default:
                 return ResponseEntity.badRequest().body("Invalid type");
         }
+    }
+
+    @GetMapping("/updated")
+    public ResponseEntity<?> sortUpdatedDateDesc(){
+        return ResponseEntity.ok().body(usersService.sortByUpdatedDateDesc());
     }
 
     @PostMapping("/create")
