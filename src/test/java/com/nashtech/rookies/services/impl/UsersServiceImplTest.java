@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.nashtech.rookies.dto.request.user.UpdateUserRequestDto;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -66,7 +68,7 @@ public class UsersServiceImplTest {
 		Users user = mock(Users.class);
 
 		UpdateUserRequestDto dto = UpdateUserRequestDto.builder().role("USER").build();
-		when(userRepository.findUsersById(dto.getId())).thenReturn(user);
+		when(usersRepository.findUsersById(dto.getId())).thenReturn(user);
 		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
 			usersServiceImpl.updateUser(dto);
 		});
@@ -78,7 +80,7 @@ public class UsersServiceImplTest {
 		Users user = mock(Users.class);
 
 		UpdateUserRequestDto dto = UpdateUserRequestDto.builder().dob("30/02/2020").role("ADMIN").build();
-		when(userRepository.findUsersById(dto.getId())).thenReturn(user);
+		when(usersRepository.findUsersById(dto.getId())).thenReturn(user);
 		when(userUtil.isValidDate(dto.getDob())).thenReturn(false);
 		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
 			usersServiceImpl.updateUser(dto);
@@ -90,7 +92,7 @@ public class UsersServiceImplTest {
 		Users user = mock(Users.class);
 
 		UpdateUserRequestDto dto = UpdateUserRequestDto.builder().dob("28/02/1990").joinedDate("28-02-2020").role("ADMIN").build();
-		when(userRepository.findUsersById(dto.getId())).thenReturn(user);
+		when(usersRepository.findUsersById(dto.getId())).thenReturn(user);
 		when(userUtil.isValidDate(dto.getDob())).thenReturn(true);
 		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
 			usersServiceImpl.updateUser(dto);
@@ -103,14 +105,14 @@ public class UsersServiceImplTest {
 		Date joinedDate = mock(Date.class);
 		Users user = mock(Users.class);
 		UpdateUserRequestDto dto = UpdateUserRequestDto.builder().id(1L).gender(true).dob("28/02/1990").joinedDate("28/02/2020").role("ADMIN").build();
-		when(userRepository.findUsersById(dto.getId())).thenReturn(user);
+		when(usersRepository.findUsersById(dto.getId())).thenReturn(user);
 		when(userUtil.isValidDate("28/02/1990")).thenReturn(true);
 		when(userUtil.isValidDate("28/02/2020")).thenReturn(true);
 		when(userUtil.convertStrDateToObDate("28/02/1990")).thenReturn(dobDate);
 		when(userUtil.convertStrDateToObDate("28/02/2020")).thenReturn(joinedDate);
 		when(userUtil.isValidAge(dobDate)).thenReturn(true);
 		when(joinedDate.before(dobDate)).thenReturn(false);
-		when(userRepository.save(user)).thenReturn(user);
+		when(usersRepository.save(user)).thenReturn(user);
 		String actual = usersServiceImpl.updateUser(dto);
 		Assertions.assertEquals("Update Success", actual);
 	}
@@ -121,7 +123,7 @@ public class UsersServiceImplTest {
 		Date dobDate = mock(Date.class);
 		Date joinedDate = mock(Date.class);
 		UpdateUserRequestDto dto = UpdateUserRequestDto.builder().dob("28/02/2010").joinedDate("28/02/2020").role("ADMIN").build();
-		when(userRepository.findUsersById(dto.getId())).thenReturn(user);
+		when(usersRepository.findUsersById(dto.getId())).thenReturn(user);
 		when(userUtil.isValidDate(dto.getDob())).thenReturn(true);
 		when(userUtil.isValidDate(dto.getJoinedDate())).thenReturn(true);
 		when(userUtil.convertStrDateToObDate(dto.getDob())).thenReturn(dobDate);
@@ -140,7 +142,7 @@ public class UsersServiceImplTest {
 		Date dobDate = mock(Date.class);
 		Date joinedDate = mock(Date.class);
 		UpdateUserRequestDto dto = UpdateUserRequestDto.builder().dob("28/02/1990").joinedDate("28/02/2020").role("ADMIN").build();
-		when(userRepository.findUsersById(dto.getId())).thenReturn(user);
+		when(usersRepository.findUsersById(dto.getId())).thenReturn(user);
 		when(userUtil.isValidDate("28/02/1990")).thenReturn(true);
 		when(userUtil.isValidDate("28/02/2020")).thenReturn(true);
 		when(userUtil.convertStrDateToObDate("28/02/1990")).thenReturn(dobDate);

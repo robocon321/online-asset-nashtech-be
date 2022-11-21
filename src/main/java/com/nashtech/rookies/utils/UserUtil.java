@@ -156,4 +156,6 @@ public class UserUtil {
 		return userPrinciple.getLocation();
 	}
 
+
+
 }
