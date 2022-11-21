@@ -35,17 +35,13 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 		this.passwordEncoder = passwordEncoder;
 	}
 
-	public String getLocation() {
-		UserDetails users = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		Optional<Users> user = usersRepository.findByUsername(users.getUsername());
-		return user.get().getLocation();
-	}
+	
 
 //    region Show information
 //    Find all users by admin locations
 	@Override
 	public List<Users> showAll() {
-		return usersRepository.findByLocation(getLocation());
+		return usersRepository.findByLocation(userUtil.getAddressFromUserPrinciple());
 	}
 
 //    Show information of user by id
@@ -67,45 +63,51 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 //    Sort users by JoinedDate
 	@Override
 	public List<Users> sortByJoinedDateDesc() {
-		return usersRepository.findByLocationOrderByJoinedDateDesc(getLocation());
+		return usersRepository.findByLocationOrderByJoinedDateDesc(userUtil.getAddressFromUserPrinciple());
 	}
 
 	@Override
 	public List<Users> sortByJoinedDateAsc() {
-		return usersRepository.findByLocationOrderByJoinedDateAsc(getLocation());
+		return usersRepository.findByLocationOrderByJoinedDateAsc(userUtil.getAddressFromUserPrinciple());
 	}
 
 //    Sort users by code
 	@Override
 	public List<Users> sortByCodeDesc() {
-		return usersRepository.findByLocationOrderByCodeDesc(getLocation());
+		return usersRepository.findByLocationOrderByCodeDesc(userUtil.getAddressFromUserPrinciple());
 	}
 
 	@Override
 	public List<Users> sortByCodeAsc() {
-		return usersRepository.findByLocationOrderByCodeAsc(getLocation());
+		return usersRepository.findByLocationOrderByCodeAsc(userUtil.getAddressFromUserPrinciple());
 	}
 
 //    Sort users by full name
 	@Override
 	public List<Users> sortByFullNameDesc() {
-		return usersRepository.findByLocationOrderByFullNameDesc(getLocation());
+		return usersRepository.findByLocationOrderByFullNameDesc(userUtil.getAddressFromUserPrinciple());
 	}
 
 	@Override
 	public List<Users> sortByFullNameAsc() {
-		return usersRepository.findByLocationOrderByFullNameAsc(getLocation());
+		return usersRepository.findByLocationOrderByFullNameAsc(userUtil.getAddressFromUserPrinciple());
 	}
 
 //    Sort users by role
 	@Override
 	public List<Users> sortByRoleDesc() {
-		return usersRepository.findByLocationOrderByRoleDesc(getLocation());
+		return usersRepository.findByLocationOrderByRoleDesc(userUtil.getAddressFromUserPrinciple());
 	}
     @Override
     public List<Users> sortByRoleAsc() {
-        return usersRepository.findByLocationOrderByRoleAsc(getLocation());
+        return usersRepository.findByLocationOrderByRoleAsc(userUtil.getAddressFromUserPrinciple());
     }
+
+	@Override
+	public List<Users> sortByUpdatedDateDesc() {
+		return usersRepository.findByLocationOrderByUpdatedDateDesc(userUtil.getAddressFromUserPrinciple());
+	}
+
 //    endregion
 
 //    region Create user

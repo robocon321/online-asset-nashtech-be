@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.nashtech.rookies.dto.request.user.UserRequestDto;
@@ -32,6 +33,7 @@ public class UsersServiceImplTest {
 
 	Users initUsers;
 	Users expectedUsers;
+
 	List<Users> mockUsers = new ArrayList<>();
 
 	@BeforeEach
@@ -156,10 +158,10 @@ public class UsersServiceImplTest {
 	//region	Test show all users
 	@Test
 	public void ShowAllByLocation_ShouldReturnAllUsers_WhenLocationFromAdminValid() throws Exception {
-		when(usersRepository.findByLocation("HCM")).thenReturn(mockUsers);
+		when(usersRepository.findByLocation(userUtil.getAddressFromUserPrinciple())).thenReturn(mockUsers);
 		List<Users> actualUsers = usersServiceImpl.showAll();
 		assertEquals(mockUsers.size(), actualUsers.size());
-		verify(usersRepository).findByLocation("HCM");
+		verify(usersRepository).findByLocation(userUtil.getAddressFromUserPrinciple());
 	}
 
 	@Test
@@ -178,59 +180,67 @@ public class UsersServiceImplTest {
 
 	@Test
 	public void testSortByJoinedDateDesc() {
-		when(usersRepository.findByLocationOrderByJoinedDateDesc("HCM")).thenReturn(mockUsers);
+		when(usersRepository.findByLocationOrderByJoinedDateDesc(userUtil.getAddressFromUserPrinciple())).thenReturn(mockUsers);
 		List<Users> actualUsers = usersServiceImpl.sortByJoinedDateDesc();
 		assertEquals(mockUsers.size(), actualUsers.size());
-		verify(usersRepository).findByLocationOrderByJoinedDateDesc("HCM");
+		verify(usersRepository).findByLocationOrderByJoinedDateDesc(userUtil.getAddressFromUserPrinciple());
 	}
 	@Test
 	public void testSortByJoinedDateAsc() {
-		when(usersRepository.findByLocationOrderByJoinedDateAsc("HCM")).thenReturn(mockUsers);
+		when(usersRepository.findByLocationOrderByJoinedDateAsc(userUtil.getAddressFromUserPrinciple())).thenReturn(mockUsers);
 		List<Users> actualUsers = usersServiceImpl.sortByJoinedDateAsc();
 		assertEquals(mockUsers.size(), actualUsers.size());
-		verify(usersRepository).findByLocationOrderByJoinedDateAsc("HCM");
+		verify(usersRepository).findByLocationOrderByJoinedDateAsc(userUtil.getAddressFromUserPrinciple());
 	}
 	@Test
 	public void testSortByCodeDesc() {
-		when(usersRepository.findByLocationOrderByCodeDesc("HCM")).thenReturn(mockUsers);
+		when(usersRepository.findByLocationOrderByCodeDesc(userUtil.getAddressFromUserPrinciple())).thenReturn(mockUsers);
 		List<Users> actualUsers = usersServiceImpl.sortByCodeDesc();
 		assertEquals(mockUsers.size(), actualUsers.size());
-		verify(usersRepository).findByLocationOrderByCodeDesc("HCM");
+		verify(usersRepository).findByLocationOrderByCodeDesc(userUtil.getAddressFromUserPrinciple());
 	}
 	@Test
 	public void testSortByCodeAsc() {
-		when(usersRepository.findByLocationOrderByCodeAsc("HCM")).thenReturn(mockUsers);
+		when(usersRepository.findByLocationOrderByCodeAsc(userUtil.getAddressFromUserPrinciple())).thenReturn(mockUsers);
 		List<Users> actualUsers = usersServiceImpl.sortByCodeAsc();
 		assertEquals(mockUsers.size(), actualUsers.size());
-		verify(usersRepository).findByLocationOrderByCodeAsc("HCM");
+		verify(usersRepository).findByLocationOrderByCodeAsc(userUtil.getAddressFromUserPrinciple());
 	}
 	@Test
 	public void testSortByFullNameDesc() {
-		when(usersRepository.findByLocationOrderByFullNameDesc("HCM")).thenReturn(mockUsers);
+		when(usersRepository.findByLocationOrderByFullNameDesc(userUtil.getAddressFromUserPrinciple())).thenReturn(mockUsers);
 		List<Users> actualUsers = usersServiceImpl.sortByFullNameDesc();
 		assertEquals(mockUsers.size(), actualUsers.size());
-		verify(usersRepository).findByLocationOrderByFullNameDesc("HCM");
+		verify(usersRepository).findByLocationOrderByFullNameDesc(userUtil.getAddressFromUserPrinciple());
 	}
 	@Test
 	public void testSortByFullNameAsc() {
-		when(usersRepository.findByLocationOrderByFullNameAsc("HCM")).thenReturn(mockUsers);
+		when(usersRepository.findByLocationOrderByFullNameAsc(userUtil.getAddressFromUserPrinciple())).thenReturn(mockUsers);
 		List<Users> actualUsers = usersServiceImpl.sortByFullNameAsc();
 		assertEquals(mockUsers.size(), actualUsers.size());
-		verify(usersRepository).findByLocationOrderByFullNameAsc("HCM");
+		verify(usersRepository).findByLocationOrderByFullNameAsc(userUtil.getAddressFromUserPrinciple());
 	}
 	@Test
 	public void testSortByRoleDesc() {
-		when(usersRepository.findByLocationOrderByRoleDesc("HCM")).thenReturn(mockUsers);
+		when(usersRepository.findByLocationOrderByRoleDesc(userUtil.getAddressFromUserPrinciple())).thenReturn(mockUsers);
 		List<Users> actualUsers = usersServiceImpl.sortByRoleDesc();
 		assertEquals(mockUsers.size(), actualUsers.size());
-		verify(usersRepository).findByLocationOrderByRoleDesc("HCM");
+		verify(usersRepository).findByLocationOrderByRoleDesc(userUtil.getAddressFromUserPrinciple());
 	}
 	@Test
 	public void testSortByRoleAsc() {
-		when(usersRepository.findByLocationOrderByRoleAsc("HCM")).thenReturn(mockUsers);
+		when(usersRepository.findByLocationOrderByRoleAsc(userUtil.getAddressFromUserPrinciple())).thenReturn(mockUsers);
 		List<Users> actualUsers = usersServiceImpl.sortByRoleAsc();
 		assertEquals(mockUsers.size(), actualUsers.size());
-		verify(usersRepository).findByLocationOrderByRoleAsc("HCM");
+		verify(usersRepository).findByLocationOrderByRoleAsc(userUtil.getAddressFromUserPrinciple());
+	}
+
+	@Test
+	public void testSortByUpdateDateDesc() {
+		when(usersRepository.findByLocationOrderByUpdatedDateDesc(userUtil.getAddressFromUserPrinciple())).thenReturn(mockUsers);
+		List<Users> actualUsers = usersServiceImpl.sortByUpdatedDateDesc();
+		assertEquals(mockUsers.size(), actualUsers.size());
+		verify(usersRepository).findByLocationOrderByUpdatedDateDesc(userUtil.getAddressFromUserPrinciple());
 	}
 //	endregion
 

@@ -33,6 +33,8 @@ public interface UsersService {
 
     List<Users> sortByRoleAsc();
 
+    List<Users> sortByUpdatedDateDesc();
+
     void createUser(UserRequestDto dto);
 
     String updateUser(UpdateUserRequestDto userUpdateDto);
