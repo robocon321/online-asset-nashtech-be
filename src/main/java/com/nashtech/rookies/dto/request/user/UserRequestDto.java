@@ -25,7 +25,7 @@ public class UserRequestDto {
 	@Size(min = 1, max = 50)
 	private String lastName;
 
-	@NotBlank(message = "FirstName is required.")
+	@NotBlank(message = "Date of Birth is required.")
 	private String dob;
 
 	@NotNull

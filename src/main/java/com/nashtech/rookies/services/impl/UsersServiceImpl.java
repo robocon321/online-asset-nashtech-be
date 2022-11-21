@@ -1,21 +1,17 @@
 package com.nashtech.rookies.services.impl;
 
+import com.nashtech.rookies.dto.request.user.UpdateUserRequestDto;
 import com.nashtech.rookies.dto.request.user.UserRequestDto;
 import com.nashtech.rookies.entity.Users;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
 import com.nashtech.rookies.mapper.UserMapper;
 import com.nashtech.rookies.repository.UsersRepository;
+import com.nashtech.rookies.utils.DateUtil;
 import com.nashtech.rookies.utils.UserUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +22,7 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
     UsersRepository usersRepository;
     UserMapper userMapper;
     UserUtil userUtil;
+    DateUtil dateUtil;
 
     @Autowired
     public UsersServiceImpl(UserUtil userUtil, UsersRepository usersRepository, UserMapper userMapper) {
@@ -177,6 +174,49 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
         user.setLocation("HCM");
         user.setPassword(password);
         user = usersRepository.save(user);
+
+    }
+
+    @Override
+    public String updateUser(UpdateUserRequestDto userUpdateDto){
+        Users user = usersRepository.findUsersById(userUpdateDto.getId());
+
+        if(user == null){
+            throw new InvalidDataInputException("Can't find any user with id: " + userUpdateDto.getId());
+        }else{
+            if (!userUpdateDto.getRole().equals("ADMIN") && !userUpdateDto.getRole().equals("STAFF")) {
+                throw new InvalidDataInputException("Role is invalid");
+            }
+
+            if (!userUtil.isValidDate(userUpdateDto.getDob())) {
+                throw new InvalidDataInputException("Date of birth is invalid");
+            }
+
+            if (!userUtil.isValidDate(userUpdateDto.getJoinedDate())) {
+                throw new InvalidDataInputException("Join date is invalid");
+            }
+
+            Date dobDate = userUtil.convertStrDateToObDate(userUpdateDto.getDob());
+
+            Date joinedDate = userUtil.convertStrDateToObDate(userUpdateDto.getJoinedDate());
+
+            if (!userUtil.isValidAge(dobDate)) {
+                throw new InvalidDataInputException("User is under 18");
+            }
+
+            if (joinedDate.before(dobDate)) {
+                throw new InvalidDataInputException("Joined date is not later than Date of Birth");
+            }
+
+            user.setDob(dobDate);
+            user.setGender(userUpdateDto.isGender());
+            user.setJoinedDate(joinedDate);
+            user.setRole(userUpdateDto.getRole());
+            user.setUpdatedDate(new Date());
+            usersRepository.save(user);
+            String message="Update Success";
+            return message;
+        }
 
     }
 

@@ -1,5 +1,6 @@
 package com.nashtech.rookies.services.interfaces;
 
+import com.nashtech.rookies.dto.request.user.UpdateUserRequestDto;
 import com.nashtech.rookies.dto.request.user.UserRequestDto;
 import com.nashtech.rookies.entity.Users;
 import java.util.List;
@@ -36,4 +37,6 @@ public interface UsersService {
     List<Users> sortByRoleAsc();
 
     void createUser(UserRequestDto dto);
+
+    String updateUser(UpdateUserRequestDto userUpdateDto);
 }
