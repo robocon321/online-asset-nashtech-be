@@ -9,5 +9,5 @@ public interface AuthService {
 
 	LoginResponseDto login(LoginRequestDto dto);
 
-    ResponseEntity<?> changePassword(ChangePasswordRequestDto dto);
+    String changePassword(ChangePasswordRequestDto dto);
 }

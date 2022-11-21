@@ -12,6 +12,9 @@ import com.nashtech.rookies.dto.request.user.LoginRequestDto;
 import com.nashtech.rookies.dto.response.user.LoginResponseDto;
 import com.nashtech.rookies.services.interfaces.AuthService;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/users")
 public class AuthController {
@@ -26,6 +29,8 @@ public class AuthController {
 	}
 	@PutMapping("/changePassword")
 	public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequestDto dto){
-		return authService.changePassword(dto);
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		map.put("message",authService.changePassword(dto));
+		return new ResponseEntity<>(map, HttpStatus.OK);
 	}
 }

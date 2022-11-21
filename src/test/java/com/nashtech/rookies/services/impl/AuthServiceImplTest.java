@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
-
+import java.util.regex.Pattern;
 import com.nashtech.rookies.dto.request.user.ChangePasswordRequestDto;
 import com.nashtech.rookies.security.userprincal.UserPrinciple;
 import com.nashtech.rookies.utils.UserUtil;
@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -40,7 +41,8 @@ public class AuthServiceImplTest {
 	UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken;
 	Authentication authentication;
 
-//	UserPrinciple userPrinciple;
+
+	UserPrinciple userPrinciple;
 	AuthServiceImpl authServiceImpl;
 
 	@BeforeEach
@@ -52,7 +54,7 @@ public class AuthServiceImplTest {
 		passwordEncoder = mock(PasswordEncoder.class);
 		usernamePasswordAuthenticationToken = mock(UsernamePasswordAuthenticationToken.class);
 		authentication = mock(Authentication.class);
-
+		userPrinciple=mock(UserPrinciple.class);
 		authServiceImpl = new AuthServiceImpl(authenticationManager, jwtProvider, usersRepository, passwordEncoder);
 	}
 
@@ -102,31 +104,90 @@ public class AuthServiceImplTest {
 
 	@Test
 	void changePassword_ShouldReturnErr_WhenDataNotValid(){
-		Map<String, Object> map = new LinkedHashMap<String, Object>();
+//		Authentication authentication = mock(Authentication.class);
+//		SecurityContext securityContext = mock(SecurityContext.class);
+//		UserPrinciple userPrinciple1 = new UserPrinciple();
+//		when(securityContext.getAuthentication()).thenReturn(authentication);
+//		SecurityContextHolder.setContext(securityContext);
+//		when(authentication.getPrincipal()).thenReturn(userPrinciple1);
 		ChangePasswordRequestDto dto = ChangePasswordRequestDto.builder().oldPassword("trongbt123").newPassword("123456").build();
-		Users user = mock(Users.class);
+		Users user = new Users();
 		Long id = 1L;
-		when(usersRepository.findUsersById(id)).thenReturn(user);
-		map.put("message","Minimum eight characters, at least one letter, one number and one special character");
-		ResponseEntity<?> expected = new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
-		ResponseEntity<?> actual = authServiceImpl.changePassword(dto);
-		Assertions.assertEquals(expected,actual);
+//		when(userPrinciple.getId()).thenReturn(id);
+//		when(usersRepository.findUsersById(id)).thenReturn(user);
+		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
+			authServiceImpl.changePassword(dto);
+		});
+		Assertions.assertEquals("Minimum eight characters, at least one letter, one number and one special character", actualException.getMessage() );
 	}
 
-//	@Test
-//	void changePassword_ShouldReturnErr_WhenRegexNotValid(){
-//		Map<String, Object> map = new LinkedHashMap<String, Object>();
-//		ChangePasswordRequestDto dto = ChangePasswordRequestDto.builder().oldPassword("trongbt123").newPassword("123456").build();
-//		Users user = mock(Users.class);
-//		user.setEnabled(false);
-//		Long id = 1L;
-//		when(usersRepository.findUsersById(id)).thenReturn(user);
-////		when(Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$", dto.getNewPassword())).thenReturn(true);
-//		Assert.assertTrue(Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$",dto.getNewPassword()));
-//		map.put("message","Successfully");
-//		ResponseEntity<?> expected = new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
-//		ResponseEntity<?> actual = authServiceImpl.changePassword(dto);
-//		Assertions.assertEquals(expected,actual);
-//	}
+	@Test
+	void changePassword_ShouldReturnSuccess_WhenRegexValid(){
+		Authentication authentication = mock(Authentication.class);
+		SecurityContext securityContext = mock(SecurityContext.class);
+		UserPrinciple userPrinciple1 = new UserPrinciple();
+		when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		when(authentication.getPrincipal()).thenReturn(userPrinciple1);
+		ChangePasswordRequestDto dto = ChangePasswordRequestDto.builder().oldPassword("trongbt123").newPassword("abcd1234!@#$").build();
+		Users user = new Users();
+		user.setEnabled(false);
+		when(usersRepository.findUsersById(userPrinciple1.getId())).thenReturn(user);
+		String actual = authServiceImpl.changePassword(dto);
+		Assertions.assertEquals("Successfully", actual );
+	}
+
+	@Test
+	void changePassword_ShouldReturnErr_WhenOldPasswordInCorrect(){
+		Authentication authentication = mock(Authentication.class);
+		SecurityContext securityContext = mock(SecurityContext.class);
+		UserPrinciple userPrinciple1 = new UserPrinciple();
+		when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		when(authentication.getPrincipal()).thenReturn(userPrinciple1);
+		ChangePasswordRequestDto dto = ChangePasswordRequestDto.builder().oldPassword("").newPassword("abcd1234!@#$").build();
+		Users user = new Users();
+		user.setEnabled(true);
+		when(usersRepository.findUsersById(userPrinciple1.getId())).thenReturn(user);
+		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
+			authServiceImpl.changePassword(dto);
+		});
+		Assertions.assertEquals("Old Password incorrect", actualException.getMessage() );
+	}
+	@Test
+	void changePassword_ShouldReturnErr_WhenOldPasswordIsNull(){
+		Authentication authentication = mock(Authentication.class);
+		SecurityContext securityContext = mock(SecurityContext.class);
+		UserPrinciple userPrinciple1 = new UserPrinciple();
+		when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		when(authentication.getPrincipal()).thenReturn(userPrinciple1);
+		ChangePasswordRequestDto dto = ChangePasswordRequestDto.builder().oldPassword(null).newPassword("abcd1234!@#$").build();
+		Users user = new Users();
+		user.setEnabled(true);
+		when(usersRepository.findUsersById(userPrinciple1.getId())).thenReturn(user);
+		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
+			authServiceImpl.changePassword(dto);
+		});
+		Assertions.assertEquals("Old password not empty", actualException.getMessage() );
+	}
+	@Test
+	void changePassword_ShouldReturnSuccess(){
+		Authentication authentication = mock(Authentication.class);
+		SecurityContext securityContext = mock(SecurityContext.class);
+		UserPrinciple userPrinciple1 = new UserPrinciple();
+		when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		when(authentication.getPrincipal()).thenReturn(userPrinciple1);
+		ChangePasswordRequestDto dto = ChangePasswordRequestDto.builder().oldPassword("abcd1111!!!!").newPassword("abcd1234!@#$").build();
+		Users user = new Users();
+		user.setEnabled(true);
+		user.setPassword("abcd1111!!!!");
+		when(usersRepository.findUsersById(userPrinciple1.getId())).thenReturn(user);
+		when(passwordEncoder.matches(dto.getOldPassword(),user.getPassword())).thenReturn(true);
+		String actual = authServiceImpl.changePassword(dto);
+
+		Assertions.assertEquals("Successfully", actual );
+	}
 
 }

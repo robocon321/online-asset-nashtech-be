@@ -70,40 +70,35 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public ResponseEntity<?> changePassword(ChangePasswordRequestDto dto){
-		Map<String, Object> map = new LinkedHashMap<String, Object>();
-//		UserPrinciple userPrinciple= (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	public String changePassword(ChangePasswordRequestDto dto){
 
-		Users user = usersRepository.findUsersById(Utils.getIdFromUserPrinciple());
+
 		boolean checkRegex = Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$", dto.getNewPassword());
 
 		if(!checkRegex){
-			map.put("message","Minimum eight characters, at least one letter, one number and one special character");
-			return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+			throw new InvalidDataInputException( "Minimum eight characters, at least one letter, one number and one special character");
 		}
+		UserPrinciple userPrinciple= (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+		Users user = usersRepository.findUsersById(userPrinciple.getId());
 		if(!user.isEnabled()){
 			user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
 			user.setEnabled(true);
 			usersRepository.save(user);
-			map.put("message","Successfully");
-			return new ResponseEntity<>(map, HttpStatus.OK);
+			return "Successfully";
 		}
 
 		if(dto.getOldPassword()==null){
-			map.put("message","Old password not empty");
-			return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
+				throw new InvalidDataInputException ("Old password not empty");
 		}
 
 		if(!passwordEncoder.matches(dto.getOldPassword(),user.getPassword())){
-			map.put("message","Old Password incorrect");
-			return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
+			throw new InvalidDataInputException("Old Password incorrect");
 		}
 		else{
 			user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
 			usersRepository.save(user);
-			map.put("message","Successfully");
-			return new ResponseEntity<>(map, HttpStatus.OK);
+			return "Successfully";
 			}
 		}
 
