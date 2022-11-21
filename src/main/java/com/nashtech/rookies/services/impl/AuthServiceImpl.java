@@ -1,7 +1,12 @@
 package com.nashtech.rookies.services.impl;
 
-import java.util.Optional;
-
+import com.nashtech.rookies.dto.request.user.LoginRequestDto;
+import com.nashtech.rookies.dto.response.user.LoginResponseDto;
+import com.nashtech.rookies.entity.Users;
+import com.nashtech.rookies.exceptions.InvalidDataInputException;
+import com.nashtech.rookies.jwt.JwtProvider;
+import com.nashtech.rookies.repository.UsersRepository;
+import com.nashtech.rookies.services.interfaces.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,13 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.nashtech.rookies.dto.request.user.LoginRequestDto;
-import com.nashtech.rookies.dto.response.user.LoginResponseDto;
-import com.nashtech.rookies.entity.Users;
-import com.nashtech.rookies.exceptions.InvalidDataInputException;
-import com.nashtech.rookies.jwt.JwtProvider;
-import com.nashtech.rookies.repository.UsersRepository;
-import com.nashtech.rookies.services.interfaces.AuthService;
+import java.util.Optional;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -36,7 +35,6 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public LoginResponseDto login(LoginRequestDto dto) {
-
 		Optional<Users> userOptional = usersRepository.findByUsername(dto.getUsername());
 
 		if (userOptional.isEmpty()) {
