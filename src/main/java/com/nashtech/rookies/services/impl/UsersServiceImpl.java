@@ -1,19 +1,20 @@
 package com.nashtech.rookies.services.impl;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import com.nashtech.rookies.dto.request.user.UserRequestDto;
 import com.nashtech.rookies.entity.Users;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
 import com.nashtech.rookies.mapper.UserMapper;
 import com.nashtech.rookies.repository.UsersRepository;
 import com.nashtech.rookies.utils.UserUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsersServiceImpl implements com.nashtech.rookies.services.interfaces.UsersService {
@@ -32,13 +33,17 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 		this.passwordEncoder = passwordEncoder;
 	}
 
-	public static final String location = "HCM";
+	public String getLocation() {
+		UserDetails users = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Optional<Users> user = usersRepository.findByUsername(users.getUsername());
+		return user.get().getLocation();
+	}
 
 //    region Show information
 //    Find all users by admin locations
 	@Override
 	public List<Users> showAll() {
-		return usersRepository.findByLocation(location);
+		return usersRepository.findByLocation(getLocation());
 	}
 
 //    Show information of user by id
@@ -60,44 +65,44 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 //    Sort users by JoinedDate
 	@Override
 	public List<Users> sortByJoinedDateDesc() {
-		return usersRepository.findByLocationOrderByJoinedDateDesc(location);
+		return usersRepository.findByLocationOrderByJoinedDateDesc(getLocation());
 	}
 
 	@Override
 	public List<Users> sortByJoinedDateAsc() {
-		return usersRepository.findByLocationOrderByJoinedDateAsc(location);
+		return usersRepository.findByLocationOrderByJoinedDateAsc(getLocation());
 	}
 
 //    Sort users by code
 	@Override
 	public List<Users> sortByCodeDesc() {
-		return usersRepository.findByLocationOrderByCodeDesc(location);
+		return usersRepository.findByLocationOrderByCodeDesc(getLocation());
 	}
 
 	@Override
 	public List<Users> sortByCodeAsc() {
-		return usersRepository.findByLocationOrderByCodeAsc(location);
+		return usersRepository.findByLocationOrderByCodeAsc(getLocation());
 	}
 
 //    Sort users by full name
 	@Override
 	public List<Users> sortByFullNameDesc() {
-		return usersRepository.findByLocationOrderByFullNameDesc(location);
+		return usersRepository.findByLocationOrderByFullNameDesc(getLocation());
 	}
 
 	@Override
 	public List<Users> sortByFullNameAsc() {
-		return usersRepository.findByLocationOrderByFullNameAsc(location);
+		return usersRepository.findByLocationOrderByFullNameAsc(getLocation());
 	}
 
 //    Sort users by role
 	@Override
 	public List<Users> sortByRoleDesc() {
-		return usersRepository.findByLocationOrderByRoleDesc(location);
+		return usersRepository.findByLocationOrderByRoleDesc(getLocation());
 	}
     @Override
     public List<Users> sortByRoleAsc() {
-        return usersRepository.findByLocationOrderByRoleAsc(location);
+        return usersRepository.findByLocationOrderByRoleAsc(getLocation());
     }
 //    endregion
 

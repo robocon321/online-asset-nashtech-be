@@ -35,6 +35,8 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 
 	List<Users> findByLocationOrderByRoleAsc(String location);
 
+	List<Users> findByLocationOrderByUpdatedDateDesc(String location);
+
 	Users findUsersByUsername(String username);
 
 	Optional<Users> findByUsername(String username);
