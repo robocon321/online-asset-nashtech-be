@@ -2,21 +2,23 @@ package com.nashtech.rookies.services.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.nashtech.rookies.repository.UsersRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.nashtech.rookies.dto.request.user.UserRequestDto;
 import com.nashtech.rookies.entity.Users;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
 import com.nashtech.rookies.mapper.UserMapper;
+import com.nashtech.rookies.repository.UsersRepository;
 import com.nashtech.rookies.utils.UserUtil;
 
 public class UsersServiceImplTest {
@@ -24,6 +26,7 @@ public class UsersServiceImplTest {
 	UserUtil userUtil;
 	UsersRepository usersRepository;
 	UserMapper userMapper;
+	PasswordEncoder passwordEncoder;
 
 	UsersServiceImpl usersServiceImpl;
 
@@ -38,9 +41,9 @@ public class UsersServiceImplTest {
 		userMapper = mock(UserMapper.class);
 		initUsers = mock(Users.class);
 		expectedUsers = mock(Users.class);
+		passwordEncoder = mock(PasswordEncoder.class);
 
-
-		usersServiceImpl = new UsersServiceImpl(userUtil, usersRepository, userMapper);
+		usersServiceImpl = new UsersServiceImpl(userUtil, usersRepository, userMapper, passwordEncoder);
 
 		for(int i = 0; i < 10; i++){
 			mockUsers.add(
