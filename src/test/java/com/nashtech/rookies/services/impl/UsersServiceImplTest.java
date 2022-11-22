@@ -115,8 +115,8 @@ public class UsersServiceImplTest {
 		when(userUtil.isValidAge(dobDate)).thenReturn(true);
 		when(joinedDate.before(dobDate)).thenReturn(false);
 		when(usersRepository.save(user)).thenReturn(user);
-		String actual = usersServiceImpl.updateUser(dto);
-		Assertions.assertEquals("Update Success", actual);
+		Users actual = usersServiceImpl.updateUser(dto);
+		Assertions.assertEquals(user, actual);
 	}
 
 	@Test

@@ -170,7 +170,7 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 //    endregion
 
     @Override
-    public String updateUser(UpdateUserRequestDto userUpdateDto){
+    public Users updateUser(UpdateUserRequestDto userUpdateDto){
         Users user = usersRepository.findUsersById(userUpdateDto.getId());
 
         if(user == null){
@@ -205,9 +205,9 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
             user.setJoinedDate(joinedDate);
             user.setRole(userUpdateDto.getRole());
             user.setUpdatedDate(new Date());
-            usersRepository.save(user);
-            String message="Update Success";
-            return message;
+            Users userResponse= usersRepository.save(user);
+//            String message="Update Success";
+            return userResponse;
         }
 
     }
