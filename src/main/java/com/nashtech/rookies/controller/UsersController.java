@@ -66,8 +66,8 @@ public class UsersController {
     }
 
     @PostMapping("/create")
-    public void createUser(@Valid @RequestBody UserRequestDto dto) {
-        usersService.createUser(dto);
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequestDto dto) {
+    	return ResponseEntity.ok().body(usersService.createUser(dto));
     }
 
     @PutMapping("/update")
