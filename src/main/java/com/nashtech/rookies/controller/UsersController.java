@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@CrossOrigin
 @RequestMapping("/api/v1/users")
 @RestController
 public class UsersController {

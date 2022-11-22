@@ -57,22 +57,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		CorsConfiguration config = new CorsConfiguration();
-		List<String> newlist = new ArrayList<>();
-		config.setAllowCredentials(true);
-		List<String> newList2 = new ArrayList<>();
-		newList2.add("Authorization");
-		newList2.add("Cache-Control");
-		newList2.add("Content-Type");
-
-		config.setAllowedHeaders(newList2);
-		config.addAllowedMethod("*");
-		newlist.add("http://localhost:3000");
-		config.setAllowedOrigins(newlist);
-
-		httpSecurity.cors().and().csrf().disable().cors().configurationSource(request -> config).and()
+		httpSecurity.cors().and().csrf().disable()
 				.authorizeRequests()
-				.antMatchers("/api/v1/users/login").permitAll()
+				.antMatchers("/api/v1/auth/login").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/v1/users/create").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.GET,"/api/v1/users/").hasAuthority("ADMIN")
 				.antMatchers(HttpMethod.GET,"/api/v1/users/id/**").hasAuthority("ADMIN")
