@@ -37,5 +37,5 @@ public interface UsersService {
 
     Users createUser(UserRequestDto dto);
 
-    String updateUser(UpdateUserRequestDto userUpdateDto);
+    Users updateUser(UpdateUserRequestDto userUpdateDto);
 }
