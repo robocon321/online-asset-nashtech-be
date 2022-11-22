@@ -6,7 +6,6 @@ import com.nashtech.rookies.entity.Users;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
 import com.nashtech.rookies.mapper.UserMapper;
 import com.nashtech.rookies.repository.UsersRepository;
-import com.nashtech.rookies.utils.DateUtil;
 import com.nashtech.rookies.utils.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -2,17 +2,18 @@ package com.nashtech.rookies.controller;
 
 import javax.validation.Valid;
 
+import com.nashtech.rookies.dto.request.user.ChangePasswordRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.nashtech.rookies.dto.request.user.LoginRequestDto;
 import com.nashtech.rookies.dto.response.user.LoginResponseDto;
 import com.nashtech.rookies.services.interfaces.AuthService;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -25,5 +26,11 @@ public class AuthController {
 	public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto dto) {
 
 		return ResponseEntity.status(HttpStatus.OK).body(authService.login(dto));
+	}
+	@PutMapping("/changePassword")
+	public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequestDto dto){
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		map.put("message",authService.changePassword(dto));
+		return new ResponseEntity<>(map, HttpStatus.OK);
 	}
 }
