@@ -60,21 +60,23 @@ public class initDatabase {
             for (int i = 1; i <= 5; i++){
                 categoryRepository.save(new Category(
                         "category" + i,
-                        "CATEGORY" + i
+                        "CATEGORY" + i + "_"
                 ));
             }
 //            endregion
 
             //            region    Asset
             for (int i = 1; i <= 30; i++){
-                assetRepository.save(new Asset(
+            	Asset asset = new Asset(
                         "asset" + i,
                         "ASSETS" + i,
                         "Day la asset, ahihi :v",
                         "HCM",
                         randomStateAsset(),
                         categoryRepository.findById((long) new Random().nextInt(5) + 1).get()
-                ));
+                );
+            	asset.setCode(asset.getCategory().getCode() + i);
+                assetRepository.save(asset);
             }
 
             assetRepository.save(new Asset(
