@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.nashtech.rookies.repository.AssignmentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,6 +29,7 @@ import com.nashtech.rookies.utils.UserUtil;
 public class AssetServiceImplTest {
 	AssetRepository assetRepository;
 	CategoryRepository categoryRepository;
+	AssignmentRepository assignmentRepository;
 	CategoryMapper categoryMapper;
 	AssetMapper assetMapper;
 	UserUtil userUtil;
@@ -39,6 +41,7 @@ public class AssetServiceImplTest {
 	void beforeEach() {
 		assetRepository = mock(AssetRepository.class);
 		categoryRepository = mock(CategoryRepository.class);
+		assignmentRepository = mock(AssignmentRepository.class);
 
 		categoryMapper = mock(CategoryMapper.class);
 		assetMapper = mock(AssetMapper.class);
@@ -47,7 +50,7 @@ public class AssetServiceImplTest {
 		assetUtil = mock(AssetUtil.class);
 
 		assetServiceImpl = new AssetServiceImpl(assetRepository, userUtil, categoryRepository, categoryMapper,
-				assetMapper, assetUtil);
+				assetMapper, assetUtil, assignmentRepository);
 
 	}
 
