@@ -4,8 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.client.ExpectedCount.times;
 
 import java.util.Date;
 import java.util.List;
@@ -37,6 +37,9 @@ public class AssetServiceImplTest {
 
 	AssetServiceImpl assetServiceImpl;
 
+	Asset initAsset;
+
+
 	@BeforeEach
 	void beforeEach() {
 		assetRepository = mock(AssetRepository.class);
@@ -51,6 +54,10 @@ public class AssetServiceImplTest {
 
 		assetServiceImpl = new AssetServiceImpl(assetRepository, userUtil, categoryRepository, categoryMapper,
 				assetMapper, assetUtil, assignmentRepository);
+
+		initAsset = mock(Asset.class);
+
+		initAsset = Asset.builder().name("Name").id(1L).state("Available").build();
 
 	}
 
@@ -138,6 +145,49 @@ public class AssetServiceImplTest {
 		Asset actualAsset = assetServiceImpl.createAsset(dto);
 
 		assertThat(expectedAsset, is(actualAsset));
+	}
+
+	@Test
+	void deleteAsset_ShouldRemoveAssets_WhenAssetsIsAvailable() throws Exception {
+		when(assetRepository.findAssetById(1L)).thenReturn(initAsset);
+		when(assignmentRepository.existsAssignmentByAsset_Id(1L)).thenReturn(false);
+
+		assetServiceImpl.deleteAsset(1L);
+		verify(assetRepository).delete(initAsset);
+	}
+
+	@Test
+	void deleteAssets_ShouldThrowException_WhenNotFound(){
+		when(assetRepository.findAssetById(1L)).thenReturn(null);
+
+		Exception exception = assertThrows(Exception.class, () -> {
+			assetServiceImpl.deleteAsset(1L);
+		});
+		assertEquals("Asset not found", exception.getMessage());
+	}
+
+	@Test
+	void deleteAssets_ShouldThrowException_WhenAssetIsAssigned(){
+		when(assetRepository.findAssetById(1L)).thenReturn(initAsset);
+		when(assignmentRepository.existsAssignmentByAsset_Id(1L)).thenReturn(true);
+
+		Exception exception = assertThrows(Exception.class, () -> {
+			assetServiceImpl.deleteAsset(1L);
+		});
+		assertEquals("Cannot delete the asset because it belongs to one or more historical assignments.", exception.getMessage());
+	}
+
+	@Test
+	void deleteAssets_ShouldThrowException_WhenStateIsAssigned(){
+		initAsset = Asset.builder().name("Name").id(1L).state("Assigned").build();
+
+		when(assetRepository.findAssetById(1L)).thenReturn(initAsset);
+		when(assignmentRepository.existsAssignmentByAsset_Id(1L)).thenReturn(false);
+
+		Exception exception = assertThrows(Exception.class, () -> {
+			assetServiceImpl.deleteAsset(1L);
+		});
+		assertEquals("Cannot delete the asset because it is assigned to one or more users.", exception.getMessage());
 	}
 
 }
