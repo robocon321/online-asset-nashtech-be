@@ -39,7 +39,7 @@ public class initDatabase {
             assignmentRepository.deleteAll();
 
             //            region Users
-            for(int i = 1; i <= 60; i++) {
+            for(int i = 1; i <= 30; i++) {
                 usersRepository.save(new Users(
                         "user" + i,
                         passwordEncoder.encode("123456"),
@@ -48,12 +48,29 @@ public class initDatabase {
                         "cute",
                         randomGender(),
                         new Date(),
-                        randomLocation(),
+                        renderLocationUser(i),
                         new Date(),
-                        randomRole(),
+                        "ADMIN",
                         renderCodeUser(i)
                 ));
             }
+
+            for(int i = 31; i <= 60; i++) {
+                usersRepository.save(new Users(
+                        "user" + i,
+                        passwordEncoder.encode("123456"),
+                        true,
+                        "dev",
+                        "cute",
+                        randomGender(),
+                        new Date(),
+                        renderLocationUser(i),
+                        new Date(),
+                        "STAFF",
+                        renderCodeUser(i)
+                ));
+            }
+
 //          endregion
 
             //            region Category
@@ -139,24 +156,16 @@ public class initDatabase {
         }
     }
 
-    private String randomUsername(){
-        String[] usernames = {"admin", "user"};
-        return usernames[new Random().nextInt(usernames.length)];
+    private String renderLocationUser(int i){
+        if(i % 2 == 0)
+            return "HCM";
+        else
+            return "HN";
     }
 
     private boolean randomGender(){
         boolean[] states = {true, false};
         return states[new Random().nextInt(states.length)];
-    }
-
-    private String randomRole(){
-        String[] roles = {"ADMIN", "STAFF"};
-        return roles[new Random().nextInt(roles.length)];
-    }
-
-    private String randomLocation(){
-        String[] locations = {"HCM", "HN"};
-        return locations[new Random().nextInt(locations.length)];
     }
 
 }
