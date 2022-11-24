@@ -9,6 +9,7 @@ import com.nashtech.rookies.repository.AssignmentRepository;
 import com.nashtech.rookies.repository.CategoryRepository;
 import com.nashtech.rookies.repository.UsersRepository;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,8 @@ public class initDatabase {
 	
 	@Autowired
 	PasswordEncoder passwordEncoder;
+
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(initDatabase.class);
 	
     @Bean
     CommandLineRunner loadDatabase(UsersRepository usersRepository,
@@ -38,67 +41,36 @@ public class initDatabase {
             //            region Users
             for(int i = 1; i <= 30; i++) {
                 usersRepository.save(new Users(
-                        "adhcm" + i,
+                        "user" + i,
                         passwordEncoder.encode("123456"),
                         true,
-                        "admin",
+                        "dev",
                         "cute",
-                        true,
+                        randomGender(),
                         new Date(),
-                        "HCM",
+                        renderLocationUser(i),
                         new Date(),
                         "ADMIN",
-                        "HCMADMIN" + i
+                        renderCodeUser(i)
                 ));
             }
 
-            for(int i = 1; i <= 10; i++) {
+            for(int i = 31; i <= 60; i++) {
                 usersRepository.save(new Users(
-                        "userhcm" + i,
+                        "user" + i,
                         passwordEncoder.encode("123456"),
                         true,
-                        "admin123",
+                        "dev",
                         "cute",
-                        true,
+                        randomGender(),
                         new Date(),
-                        "HCM",
+                        renderLocationUser(i),
                         new Date(),
                         "STAFF",
-                        "HCMUSER" + i
+                        renderCodeUser(i)
                 ));
             }
 
-            for(int i = 1; i <= 10; i++) {
-                usersRepository.save(new Users(
-                        "userhn" + i,
-                        passwordEncoder.encode("123456"),
-                        true,
-                        "admin",
-                        "cute",
-                        true,
-                        new Date(),
-                        "HN",
-                        new Date(),
-                        "STAFF",
-                        "HNUSER" + i
-                ));
-            }
-
-            for(int i = 1; i <= 10; i++) {
-                usersRepository.save(new Users(
-                        "adhn" + i,
-                        passwordEncoder.encode("123456"),
-                        true,
-                        "admin",
-                        "cute",
-                        true,
-                        new Date(),
-                        "HN",
-                        new Date(),
-                        "ADMIN",
-                        "HNADMIN" + i
-                ));
-            }
 //          endregion
 
             //            region Category
@@ -170,6 +142,30 @@ public class initDatabase {
     private String randomStateAssignment() {
     	String[] states = {"Accepted", "Waiting for acceptance"};
     	return states[new Random().nextInt(states.length)];
+    }
+
+    private String renderCodeUser(int i){
+        if(i < 10){
+            return "SD000" + i;
+        }
+        else if (i >= 10 && i < 100){
+            return "SD00" + i;
+        }
+        else {
+            return "SD0" + i;
+        }
+    }
+
+    private String renderLocationUser(int i){
+        if(i % 2 == 0)
+            return "HCM";
+        else
+            return "HN";
+    }
+
+    private boolean randomGender(){
+        boolean[] states = {true, false};
+        return states[new Random().nextInt(states.length)];
     }
 
 }
