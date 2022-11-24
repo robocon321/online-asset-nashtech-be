@@ -104,21 +104,15 @@ public class AuthServiceImplTest {
 
 	@Test
 	void changePassword_ShouldReturnErr_WhenDataNotValid(){
-//		Authentication authentication = mock(Authentication.class);
-//		SecurityContext securityContext = mock(SecurityContext.class);
-//		UserPrinciple userPrinciple1 = new UserPrinciple();
-//		when(securityContext.getAuthentication()).thenReturn(authentication);
-//		SecurityContextHolder.setContext(securityContext);
-//		when(authentication.getPrincipal()).thenReturn(userPrinciple1);
+
 		ChangePasswordRequestDto dto = ChangePasswordRequestDto.builder().oldPassword("trongbt123").newPassword("123456").build();
 		Users user = new Users();
 		Long id = 1L;
-//		when(userPrinciple.getId()).thenReturn(id);
-//		when(usersRepository.findUsersById(id)).thenReturn(user);
+
 		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
 			authServiceImpl.changePassword(dto);
 		});
-		Assertions.assertEquals("Minimum eight characters, at least one letter, one number and one special character", actualException.getMessage() );
+		Assertions.assertEquals("Minimum eight characters and Maximum fifty characters, at least one letter, one number and one special character", actualException.getMessage() );
 	}
 
 	@Test

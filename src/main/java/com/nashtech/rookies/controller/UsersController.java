@@ -2,6 +2,7 @@ package com.nashtech.rookies.controller;
 
 import com.nashtech.rookies.dto.request.user.UpdateUserRequestDto;
 import com.nashtech.rookies.dto.request.user.UserRequestDto;
+import com.nashtech.rookies.entity.Users;
 import com.nashtech.rookies.services.interfaces.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -65,10 +66,10 @@ public class UsersController {
     }
 
     @PostMapping("/create")
-    public void createUser(@Valid @RequestBody UserRequestDto dto) {
-        usersService.createUser(dto);
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequestDto dto) {
+    	return ResponseEntity.ok().body(usersService.createUser(dto));
     }
 
     @PutMapping("/update")
-    public String updateUser(@Valid @RequestBody UpdateUserRequestDto dto){ return usersService.updateUser(dto);}
+    public Users updateUser(@Valid @RequestBody UpdateUserRequestDto dto){ return usersService.updateUser(dto);}
 }

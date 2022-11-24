@@ -35,7 +35,7 @@ public interface UsersService {
 
     List<Users> sortByUpdatedDateDesc();
 
-    void createUser(UserRequestDto dto);
+    Users createUser(UserRequestDto dto);
 
-    String updateUser(UpdateUserRequestDto userUpdateDto);
+    Users updateUser(UpdateUserRequestDto userUpdateDto);
 }

@@ -67,10 +67,10 @@ public class AuthServiceImpl implements AuthService {
 	public String changePassword(ChangePasswordRequestDto dto){
 
 
-		boolean checkRegex = Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$", dto.getNewPassword());
+		boolean checkRegex = Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,50}$", dto.getNewPassword());
 
 		if(!checkRegex){
-			throw new InvalidDataInputException( "Minimum eight characters, at least one letter, one number and one special character");
+			throw new InvalidDataInputException( "Minimum eight characters and Maximum fifty characters, at least one letter, one number and one special character");
 		}
 		UserPrinciple userPrinciple= (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 

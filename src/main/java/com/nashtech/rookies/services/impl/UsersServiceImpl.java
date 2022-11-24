@@ -111,7 +111,7 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 
 //    region Create user
     @Override
-    public void createUser(UserRequestDto dto) {
+    public Users createUser(UserRequestDto dto) {
 
 		if (!dto.getRole().equals("ADMIN") && !dto.getRole().equals("STAFF")) {
 			throw new InvalidDataInputException("Role is invalid");
@@ -163,14 +163,15 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 		user.setEnabled(false);
 
 		user = usersRepository.save(user);
-
+		
+		return user;
 	}
 
     
 //    endregion
 
     @Override
-    public String updateUser(UpdateUserRequestDto userUpdateDto){
+    public Users updateUser(UpdateUserRequestDto userUpdateDto){
         Users user = usersRepository.findUsersById(userUpdateDto.getId());
 
         if(user == null){
@@ -205,9 +206,9 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
             user.setJoinedDate(joinedDate);
             user.setRole(userUpdateDto.getRole());
             user.setUpdatedDate(new Date());
-            usersRepository.save(user);
-            String message="Update Success";
-            return message;
+            Users userResponse= usersRepository.save(user);
+//            String message="Update Success";
+            return userResponse;
         }
 
     }
