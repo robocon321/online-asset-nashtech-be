@@ -60,6 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/api/v1/users/").hasAuthority("ADMIN")
 				.antMatchers(HttpMethod.GET,"/api/v1/users/id/**").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.GET,"/api/v1/categories/").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.GET,"/api/v1/assets/").hasAuthority("ADMIN")
 				.anyRequest()
 				.authenticated()
 				.and().exceptionHandling()
