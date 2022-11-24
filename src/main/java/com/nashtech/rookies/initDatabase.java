@@ -41,7 +41,7 @@ public class initDatabase {
             //            region Users
             for(int i = 1; i <= 60; i++) {
                 usersRepository.save(new Users(
-                        randomUsername() + i,
+                        "user" + i,
                         passwordEncoder.encode("123456"),
                         true,
                         "dev",
