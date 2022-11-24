@@ -28,7 +28,10 @@ public class Assignment {
     @ManyToOne
     private Users assigned_to;
 
-    public Assignment(String note, String state, Date assigned_date, Date returned_date, Date created_date, Users assigned_by, Users assigned_to) {
+    @ManyToOne
+    private Asset asset;
+
+    public Assignment(String note, String state, Date assigned_date, Date returned_date, Date created_date, Users assigned_by, Users assigned_to, Asset asset) {
         this.note = note;
         this.state = state;
         this.assigned_date = assigned_date;
@@ -36,5 +39,6 @@ public class Assignment {
         this.created_date = created_date;
         this.assigned_by = assigned_by;
         this.assigned_to = assigned_to;
+        this.asset = asset;
     }
 }

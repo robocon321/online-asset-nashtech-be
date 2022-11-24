@@ -124,6 +124,24 @@ public class initDatabase {
                 assetRepository.save(asset);
             }
 
+            assetRepository.save(new Asset(
+                    "asset31",
+                    "ASSETS31",
+                    "Day la asset, ahihi :v",
+                    "HCM",
+                    "Assigned",
+                    categoryRepository.findById((long) new Random().nextInt(5) + 1).get()
+            ));
+
+            assetRepository.save(new Asset(
+                    "asset31",
+                    "ASSETS31",
+                    "Day la asset, ahihi :v",
+                    "HCM",
+                    "Not available",
+                    categoryRepository.findById((long) new Random().nextInt(5) + 1).get()
+            ));
+
 //            endregion
 
             //            region    Assignment
@@ -135,7 +153,8 @@ public class initDatabase {
                         new Date(),
                         new Date(),
                         usersRepository.findById((long) new Random().nextInt(30) + 1 ).get(),
-                        usersRepository.findById((long) new Random().nextInt(30) + 1 ).get()
+                        usersRepository.findById((long) new Random().nextInt(30) + 1 ).get(),
+                        assetRepository.findById((long) new Random().nextInt(30) + 1 ).get()
                 ));
             }
             //            endregion
@@ -152,6 +171,5 @@ public class initDatabase {
     	String[] states = {"Accepted", "Waiting for acceptance"};
     	return states[new Random().nextInt(states.length)];
     }
-
 
 }
