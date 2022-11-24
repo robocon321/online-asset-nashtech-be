@@ -1,8 +1,5 @@
 package com.nashtech.rookies.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +14,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
 
 import com.nashtech.rookies.jwt.JwtEntryPoint;
 import com.nashtech.rookies.jwt.JwtTokenFilter;
@@ -57,17 +53,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.cors().and().csrf().disable()
-				.authorizeRequests()
-				.antMatchers("/api/v1/auth/login").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/v1/users/create").hasAuthority("ADMIN")
-                .antMatchers(HttpMethod.GET,"/api/v1/users/").hasAuthority("ADMIN")
-				.antMatchers(HttpMethod.GET,"/api/v1/users/id/**").hasAuthority("ADMIN")
-				.anyRequest()
-				.authenticated()
-				.and().exceptionHandling()
-				.authenticationEntryPoint(jwtEntryPoint).and().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		httpSecurity.cors().and().csrf().disable().authorizeRequests()
+
+				.antMatchers(HttpMethod.GET, "/api/v1/categories/").hasAuthority("ADMIN")
+				.antMatchers(HttpMethod.GET, "/api/v1/assets/").hasAuthority("ADMIN").antMatchers("/api/v1/auth/**")
+				.permitAll().antMatchers("/api/v1/users/**").hasAuthority("ADMIN").antMatchers("/api/v1/asset/**")
+				.hasAuthority("ADMIN")
+
+				.anyRequest().authenticated().and().exceptionHandling().authenticationEntryPoint(jwtEntryPoint).and()
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		httpSecurity.addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
 	}

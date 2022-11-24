@@ -1,16 +1,8 @@
 package com.nashtech.rookies.services.interfaces;
 
+import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
+import com.nashtech.rookies.entity.Asset;
+
 public interface AssetService {
-
-    //    Show information of asset by id
-
-    //    Create assets
-
-    //    Update assets
-
-    //    Delete assets
-
-    void deleteAsset(Long id) throws Exception;
-
-
+	Asset createAsset(CreateAssetRequestDto dto);
 }
