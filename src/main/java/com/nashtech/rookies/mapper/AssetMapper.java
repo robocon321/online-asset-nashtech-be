@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
-import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Category;
 
@@ -24,15 +23,4 @@ public class AssetMapper {
 				.build();
 	}
 	
-	public AssetResponseDto mapToDto(Asset asset) {
-		
-		return AssetResponseDto.builder()
-				.id(asset.getId())
-				.name(asset.getName())
-				.categoryName(asset.getCategory().getName())
-				.specification(asset.getSpecification())
-				.installedDate(asset.getInstalledDate())
-				.state(asset.getState())
-				.build();
-	}
 }
