@@ -1,6 +1,7 @@
 package com.nashtech.rookies.services.impl;
 
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
+import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Category;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
@@ -33,7 +34,8 @@ public class AssetServiceImpl implements AssetService {
 
 	@Autowired
 	public AssetServiceImpl(AssetRepository assetRepository, UserUtil userUtil, CategoryRepository categoryRepository,
-			CategoryMapper categoryMapper, AssetMapper assetMapper, AssetUtil assetUtil, AssignmentRepository assignmentRepository) {
+			CategoryMapper categoryMapper, AssetMapper assetMapper, AssetUtil assetUtil,
+			AssignmentRepository assignmentRepository) {
 		this.assetRepository = assetRepository;
 		this.userUtil = userUtil;
 		this.categoryRepository = categoryRepository;
@@ -90,23 +92,43 @@ public class AssetServiceImpl implements AssetService {
 
 //    Delete asset
 
-    @Override
-    public void deleteAsset(Long id) throws Exception {
-        Asset asset = assetRepository.findAssetById(id);
+	@Override
+	public void deleteAsset(Long id) throws Exception {
+		Asset asset = assetRepository.findAssetById(id);
 
-        if (asset == null) {
-            throw new Exception("Asset not found");
-        }
+		if (asset == null) {
+			throw new Exception("Asset not found");
+		}
 
-        if (assignmentRepository.existsAssignmentByAsset_Id(id)) {
-            throw new Exception("Cannot delete the asset because it belongs to one or more historical assignments.");
-        }
+		if (assignmentRepository.existsAssignmentByAsset_Id(id)) {
+			throw new Exception("Cannot delete the asset because it belongs to one or more historical assignments.");
+		}
 
-        if(asset.getState().equals("Assigned")) {
-            throw new Exception("Cannot delete the asset because it is assigned to one or more users.");
-        }
+		if (asset.getState().equals("Assigned")) {
+			throw new Exception("Cannot delete the asset because it is assigned to one or more users.");
+		}
 
-        assetRepository.delete(asset);
-    }
+		assetRepository.delete(asset);
+	}
+
+	@Override
+	public AssetResponseDto getUpdateAssetById(Long id) {
+		Optional<Asset> assetOptional = assetRepository.findById(id);
+
+		if (assetOptional.isEmpty()) {
+			throw new InvalidDataInputException("Asset id is invalid");
+		}
+
+		Asset asset = assetOptional.get();
+
+		boolean hasExistsAssignment = assignmentRepository.existsAssignmentByAsset_Id(id);
+
+		if (hasExistsAssignment) {
+			throw new InvalidDataInputException(
+					"Cannot update the asset because it belongs to one or more historical assignments.");
+		}
+
+		return assetMapper.mapToDto(asset);
+	}
 
 }

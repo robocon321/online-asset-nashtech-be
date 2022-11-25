@@ -1,16 +1,20 @@
 package com.nashtech.rookies.controller;
 
-import com.nashtech.rookies.repository.AssetRepository;
-import com.nashtech.rookies.services.interfaces.AssetService;
-import org.slf4j.Logger;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 import com.nashtech.rookies.services.interfaces.AssetService;
-
-import javax.validation.Valid;
 
 @RequestMapping("/api/v1/assets")
 @RestController
@@ -24,9 +28,14 @@ public class AssetController {
 		return ResponseEntity.ok().body(assetService.createAsset(dto));
 	}
 
-    @DeleteMapping("")
-    public ResponseEntity<?> deleteAsset(@RequestParam Long id) throws Exception {
-        assetService.deleteAsset(id);
-        return ResponseEntity.ok().body("Delete asset successfully");
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<?> getUpdateAssetById(@PathVariable Long id) {
+		return ResponseEntity.ok().body(assetService.getUpdateAssetById(id));
+	}
+
+	@DeleteMapping("")
+	public ResponseEntity<?> deleteAsset(@RequestParam Long id) throws Exception {
+		assetService.deleteAsset(id);
+		return ResponseEntity.ok().body("Delete asset successfully");
+	}
 }
