@@ -1,14 +1,13 @@
 package com.nashtech.rookies.controller;
 
+import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 import com.nashtech.rookies.repository.AssetRepository;
 import com.nashtech.rookies.services.interfaces.AssetService;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
-import com.nashtech.rookies.services.interfaces.AssetService;
+import javax.validation.Valid;
 
 import javax.validation.Valid;
 
