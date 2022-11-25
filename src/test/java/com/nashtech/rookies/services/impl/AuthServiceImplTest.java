@@ -68,7 +68,7 @@ public class AuthServiceImplTest {
 			authServiceImpl.login(dto);
 		});
 
-		Assertions.assertEquals("username or password is incorrect", actualException.getMessage());
+		Assertions.assertEquals("Username or password is incorrect. Please try again", actualException.getMessage());
 	}
 
 	@Test
@@ -84,7 +84,7 @@ public class AuthServiceImplTest {
 			authServiceImpl.login(dto);
 		});
 
-		Assertions.assertEquals("username or password is incorrect", actualException.getMessage());
+		Assertions.assertEquals("Username or password is incorrect. Please try again", actualException.getMessage());
 	}
 
 	@Test
