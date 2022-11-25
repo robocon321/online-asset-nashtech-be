@@ -32,12 +32,16 @@ public class Asset {
 	@ManyToOne
 	private Category category;
 
-	public Asset(String name, String code, String specification, String location, String state, Category category) {
+	@ManyToOne
+	private Users users;
+
+	public Asset(String name, String code, String specification, String location, String state, Category category, Users users) {
 		this.name = name;
 		this.code = code;
 		this.specification = specification;
 		this.location = location;
 		this.state = state;
 		this.category = category;
+		this.users = users;
 	}
 }
