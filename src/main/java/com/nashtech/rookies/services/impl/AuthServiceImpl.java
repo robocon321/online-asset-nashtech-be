@@ -41,13 +41,13 @@ public class AuthServiceImpl implements AuthService {
 		Optional<Users> userOptional = usersRepository.findByUsername(dto.getUsername());
 
 		if (userOptional.isEmpty()) {
-			throw new InvalidDataInputException("username or password is incorrect");
+			throw new InvalidDataInputException("Username or password is incorrect. Please try again");
 		}
 
 		Users user = userOptional.get();
 
 		if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-			throw new InvalidDataInputException("username or password is incorrect");
+			throw new InvalidDataInputException("Username or password is incorrect. Please try again");
 		}
 
 		Authentication authentication = authenticationManager

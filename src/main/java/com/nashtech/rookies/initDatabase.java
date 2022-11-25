@@ -24,8 +24,6 @@ public class initDatabase {
 	
 	@Autowired
 	PasswordEncoder passwordEncoder;
-
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(initDatabase.class);
 	
     @Bean
     CommandLineRunner loadDatabase(UsersRepository usersRepository,
@@ -90,7 +88,8 @@ public class initDatabase {
                         "Day la asset, ahihi :v",
                         "HCM",
                         randomStateAsset(),
-                        categoryRepository.findById((long) new Random().nextInt(5) + 1).get()
+                        categoryRepository.findById((long) new Random().nextInt(5) + 1).get(),
+                        usersRepository.findById((long) new Random().nextInt(30) + 1).get()
                 );
             	asset.setCode(asset.getCategory().getCode() + i);
                 assetRepository.save(asset);
@@ -102,7 +101,8 @@ public class initDatabase {
                     "Day la asset, ahihi :v",
                     "HCM",
                     "Assigned",
-                    categoryRepository.findById((long) new Random().nextInt(5) + 1).get()
+                    categoryRepository.findById((long) new Random().nextInt(5) + 1).get(),
+                    usersRepository.findById(2L).get()
             ));
 
             assetRepository.save(new Asset(
@@ -111,7 +111,8 @@ public class initDatabase {
                     "Day la asset, ahihi :v",
                     "HCM",
                     "Not available",
-                    categoryRepository.findById((long) new Random().nextInt(5) + 1).get()
+                    categoryRepository.findById((long) new Random().nextInt(5) + 1).get(),
+                    usersRepository.findById(1L).get()
             ));
 
 //            endregion
