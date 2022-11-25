@@ -4,12 +4,14 @@ import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Category;
+import com.nashtech.rookies.entity.Users;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
 import com.nashtech.rookies.mapper.AssetMapper;
 import com.nashtech.rookies.mapper.CategoryMapper;
 import com.nashtech.rookies.repository.AssetRepository;
 import com.nashtech.rookies.repository.AssignmentRepository;
 import com.nashtech.rookies.repository.CategoryRepository;
+import com.nashtech.rookies.repository.UsersRepository;
 import com.nashtech.rookies.services.interfaces.AssetService;
 import com.nashtech.rookies.utils.AssetUtil;
 import com.nashtech.rookies.utils.UserUtil;
@@ -31,11 +33,13 @@ public class AssetServiceImpl implements AssetService {
 	AssetMapper assetMapper;
 	UserUtil userUtil;
 	AssetUtil assetUtil;
+	
+	UsersRepository usersRepository;
 
 	@Autowired
 	public AssetServiceImpl(AssetRepository assetRepository, UserUtil userUtil, CategoryRepository categoryRepository,
 			CategoryMapper categoryMapper, AssetMapper assetMapper, AssetUtil assetUtil,
-			AssignmentRepository assignmentRepository) {
+			AssignmentRepository assignmentRepository, UsersRepository usersRepository) {
 		this.assetRepository = assetRepository;
 		this.userUtil = userUtil;
 		this.categoryRepository = categoryRepository;
@@ -43,6 +47,7 @@ public class AssetServiceImpl implements AssetService {
 		this.assetMapper = assetMapper;
 		this.assetUtil = assetUtil;
 		this.assignmentRepository = assignmentRepository;
+		this.usersRepository = usersRepository;
 	}
 
 	@Override
@@ -80,9 +85,16 @@ public class AssetServiceImpl implements AssetService {
 		Date installedDate = userUtil.convertStrDateToObDate(dto.getInstalledDate());
 
 		String location = userUtil.getAddressFromUserPrinciple();
+		
+		Long id = userUtil.getIdFromUserPrinciple();
+		
+		Users user = usersRepository.findUsersById(id);
 
 		Asset asset = assetMapper.mapToAsset(dto.getName(), code, dto.getSpecification(), dto.getState(), location,
 				installedDate, category);
+		
+		asset.setUsers(user);
+		
 		asset = assetRepository.save(asset);
 
 		return asset;

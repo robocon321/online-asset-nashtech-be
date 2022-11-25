@@ -156,6 +156,15 @@ public class UserUtil {
 		return userPrinciple.getLocation();
 	}
 
+	public Long getIdFromUserPrinciple() {
+		UserPrinciple userPrinciple = new UserPrinciple();
 
+		try {
+			userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return userPrinciple.getId();
+	}
 
 }
