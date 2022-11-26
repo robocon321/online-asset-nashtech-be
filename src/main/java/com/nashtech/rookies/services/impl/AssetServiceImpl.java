@@ -110,8 +110,6 @@ public class AssetServiceImpl implements AssetService {
 			throw new InvalidDataInputException("Install date is invalid");
 		}
 
-		Date installedDate = userUtil.convertStrDateToObDate(dto.getInstalledDate());
-
 		Optional<Asset> assetOptional = assetRepository.findById(dto.getId());
 
 		if (assetOptional.isEmpty()) {
@@ -122,7 +120,7 @@ public class AssetServiceImpl implements AssetService {
 
 		asset.setName(dto.getName());
 		asset.setSpecification(dto.getSpecification());
-		asset.setInstalledDate(installedDate);
+		asset.setInstalledDate(userUtil.convertStrDateToObDate(dto.getInstalledDate()));
 		asset.setState(dto.getState());
 
 		asset = assetRepository.save(asset);
