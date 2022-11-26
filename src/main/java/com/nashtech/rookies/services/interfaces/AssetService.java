@@ -9,5 +9,5 @@ public interface AssetService {
 
 	void deleteAsset(Long id) throws Exception;
 
-	AssetResponseDto getUpdateAssetById(Long id);
+	AssetResponseDto getAssetById(Long id);
 }

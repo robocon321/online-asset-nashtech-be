@@ -1,11 +1,17 @@
 package com.nashtech.rookies.services.impl;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Category;
 import com.nashtech.rookies.entity.Users;
-import com.nashtech.rookies.exceptions.ExistsAssignmentException;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
 import com.nashtech.rookies.mapper.AssetMapper;
 import com.nashtech.rookies.mapper.CategoryMapper;
@@ -16,13 +22,6 @@ import com.nashtech.rookies.repository.UsersRepository;
 import com.nashtech.rookies.services.interfaces.AssetService;
 import com.nashtech.rookies.utils.AssetUtil;
 import com.nashtech.rookies.utils.UserUtil;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class AssetServiceImpl implements AssetService {
@@ -103,21 +102,14 @@ public class AssetServiceImpl implements AssetService {
 
 //    Update asset
 	@Override
-	public AssetResponseDto getUpdateAssetById(Long id) {
+	public AssetResponseDto getAssetById(Long id) {
 		Optional<Asset> assetOptional = assetRepository.findById(id);
 
 		if (assetOptional.isEmpty()) {
-			throw new InvalidDataInputException("Asset id is invalid");
+			throw new InvalidDataInputException("Asset not found");
 		}
 
 		Asset asset = assetOptional.get();
-
-		boolean hasExistsAssignment = assignmentRepository.existsAssignmentByAsset_Id(id);
-
-		if (hasExistsAssignment) {
-			throw new ExistsAssignmentException(
-					"Cannot update the asset because it belongs to one or more historical assignments.");
-		}
 
 		return assetMapper.mapToDto(asset);
 	}

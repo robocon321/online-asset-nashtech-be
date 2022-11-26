@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
-import com.nashtech.rookies.dto.request.asset.UpdateAssetRequestDto;
+import com.nashtech.rookies.dto.request.asset.AssetRequestDto;
 import com.nashtech.rookies.services.interfaces.AssetService;
 
 @RequestMapping("/api/v1/assets")
@@ -31,10 +31,15 @@ public class AssetController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getUpdateAssetById(@PathVariable Long id) {
-		return ResponseEntity.ok().body(assetService.getUpdateAssetById(id));
+	public ResponseEntity<?> getAssetById(@PathVariable Long id) {
+		return ResponseEntity.ok().body(assetService.getAssetById(id));
 	}
 	
+	@PutMapping("/")
+	public ResponseEntity<?> updateAsset(@Valid @RequestBody AssetRequestDto dto) {
+		return ResponseEntity.ok().body("");
+	}
+
 	@DeleteMapping("")
 	public ResponseEntity<?> deleteAsset(@RequestParam Long id) throws Exception {
 		assetService.deleteAsset(id);
