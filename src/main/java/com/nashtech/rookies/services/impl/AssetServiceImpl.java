@@ -1,6 +1,17 @@
 package com.nashtech.rookies.services.impl;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
+import com.nashtech.rookies.dto.request.asset.UpdateAssetRequestDto;
+import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
+
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Category;
 import com.nashtech.rookies.entity.Users;
@@ -16,14 +27,6 @@ import com.nashtech.rookies.services.interfaces.AssetService;
 import com.nashtech.rookies.utils.AssetUtil;
 import com.nashtech.rookies.utils.UserUtil;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
 @Service
 public class AssetServiceImpl implements AssetService {
 
@@ -38,7 +41,8 @@ public class AssetServiceImpl implements AssetService {
 
 	@Autowired
 	public AssetServiceImpl(AssetRepository assetRepository, UserUtil userUtil, CategoryRepository categoryRepository,
-			CategoryMapper categoryMapper, AssetMapper assetMapper, AssetUtil assetUtil, AssignmentRepository assignmentRepository,UsersRepository usersRepository) {
+			CategoryMapper categoryMapper, AssetMapper assetMapper, AssetUtil assetUtil,
+			AssignmentRepository assignmentRepository, UsersRepository usersRepository) {
 		this.assetRepository = assetRepository;
 		this.userUtil = userUtil;
 		this.categoryRepository = categoryRepository;
@@ -46,7 +50,7 @@ public class AssetServiceImpl implements AssetService {
 		this.assetMapper = assetMapper;
 		this.assetUtil = assetUtil;
 		this.assignmentRepository = assignmentRepository;
-		this.usersRepository=usersRepository;
+		this.usersRepository = usersRepository;
 	}
 
 	@Override
@@ -85,8 +89,15 @@ public class AssetServiceImpl implements AssetService {
 
 		String location = userUtil.getAddressFromUserPrinciple();
 
+		Long id = userUtil.getIdFromUserPrinciple();
+
+		Users user = usersRepository.findUsersById(id);
+
 		Asset asset = assetMapper.mapToAsset(dto.getName(), code, dto.getSpecification(), dto.getState(), location,
 				installedDate, category);
+
+		asset.setUsers(user);
+
 		asset = assetRepository.save(asset);
 
 		return asset;
@@ -94,26 +105,65 @@ public class AssetServiceImpl implements AssetService {
 
 //    Update asset
 
+	@Override
+	public AssetResponseDto updateAsset(UpdateAssetRequestDto dto) {
+
+		if (!userUtil.isValidDate(dto.getInstalledDate())) {
+			throw new InvalidDataInputException("Install date is invalid");
+		}
+
+		Optional<Asset> assetOptional = assetRepository.findById(dto.getId());
+
+		if (assetOptional.isEmpty()) {
+			throw new InvalidDataInputException("Asset not found");
+		}
+
+		Asset asset = assetOptional.get();
+
+		asset.setName(dto.getName());
+		asset.setSpecification(dto.getSpecification());
+		asset.setInstalledDate(userUtil.convertStrDateToObDate(dto.getInstalledDate()));
+		asset.setState(dto.getState());
+
+		asset = assetRepository.save(asset);
+
+		return assetMapper.mapToDto(asset);
+	}
+
+// Get asset by id	
+
+	@Override
+	public AssetResponseDto getAssetById(Long id) {
+		Optional<Asset> assetOptional = assetRepository.findById(id);
+
+		if (assetOptional.isEmpty()) {
+			throw new InvalidDataInputException("Asset not found");
+		}
+
+		Asset asset = assetOptional.get();
+
+		return assetMapper.mapToDto(asset);
+	}
 //    Delete asset
 
-    @Override
-    public void deleteAsset(Long id) throws Exception {
-        Asset asset = assetRepository.findAssetById(id);
+	@Override
+	public void deleteAsset(Long id) throws Exception {
+		Asset asset = assetRepository.findAssetById(id);
 
-        if (asset == null) {
-            throw new Exception("Asset not found");
-        }
+		if (asset == null) {
+			throw new Exception("Asset not found");
+		}
 
-        if (assignmentRepository.existsAssignmentByAsset_Id(id)) {
-            throw new Exception("Cannot delete the asset because it belongs to one or more historical assignments.");
-        }
+		if (assignmentRepository.existsAssignmentByAsset_Id(id)) {
+			throw new Exception("Cannot delete the asset because it belongs to one or more historical assignments.");
+		}
 
-        if(asset.getState().equals("Assigned")) {
-            throw new Exception("Cannot delete the asset because it is assigned to one or more users.");
-        }
+		if (asset.getState().equals("Assigned")) {
+			throw new Exception("Cannot delete the asset because it is assigned to one or more users.");
+		}
 
-        assetRepository.delete(asset);
-    }
+		assetRepository.delete(asset);
+	}
 
 	@Override
 	public List<Asset> showAll(){

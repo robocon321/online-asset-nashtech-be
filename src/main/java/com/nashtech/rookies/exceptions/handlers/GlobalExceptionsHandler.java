@@ -14,6 +14,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.nashtech.rookies.dto.response.ErrorResponse;
+import com.nashtech.rookies.exceptions.ExistsAssignmentException;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
 
 @ControllerAdvice
@@ -22,6 +23,13 @@ public class GlobalExceptionsHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler({ InvalidDataInputException.class })
 	protected ResponseEntity<ErrorResponse> handleItemExistException(RuntimeException exception, WebRequest request) {
 		ErrorResponse error = new ErrorResponse("03", exception.getMessage());
+		return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler({ ExistsAssignmentException.class })
+	protected ResponseEntity<ErrorResponse> handleExistsAssignmentException(RuntimeException exception,
+			WebRequest request) {
+		ErrorResponse error = new ErrorResponse("04", exception.getMessage());
 		return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
 	}
 
