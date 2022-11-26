@@ -23,16 +23,17 @@ public class AssetMapper {
 				.category(category)
 				.build();
 	}
-	
+
 	public AssetResponseDto mapToDto(Asset asset) {
 		
 		return AssetResponseDto.builder()
 				.id(asset.getId())
 				.name(asset.getName())
-				.categoryName(asset.getCategory().getName())
 				.specification(asset.getSpecification())
+				.categoryName(asset.getCategory().getName())
 				.installedDate(asset.getInstalledDate())
 				.state(asset.getState())
 				.build();
 	}
+	
 }
