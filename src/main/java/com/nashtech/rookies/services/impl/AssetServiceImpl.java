@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
+import com.nashtech.rookies.dto.request.asset.UpdateAssetRequestDto;
 import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Category;
@@ -101,6 +102,36 @@ public class AssetServiceImpl implements AssetService {
 	}
 
 //    Update asset
+
+	@Override
+	public AssetResponseDto updateAsset(UpdateAssetRequestDto dto) {
+
+		if (!userUtil.isValidDate(dto.getInstalledDate())) {
+			throw new InvalidDataInputException("Install date is invalid");
+		}
+
+		Date installedDate = userUtil.convertStrDateToObDate(dto.getInstalledDate());
+
+		Optional<Asset> assetOptional = assetRepository.findById(dto.getId());
+
+		if (assetOptional.isEmpty()) {
+			throw new InvalidDataInputException("Asset not found");
+		}
+
+		Asset asset = assetOptional.get();
+
+		asset.setName(dto.getName());
+		asset.setSpecification(dto.getSpecification());
+		asset.setInstalledDate(installedDate);
+		asset.setState(dto.getState());
+
+		asset = assetRepository.save(asset);
+
+		return assetMapper.mapToDto(asset);
+	}
+
+// Get asset by id	
+
 	@Override
 	public AssetResponseDto getAssetById(Long id) {
 		Optional<Asset> assetOptional = assetRepository.findById(id);
