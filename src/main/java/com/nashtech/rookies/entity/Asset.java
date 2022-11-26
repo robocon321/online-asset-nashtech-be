@@ -10,6 +10,8 @@ import java.util.Date;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Builder
 @Getter
@@ -32,7 +34,9 @@ public class Asset {
 	@ManyToOne
 	private Category category;
 
+	
 	@ManyToOne
+	@JsonIgnore
 	private Users users;
 
 	public Asset(String name, String code, String specification, String location, String state, Category category, Users users) {

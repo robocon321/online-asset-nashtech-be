@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.client.ExpectedCount.times;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -14,15 +15,26 @@ import java.util.Optional;
 import com.nashtech.rookies.repository.AssignmentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Category;
+import com.nashtech.rookies.entity.Users;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
+import com.nashtech.rookies.jwt.JwtProvider;
 import com.nashtech.rookies.mapper.AssetMapper;
 import com.nashtech.rookies.mapper.CategoryMapper;
 import com.nashtech.rookies.repository.AssetRepository;
 import com.nashtech.rookies.repository.CategoryRepository;
+import com.nashtech.rookies.repository.UsersRepository;
+import com.nashtech.rookies.security.userprincal.UserPrinciple;
+import com.nashtech.rookies.services.interfaces.AssetService;
 import com.nashtech.rookies.utils.AssetUtil;
 import com.nashtech.rookies.utils.UserUtil;
 
@@ -34,9 +46,17 @@ public class AssetServiceImplTest {
 	AssetMapper assetMapper;
 	UserUtil userUtil;
 	AssetUtil assetUtil;
-
+	UsersRepository usersRepository;
 	AssetServiceImpl assetServiceImpl;
+	AuthenticationManager authenticationManager;
+	JwtProvider jwtProvider;
+	AssetService assetService;
+	UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken;
+	Authentication authentication;
 
+
+	UserPrinciple userPrinciple;
+	AuthServiceImpl authServiceImpl;
 	Asset initAsset;
 
 
@@ -45,15 +65,14 @@ public class AssetServiceImplTest {
 		assetRepository = mock(AssetRepository.class);
 		categoryRepository = mock(CategoryRepository.class);
 		assignmentRepository = mock(AssignmentRepository.class);
-
 		categoryMapper = mock(CategoryMapper.class);
 		assetMapper = mock(AssetMapper.class);
 		userUtil = mock(UserUtil.class);
 
 		assetUtil = mock(AssetUtil.class);
-
+		usersRepository = mock(UsersRepository.class);
 		assetServiceImpl = new AssetServiceImpl(assetRepository, userUtil, categoryRepository, categoryMapper,
-				assetMapper, assetUtil, assignmentRepository);
+				assetMapper, assetUtil, assignmentRepository,usersRepository);
 
 		initAsset = mock(Asset.class);
 
@@ -188,6 +207,22 @@ public class AssetServiceImplTest {
 			assetServiceImpl.deleteAsset(1L);
 		});
 		assertEquals("Cannot delete the asset because it is assigned to one or more users.", exception.getMessage());
+	}
+	
+	@Test
+	void getAllAssets_ShouldReturnAllAssetsManagedByUser() {
+		Users user = new Users();
+		Authentication authentication = mock(Authentication.class);
+		SecurityContext securityContext = mock(SecurityContext.class);
+		UserPrinciple userPrinciple1 = new UserPrinciple();
+		when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		when(authentication.getPrincipal()).thenReturn(userPrinciple1);
+		when(usersRepository.findUsersById(userPrinciple1.getId())).thenReturn(user);
+		List<Asset> assetList = new ArrayList<>();
+		when(assetRepository.findByUsers(user)).thenReturn(assetList);
+		List<Asset> actual = assetServiceImpl.showAll();
+		assertEquals(assetList, actual);
 	}
 
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Category;
+import com.nashtech.rookies.entity.Users;
 
 @Component
 public class AssetMapper {
@@ -22,4 +23,6 @@ public class AssetMapper {
 				.category(category)
 				.build();
 	}
+	
+	
 }

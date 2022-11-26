@@ -1,6 +1,7 @@
 package com.nashtech.rookies.controller;
 
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
+import com.nashtech.rookies.dto.request.user.UserRequestDto;
 import com.nashtech.rookies.repository.AssetRepository;
 import com.nashtech.rookies.services.interfaces.AssetService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class AssetController {
 	AssetService assetService;
 
 	@PostMapping("/")
-	public ResponseEntity<?> createUser(@Valid @RequestBody CreateAssetRequestDto dto) {
+	public ResponseEntity<?> createAsset(@Valid @RequestBody CreateAssetRequestDto dto) {
 		return ResponseEntity.ok().body(assetService.createAsset(dto));
 	}
 
@@ -27,5 +28,10 @@ public class AssetController {
     public ResponseEntity<?> deleteAsset(@RequestParam Long id) throws Exception {
         assetService.deleteAsset(id);
         return ResponseEntity.ok().body("Delete asset successfully");
+    }
+    
+    @GetMapping("/list")
+    public ResponseEntity<?> showAllAssets(){
+        return ResponseEntity.ok(assetService.showAll());
     }
 }
