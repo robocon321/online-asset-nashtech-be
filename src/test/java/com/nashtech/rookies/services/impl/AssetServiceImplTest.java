@@ -16,9 +16,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
+import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Category;
 import com.nashtech.rookies.entity.Users;
+import com.nashtech.rookies.exceptions.ExistsAssignmentException;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
 import com.nashtech.rookies.mapper.AssetMapper;
 import com.nashtech.rookies.mapper.CategoryMapper;
@@ -167,6 +169,50 @@ public class AssetServiceImplTest {
 		assertThat(expectedAsset, is(actualAsset));
 	}
 
+	// update
+	@Test
+	void getUpdateAssetById_ShouldThrowInvalidDataInputException_WhenIdInValid() {
+
+		when(assetRepository.findById(2l)).thenReturn(Optional.empty());
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assetServiceImpl.getUpdateAssetById(2l);
+		});
+		assertEquals("Asset id is invalid", actualException.getMessage());
+	}
+
+	@Test
+	void getUpdateAssetById_ShouldThrowExistsAssignmentException_WhenIdInValid() {
+		Asset asset = mock(Asset.class);
+
+		when(assetRepository.findById(2l)).thenReturn(Optional.of(asset));
+
+		when(assignmentRepository.existsAssignmentByAsset_Id(2l)).thenReturn(true);
+
+		ExistsAssignmentException actualException = assertThrows(ExistsAssignmentException.class, () -> {
+			assetServiceImpl.getUpdateAssetById(2l);
+		});
+		assertEquals("Cannot update the asset because it belongs to one or more historical assignments.",
+				actualException.getMessage());
+	}
+
+	@Test
+	void getUpdateAssetById_ShouldReturnAsset_WhenDataValid() {
+		Asset asset = mock(Asset.class);
+		AssetResponseDto expectedAsset = mock(AssetResponseDto.class);
+
+		when(assetRepository.findById(2l)).thenReturn(Optional.of(asset));
+
+		when(assignmentRepository.existsAssignmentByAsset_Id(2l)).thenReturn(false);
+
+		when(assetMapper.mapToDto(asset)).thenReturn(expectedAsset);
+
+		AssetResponseDto actualAsset = assetServiceImpl.getUpdateAssetById(2l);
+
+		assertThat(expectedAsset, is(actualAsset));
+	}
+
+	// delete
 	@Test
 	void deleteAsset_ShouldRemoveAssets_WhenAssetsIsAvailable() throws Exception {
 		when(assetRepository.findAssetById(1L)).thenReturn(initAsset);
