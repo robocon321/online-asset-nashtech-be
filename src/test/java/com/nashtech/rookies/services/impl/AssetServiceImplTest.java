@@ -330,8 +330,10 @@ public class AssetServiceImplTest {
 		when(usersRepository.findUsersById(userPrinciple1.getId())).thenReturn(user);
 		List<Asset> assetList = new ArrayList<>();
 		when(assetRepository.findByUsers(user)).thenReturn(assetList);
-		List<Asset> actual = assetServiceImpl.showAll();
-		assertEquals(assetList, actual);
+		List<AssetResponseDto> assetDtoList = new ArrayList<>();
+		when(assetUtil.mapAssetToAssetDto(assetList)).thenReturn(assetDtoList);
+		List<AssetResponseDto> actual = assetServiceImpl.showAll();
+		assertEquals(assetDtoList, actual);
 	}
 
 }

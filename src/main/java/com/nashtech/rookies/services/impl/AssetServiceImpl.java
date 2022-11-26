@@ -166,10 +166,12 @@ public class AssetServiceImpl implements AssetService {
 	}
 
 	@Override
-	public List<Asset> showAll(){
+	public List<AssetResponseDto> showAll(){
 		UserPrinciple userPrinciple= (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Users users = usersRepository.findUsersById(userPrinciple.getId());
-		return assetRepository.findByUsers(users);
+		List<Asset> assetList = assetRepository.findByUsers(users);
+		List<AssetResponseDto> assetDtoList = assetUtil.mapAssetToAssetDto(assetList);
+		return assetDtoList;
 	}
 
 }
