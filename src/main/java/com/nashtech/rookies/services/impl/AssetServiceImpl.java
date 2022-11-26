@@ -5,6 +5,7 @@ import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Category;
 import com.nashtech.rookies.entity.Users;
+import com.nashtech.rookies.exceptions.ExistsAssignmentException;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
 import com.nashtech.rookies.mapper.AssetMapper;
 import com.nashtech.rookies.mapper.CategoryMapper;
@@ -33,7 +34,7 @@ public class AssetServiceImpl implements AssetService {
 	AssetMapper assetMapper;
 	UserUtil userUtil;
 	AssetUtil assetUtil;
-	
+
 	UsersRepository usersRepository;
 
 	@Autowired
@@ -85,23 +86,41 @@ public class AssetServiceImpl implements AssetService {
 		Date installedDate = userUtil.convertStrDateToObDate(dto.getInstalledDate());
 
 		String location = userUtil.getAddressFromUserPrinciple();
-		
+
 		Long id = userUtil.getIdFromUserPrinciple();
-		
+
 		Users user = usersRepository.findUsersById(id);
 
 		Asset asset = assetMapper.mapToAsset(dto.getName(), code, dto.getSpecification(), dto.getState(), location,
 				installedDate, category);
-		
+
 		asset.setUsers(user);
-		
+
 		asset = assetRepository.save(asset);
 
 		return asset;
 	}
 
 //    Update asset
+	@Override
+	public AssetResponseDto getUpdateAssetById(Long id) {
+		Optional<Asset> assetOptional = assetRepository.findById(id);
 
+		if (assetOptional.isEmpty()) {
+			throw new InvalidDataInputException("Asset id is invalid");
+		}
+
+		Asset asset = assetOptional.get();
+
+		boolean hasExistsAssignment = assignmentRepository.existsAssignmentByAsset_Id(id);
+
+		if (hasExistsAssignment) {
+			throw new ExistsAssignmentException(
+					"Cannot update the asset because it belongs to one or more historical assignments.");
+		}
+
+		return assetMapper.mapToDto(asset);
+	}
 //    Delete asset
 
 	@Override
@@ -121,26 +140,6 @@ public class AssetServiceImpl implements AssetService {
 		}
 
 		assetRepository.delete(asset);
-	}
-
-	@Override
-	public AssetResponseDto getUpdateAssetById(Long id) {
-		Optional<Asset> assetOptional = assetRepository.findById(id);
-
-		if (assetOptional.isEmpty()) {
-			throw new InvalidDataInputException("Asset id is invalid");
-		}
-
-		Asset asset = assetOptional.get();
-
-		boolean hasExistsAssignment = assignmentRepository.existsAssignmentByAsset_Id(id);
-
-		if (hasExistsAssignment) {
-			throw new InvalidDataInputException(
-					"Cannot update the asset because it belongs to one or more historical assignments.");
-		}
-
-		return assetMapper.mapToDto(asset);
 	}
 
 }
