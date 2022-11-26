@@ -40,7 +40,7 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 //    Find all users by admin locations
 	@Override
 	public List<Users> showAll() {
-		return usersRepository.findByLocation(userUtil.getAddressFromUserPrinciple());
+		return usersRepository.findByLocationAndDisabledIsFalse(userUtil.getAddressFromUserPrinciple());
 	}
 
 //    Show information of user by id

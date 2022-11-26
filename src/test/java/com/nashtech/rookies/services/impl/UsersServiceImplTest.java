@@ -160,10 +160,10 @@ public class UsersServiceImplTest {
 	//region	Test show all users
 	@Test
 	public void ShowAllByLocation_ShouldReturnAllUsers_WhenLocationFromAdminValid() throws Exception {
-		when(usersRepository.findByLocation(userUtil.getAddressFromUserPrinciple())).thenReturn(mockUsers);
+		when(usersRepository.findByLocationAndDisabledIsFalse(userUtil.getAddressFromUserPrinciple())).thenReturn(mockUsers);
 		List<Users> actualUsers = usersServiceImpl.showAll();
 		assertEquals(mockUsers.size(), actualUsers.size());
-		verify(usersRepository).findByLocation(userUtil.getAddressFromUserPrinciple());
+		verify(usersRepository).findByLocationAndDisabledIsFalse(userUtil.getAddressFromUserPrinciple());
 	}
 
 	@Test
