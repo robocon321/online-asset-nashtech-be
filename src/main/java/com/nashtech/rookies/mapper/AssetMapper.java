@@ -22,4 +22,5 @@ public class AssetMapper {
 				.category(category)
 				.build();
 	}
+	
 }

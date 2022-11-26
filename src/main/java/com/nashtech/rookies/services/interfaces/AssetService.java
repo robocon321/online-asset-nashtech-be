@@ -5,5 +5,7 @@ import com.nashtech.rookies.entity.Asset;
 
 public interface AssetService {
 	Asset createAsset(CreateAssetRequestDto dto);
-    void deleteAsset(Long id) throws Exception;
+
+	void deleteAsset(Long id) throws Exception;
+
 }
