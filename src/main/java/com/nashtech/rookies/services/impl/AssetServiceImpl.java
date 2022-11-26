@@ -1,6 +1,16 @@
 package com.nashtech.rookies.services.impl;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
+import com.nashtech.rookies.dto.request.asset.UpdateAssetRequestDto;
+import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
+
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Category;
 import com.nashtech.rookies.entity.Users;
@@ -14,13 +24,6 @@ import com.nashtech.rookies.repository.UsersRepository;
 import com.nashtech.rookies.services.interfaces.AssetService;
 import com.nashtech.rookies.utils.AssetUtil;
 import com.nashtech.rookies.utils.UserUtil;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class AssetServiceImpl implements AssetService {
@@ -101,6 +104,45 @@ public class AssetServiceImpl implements AssetService {
 
 //    Update asset
 
+	@Override
+	public AssetResponseDto updateAsset(UpdateAssetRequestDto dto) {
+
+		if (!userUtil.isValidDate(dto.getInstalledDate())) {
+			throw new InvalidDataInputException("Install date is invalid");
+		}
+
+		Optional<Asset> assetOptional = assetRepository.findById(dto.getId());
+
+		if (assetOptional.isEmpty()) {
+			throw new InvalidDataInputException("Asset not found");
+		}
+
+		Asset asset = assetOptional.get();
+
+		asset.setName(dto.getName());
+		asset.setSpecification(dto.getSpecification());
+		asset.setInstalledDate(userUtil.convertStrDateToObDate(dto.getInstalledDate()));
+		asset.setState(dto.getState());
+
+		asset = assetRepository.save(asset);
+
+		return assetMapper.mapToDto(asset);
+	}
+
+// Get asset by id	
+
+	@Override
+	public AssetResponseDto getAssetById(Long id) {
+		Optional<Asset> assetOptional = assetRepository.findById(id);
+
+		if (assetOptional.isEmpty()) {
+			throw new InvalidDataInputException("Asset not found");
+		}
+
+		Asset asset = assetOptional.get();
+
+		return assetMapper.mapToDto(asset);
+	}
 //    Delete asset
 
 	@Override

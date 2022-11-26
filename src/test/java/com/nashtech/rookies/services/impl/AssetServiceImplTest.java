@@ -16,6 +16,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
+import com.nashtech.rookies.dto.request.asset.UpdateAssetRequestDto;
+import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Category;
 import com.nashtech.rookies.entity.Users;
@@ -167,6 +169,95 @@ public class AssetServiceImplTest {
 		assertThat(expectedAsset, is(actualAsset));
 	}
 
+	// update
+
+	@Test
+	void updateAsset_ShouldThrowInvalidDataInputException_WhenInstalledDateInValid() {
+
+		UpdateAssetRequestDto dto = UpdateAssetRequestDto.builder().installedDate("30/02/2020").build();
+
+		when(userUtil.isValidDate("30/02/2022")).thenReturn(false);
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assetServiceImpl.updateAsset(dto);
+		});
+		assertEquals("Install date is invalid", actualException.getMessage());
+	}
+
+	@Test
+	void updateAsset_ShouldThrowInvalidDataInputException_WhenIdInValid() {
+		UpdateAssetRequestDto dto = UpdateAssetRequestDto.builder().id(2l).installedDate("18/02/2020").build();
+		when(userUtil.isValidDate(dto.getInstalledDate())).thenReturn(true);
+
+		when(assetRepository.findById(2l)).thenReturn(Optional.empty());
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assetServiceImpl.updateAsset(dto);
+		});
+		assertEquals("Asset not found", actualException.getMessage());
+	}
+
+	@Test
+	void updateAsset_ShouldReturnAsset_WhenDataValid() {
+		UpdateAssetRequestDto dto = UpdateAssetRequestDto.builder().id(2l).installedDate("18/02/2020").name("Name")
+				.specification("Specification").state("Available").build();
+
+		Asset asset = mock(Asset.class);
+		
+		AssetResponseDto expectedAsset = mock(AssetResponseDto.class);
+		Date installedDate = mock(Date.class);
+
+		when(userUtil.isValidDate(dto.getInstalledDate())).thenReturn(true);
+
+		when(assetRepository.findById(2l)).thenReturn(Optional.of(asset));
+
+		when(userUtil.convertStrDateToObDate(dto.getInstalledDate())).thenReturn(installedDate);
+
+		when(assetRepository.save(asset)).thenReturn(asset);
+
+		when(assetMapper.mapToDto(asset)).thenReturn(expectedAsset);
+
+		AssetResponseDto actualAsset = assetServiceImpl.updateAsset(dto);
+
+		verify(asset).setName("Name");
+		
+		verify(asset).setSpecification("Specification");
+
+		verify(asset).setState("Available");
+
+		verify(asset).setInstalledDate(installedDate);
+
+		assertThat(expectedAsset, is(actualAsset));
+
+	}
+
+	// get asset by id
+	@Test
+	void getAssetById_ShouldThrowInvalidDataInputException_WhenIdInValid() {
+
+		when(assetRepository.findById(2l)).thenReturn(Optional.empty());
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assetServiceImpl.getAssetById(2l);
+		});
+		assertEquals("Asset not found", actualException.getMessage());
+	}
+
+	@Test
+	void getAssetById_ShouldReturnAsset_WhenDataValid() {
+		Asset asset = mock(Asset.class);
+		AssetResponseDto expectedAsset = mock(AssetResponseDto.class);
+
+		when(assetRepository.findById(2l)).thenReturn(Optional.of(asset));
+
+		when(assetMapper.mapToDto(asset)).thenReturn(expectedAsset);
+
+		AssetResponseDto actualAsset = assetServiceImpl.getAssetById(2l);
+
+		assertThat(expectedAsset, is(actualAsset));
+	}
+
+	// delete
 	@Test
 	void deleteAsset_ShouldRemoveAssets_WhenAssetsIsAvailable() throws Exception {
 		when(assetRepository.findAssetById(1L)).thenReturn(initAsset);
