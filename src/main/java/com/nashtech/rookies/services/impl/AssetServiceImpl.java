@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
@@ -21,6 +22,7 @@ import com.nashtech.rookies.repository.AssetRepository;
 import com.nashtech.rookies.repository.AssignmentRepository;
 import com.nashtech.rookies.repository.CategoryRepository;
 import com.nashtech.rookies.repository.UsersRepository;
+import com.nashtech.rookies.security.userprincal.UserPrinciple;
 import com.nashtech.rookies.services.interfaces.AssetService;
 import com.nashtech.rookies.utils.AssetUtil;
 import com.nashtech.rookies.utils.UserUtil;
@@ -35,7 +37,6 @@ public class AssetServiceImpl implements AssetService {
 	AssetMapper assetMapper;
 	UserUtil userUtil;
 	AssetUtil assetUtil;
-
 	UsersRepository usersRepository;
 
 	@Autowired
@@ -162,6 +163,13 @@ public class AssetServiceImpl implements AssetService {
 		}
 
 		assetRepository.delete(asset);
+	}
+
+	@Override
+	public List<Asset> showAll(){
+		UserPrinciple userPrinciple= (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Users users = usersRepository.findUsersById(userPrinciple.getId());
+		return assetRepository.findByUsers(users);
 	}
 
 }

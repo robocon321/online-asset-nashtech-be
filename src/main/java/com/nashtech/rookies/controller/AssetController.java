@@ -1,5 +1,9 @@
 package com.nashtech.rookies.controller;
 
+import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
+import com.nashtech.rookies.dto.request.user.UserRequestDto;
+import com.nashtech.rookies.repository.AssetRepository;
+import com.nashtech.rookies.services.interfaces.AssetService;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +30,14 @@ public class AssetController {
 	AssetService assetService;
 
 	@PostMapping("/")
-	public ResponseEntity<?> createUser(@Valid @RequestBody CreateAssetRequestDto dto) {
+	public ResponseEntity<?> createAsset(@Valid @RequestBody CreateAssetRequestDto dto) {
 		return ResponseEntity.ok().body(assetService.createAsset(dto));
 	}
-
+    
+    @GetMapping("/list")
+    public ResponseEntity<?> showAllAssets(){
+        return ResponseEntity.ok(assetService.showAll());
+    }
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getAssetById(@PathVariable Long id) {
 		return ResponseEntity.ok().body(assetService.getAssetById(id));
