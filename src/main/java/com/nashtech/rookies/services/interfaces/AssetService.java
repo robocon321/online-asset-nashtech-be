@@ -12,7 +12,7 @@ import com.nashtech.rookies.entity.Users;
 public interface AssetService {
 	Asset createAsset(CreateAssetRequestDto dto);
     
-    List<Asset> showAll();
+    List<AssetResponseDto> showAll();
 
 	void deleteAsset(Long id) throws Exception;
 
