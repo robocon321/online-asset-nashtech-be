@@ -63,6 +63,7 @@ public class Users {
 
 	private Date updatedDate;
 
+	private boolean disabled = false;
 
 
     public Users(String username, String password, boolean enabled, String firstName, String lastName , boolean gender,  Date dob, String location, Date joinedDate, String role, String code) {
