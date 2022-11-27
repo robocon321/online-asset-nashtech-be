@@ -10,7 +10,7 @@ import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Users;
 
 public interface AssetService {
-	Asset createAsset(CreateAssetRequestDto dto);
+	AssetResponseDto createAsset(CreateAssetRequestDto dto);
     
     List<AssetResponseDto> showAll();
 

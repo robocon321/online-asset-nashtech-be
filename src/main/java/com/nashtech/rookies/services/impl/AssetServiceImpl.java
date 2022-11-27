@@ -54,7 +54,7 @@ public class AssetServiceImpl implements AssetService {
 	}
 
 	@Override
-	public Asset createAsset(CreateAssetRequestDto dto) {
+	public AssetResponseDto createAsset(CreateAssetRequestDto dto) {
 
 		if (!userUtil.isValidDate(dto.getInstalledDate())) {
 			throw new InvalidDataInputException("Install date is invalid");
@@ -100,7 +100,7 @@ public class AssetServiceImpl implements AssetService {
 
 		asset = assetRepository.save(asset);
 
-		return asset;
+		return assetMapper.mapToDto(asset);
 	}
 
 //    Update asset
