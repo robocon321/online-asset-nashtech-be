@@ -38,6 +38,12 @@ public class AssetController {
     public ResponseEntity<?> showAllAssets(){
         return ResponseEntity.ok(assetService.showAll());
     }
+    
+    @GetMapping("/detail/{id}")
+	public ResponseEntity<?> getAssetDetailById(@PathVariable Long id) {
+		return ResponseEntity.ok().body(assetService.getAssetDetailById(id));
+	}
+    
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getAssetById(@PathVariable Long id) {
 		return ResponseEntity.ok().body(assetService.getAssetById(id));
