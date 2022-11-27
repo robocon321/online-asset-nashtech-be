@@ -57,11 +57,9 @@ public class AssetServiceImplTest {
 	UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken;
 	Authentication authentication;
 
-
 	UserPrinciple userPrinciple;
 	AuthServiceImpl authServiceImpl;
 	Asset initAsset;
-
 
 	@BeforeEach
 	void beforeEach() {
@@ -115,7 +113,8 @@ public class AssetServiceImplTest {
 	void createAsset_ShouldReturnAsset_WhenCategoryIsNew() {
 		Category category = mock(Category.class);
 		Date installedDate = mock(Date.class);
-		Asset expectedAsset = mock(Asset.class);
+		Asset asset = mock(Asset.class);
+		AssetResponseDto expectedAsset = mock(AssetResponseDto.class);
 		Users user = mock(Users.class);
 
 		CreateAssetRequestDto dto = CreateAssetRequestDto.builder().installedDate("22/02/1992").state("Available")
@@ -136,13 +135,15 @@ public class AssetServiceImplTest {
 		when(usersRepository.findUsersById(2l)).thenReturn(user);
 
 		when(assetMapper.mapToAsset(dto.getName(), dto.getCategoryCode() + "000001", dto.getSpecification(),
-				dto.getState(), "TPHCM", installedDate, category)).thenReturn(expectedAsset);
+				dto.getState(), "TPHCM", installedDate, category)).thenReturn(asset);
 
-		when(assetRepository.save(expectedAsset)).thenReturn(expectedAsset);
+		when(assetRepository.save(asset)).thenReturn(asset);
 
-		Asset actualAsset = assetServiceImpl.createAsset(dto);
+		when(assetMapper.mapToDto(asset)).thenReturn(expectedAsset);
 
-		verify(expectedAsset).setUsers(user);
+		AssetResponseDto actualAsset = assetServiceImpl.createAsset(dto);
+
+		verify(asset).setUsers(user);
 
 		assertThat(expectedAsset, is(actualAsset));
 	}
@@ -151,7 +152,8 @@ public class AssetServiceImplTest {
 	void createAsset_ShouldReturnAsset_WhenCategoryIsAvailable() {
 		Category category = mock(Category.class);
 		Date installedDate = mock(Date.class);
-		Asset expectedAsset = mock(Asset.class);
+		Asset asset = mock(Asset.class);
+		AssetResponseDto expectedAsset = mock(AssetResponseDto.class);
 		@SuppressWarnings("unchecked")
 		List<Asset> listAsset = mock(List.class);
 		Users user = mock(Users.class);
@@ -174,13 +176,14 @@ public class AssetServiceImplTest {
 		when(usersRepository.findUsersById(2l)).thenReturn(user);
 
 		when(assetMapper.mapToAsset(dto.getName(), "categoryCode123", dto.getSpecification(), dto.getState(), "TPHCM",
-				installedDate, category)).thenReturn(expectedAsset);
+				installedDate, category)).thenReturn(asset);
 
-		when(assetRepository.save(expectedAsset)).thenReturn(expectedAsset);
+		when(assetRepository.save(asset)).thenReturn(asset);
+		when(assetMapper.mapToDto(asset)).thenReturn(expectedAsset);
 
-		Asset actualAsset = assetServiceImpl.createAsset(dto);
+		AssetResponseDto actualAsset = assetServiceImpl.createAsset(dto);
 
-		verify(expectedAsset).setUsers(user);
+		verify(asset).setUsers(user);
 
 		assertThat(expectedAsset, is(actualAsset));
 	}
@@ -219,7 +222,7 @@ public class AssetServiceImplTest {
 				.specification("Specification").state("Available").build();
 
 		Asset asset = mock(Asset.class);
-		
+
 		AssetResponseDto expectedAsset = mock(AssetResponseDto.class);
 		Date installedDate = mock(Date.class);
 
@@ -236,7 +239,7 @@ public class AssetServiceImplTest {
 		AssetResponseDto actualAsset = assetServiceImpl.updateAsset(dto);
 
 		verify(asset).setName("Name");
-		
+
 		verify(asset).setSpecification("Specification");
 
 		verify(asset).setState("Available");
@@ -317,7 +320,7 @@ public class AssetServiceImplTest {
 		});
 		assertEquals("Cannot delete the asset because it is assigned to one or more users.", exception.getMessage());
 	}
-	
+
 	@Test
 	void getAllAssets_ShouldReturnAllAssetsManagedByUser() {
 		Users user = new Users();

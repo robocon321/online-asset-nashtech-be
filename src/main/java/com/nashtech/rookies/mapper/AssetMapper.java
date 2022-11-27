@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Category;
-import com.nashtech.rookies.entity.Users;
 
 @Component
 public class AssetMapper {
@@ -34,6 +33,7 @@ public class AssetMapper {
 				.categoryName(asset.getCategory().getName())
 				.installedDate(asset.getInstalledDate())
 				.state(asset.getState())
+				.code(asset.getCode())
 				.build();
 	}
 	
