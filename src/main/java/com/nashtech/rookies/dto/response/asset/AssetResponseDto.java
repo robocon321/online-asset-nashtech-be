@@ -18,4 +18,5 @@ public class AssetResponseDto {
 	private String specification;
 	private Date installedDate;
 	private String state;
+	private String code;
 }
