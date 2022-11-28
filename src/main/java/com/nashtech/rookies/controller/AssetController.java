@@ -54,7 +54,7 @@ public class AssetController {
 		return ResponseEntity.ok().body(assetService.updateAsset(dto));
 	}
 
-	@DeleteMapping("")
+	@DeleteMapping("/")
 	public ResponseEntity<?> deleteAsset(@RequestParam Long id) throws Exception {
 		assetService.deleteAsset(id);
 		return ResponseEntity.ok().body("Delete asset successfully");

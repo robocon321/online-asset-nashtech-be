@@ -307,7 +307,7 @@ public class AssetServiceImplTest {
 		Exception exception = assertThrows(Exception.class, () -> {
 			assetServiceImpl.deleteAsset(1L);
 		});
-		assertEquals("Cannot delete the asset because it belongs to one or more historical assignments.",
+		assertEquals("Cannot delete the asset because it belongs to one or more historical assignments. If the asset is not able to be used anymore, please update its state in ",
 				exception.getMessage());
 	}
 
@@ -321,7 +321,7 @@ public class AssetServiceImplTest {
 		Exception exception = assertThrows(Exception.class, () -> {
 			assetServiceImpl.deleteAsset(1L);
 		});
-		assertEquals("Cannot delete the asset because it is assigned to one or more users.", exception.getMessage());
+		assertEquals("State of asset is assigned", exception.getMessage());
 	}
 
 	@Test
