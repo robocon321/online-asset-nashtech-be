@@ -234,7 +234,7 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 	public String disableUser(Long userId){
 		Users user = usersRepository.findUsersById(userId);
 		List<Assignment> historyAssignmentUser = assignmentRepository.findAllByAssignedByOrAssignedTo(user,user);
-		if(historyAssignmentUser.isEmpty()){
+		if(historyAssignmentUser.size()==0){
 			usersRepository.delete(user);
 			return "Success";
 		}
