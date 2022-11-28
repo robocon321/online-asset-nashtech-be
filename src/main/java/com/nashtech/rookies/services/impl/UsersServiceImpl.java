@@ -235,11 +235,6 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 	@Override
 	public String disableUser(Long userId){
 		Users user = usersRepository.findUsersById(userId);
-		List<Assignment> historyAssignmentUser = assignmentRepository.findAllByAssignedByOrAssignedTo(user,user);
-		if(historyAssignmentUser.size()==0){
-			usersRepository.delete(user);
-			return "Success";
-		}
 		user.setDisabled(true);
 		usersRepository.save(user);
 		return "User is hide";

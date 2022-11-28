@@ -75,6 +75,7 @@ public class AssetServiceImpl implements AssetService {
 		AssetDetailResponseDto result = assetMapper.mapToDetailDto(assetOptional.get());
 
 		List<Assignment> assignmentList = assignmentRepository.findByAsset(assetOptional.get());
+
 		result.setAssignments(assetUtil.mapAssetToAssetDetailDto(assignmentList));
 
 		return result;
