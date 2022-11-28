@@ -34,16 +34,14 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 		this.passwordEncoder = passwordEncoder;
 	}
 
-	
-
-//    region Show information
-//    Find all users by admin locations
+	//    region Show information
+	//    Find all users by admin locations
 	@Override
 	public List<Users> showAll() {
-		return usersRepository.findByLocationAndDisabledIsFalse(userUtil.getAddressFromUserPrinciple());
+		return usersRepository.findByLocationAndDisabledIsFalseOrderByCodeAsc(userUtil.getAddressFromUserPrinciple());
 	}
 
-//    Show information of user by id
+	//    Show information of user by id
 	@Override
 	public Users findByUserId(Long userId) throws Exception {
 		if (userId == 0) {
@@ -59,7 +57,7 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 		}
 	}
 
-//    Sort users by JoinedDate
+	//    Sort users by JoinedDate
 	@Override
 	public List<Users> sortByJoinedDateDesc() {
 		return usersRepository.findByLocationOrderByJoinedDateDesc(userUtil.getAddressFromUserPrinciple());
@@ -109,7 +107,7 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 
 //    endregion
 
-//    region Create user
+	//    region Create user
     @Override
     public Users createUser(UserRequestDto dto) {
 
@@ -170,6 +168,7 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
     
 //    endregion
 
+	//    region Update user
     @Override
     public Users updateUser(UpdateUserRequestDto userUpdateDto){
         Users user = usersRepository.findUsersById(userUpdateDto.getId());
@@ -213,4 +212,44 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 
     }
 
+//    endregion
+
+	//    region Delete user
+	@Override
+	public String checkValidAssigmentUser(Long userId){
+		Users user  =usersRepository.findUsersById(userId);
+		if(user == null){
+			return "Not Found";
+		}
+		List<Assignment> listValidAsmBy = assignmentRepository.findAllByStateIsAndAssignedBy("Accepted",user);
+		List<Assignment> listValidAsmTo = assignmentRepository.findAllByStateIsAndAssignedTo("Accepted",user);
+
+		if(!listValidAsmBy.isEmpty()) {return "1";}
+		if(!listValidAsmTo.isEmpty()) {return "1";}
+
+		return "0";
+	}
+
+	@Override
+	public String disableUser(Long userId){
+		Users user = usersRepository.findUsersById(userId);
+		List<Assignment> historyAssignmentUser = assignmentRepository.findAllByAssignedByOrAssignedTo(user,user);
+		if(historyAssignmentUser.isEmpty()){
+			usersRepository.delete(user);
+			return "Success";
+		}
+		user.setDisabled(true);
+		usersRepository.save(user);
+		return "User is hide";
+
+	}
+
+	@Override
+	public List<Assignment> getAllByUserIdGetAsm(Long userId){
+		Users user = usersRepository.findUsersById(userId);
+		List<Assignment> listAsmOfUser = assignmentRepository.findAllByAssignedTo(user);
+		return listAsmOfUser;
+	}
+
+//    endregion
 }

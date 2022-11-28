@@ -8,12 +8,15 @@ import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
 import com.nashtech.rookies.entity.Asset;
 
 public interface AssetService {
-	Asset createAsset(CreateAssetRequestDto dto);
+	AssetDetailResponseDto getAssetDetailById(Long id);
+	AssetResponseDto createAsset(CreateAssetRequestDto dto);
+    
+    List<AssetResponseDto> showAll();
 
 	void deleteAsset(Long id) throws Exception;
 
-	AssetResponseDto getAssetById(Long id);
-
 	AssetResponseDto updateAsset(UpdateAssetRequestDto dto);
+	
+
 
 }

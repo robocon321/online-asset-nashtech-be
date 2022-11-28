@@ -96,7 +96,7 @@ public class initDatabase {
             }
 
             assetRepository.save(new Asset(
-                    "asset31",
+                    "asset32",
                     "ASSETS31",
                     "Day la asset, ahihi :v",
                     "HCM",

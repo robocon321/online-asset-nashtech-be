@@ -52,6 +52,32 @@ public class AssetServiceImpl implements AssetService {
 		this.usersRepository = usersRepository;
 	}
 
+	//	region Show information
+	@Override
+	public List<AssetResponseDto> showAll(){
+		UserPrinciple userPrinciple= (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Users users = usersRepository.findUsersById(userPrinciple.getId());
+		List<Asset> assetList = assetRepository.findByUsers(users);
+		List<AssetResponseDto> assetDtoList = assetUtil.mapAssetToAssetDto(assetList);
+		return assetDtoList;
+	}
+
+	public AssetDetailResponseDto getAssetDetailById(Long id) {
+		Optional<Asset> assetOptional = assetRepository.findById(id);
+		if (assetOptional.isEmpty()) {
+			throw new InvalidDataInputException("Asset not found");
+		}
+
+		AssetDetailResponseDto result = assetMapper.mapToDetailDto(assetOptional.get());
+
+		List<Assignment> assignmentList = assignmentRepository.findByAsset(assetOptional.get());
+		result.setAssignments(assetUtil.mapAssetToAssetDetailDto(assignmentList));
+
+		return result;
+	}
+	//endregion
+
+	//	region Create new asset
 	@Override
 	public Asset createAsset(CreateAssetRequestDto dto) {
 
@@ -101,9 +127,9 @@ public class AssetServiceImpl implements AssetService {
 
 		return asset;
 	}
+	//	endregion
 
-//    Update asset
-
+	//  region  Update asset
 	@Override
 	public AssetResponseDto updateAsset(UpdateAssetRequestDto dto) {
 
@@ -128,23 +154,9 @@ public class AssetServiceImpl implements AssetService {
 
 		return assetMapper.mapToDto(asset);
 	}
+	//	endregion
 
-// Get asset by id	
-
-	@Override
-	public AssetResponseDto getAssetById(Long id) {
-		Optional<Asset> assetOptional = assetRepository.findById(id);
-
-		if (assetOptional.isEmpty()) {
-			throw new InvalidDataInputException("Asset not found");
-		}
-
-		Asset asset = assetOptional.get();
-
-		return assetMapper.mapToDto(asset);
-	}
-//    Delete asset
-
+	//  region  Delete asset
 	@Override
 	public void deleteAsset(Long id) throws Exception {
 		Asset asset = assetRepository.findAssetById(id);
@@ -163,5 +175,6 @@ public class AssetServiceImpl implements AssetService {
 
 		assetRepository.delete(asset);
 	}
+	//	endregion
 
 }
