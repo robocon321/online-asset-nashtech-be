@@ -412,13 +412,7 @@ public class UsersServiceImplTest {
 		assertEquals("0",usersServiceImpl.checkValidAssigmentUser(userId));
 	}
 
-	@Test
-	void whenDisableUserHaveNoHistory(){
-		Long userId = 1L;
-		Users user= new Users();
-		when(usersRepository.findUsersById(userId)).thenReturn(user);
-		assertEquals("Success",usersServiceImpl.disableUser(userId));
-	}
+	
 	@Test
 	void whenDisableUserHaveHistory(){
 		Long userId = 1L;
