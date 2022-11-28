@@ -158,11 +158,11 @@ public class AssetServiceImpl implements AssetService {
 		}
 
 		if (assignmentRepository.existsAssignmentByAsset_Id(id)) {
-			throw new Exception("Cannot delete the asset because it belongs to one or more historical assignments.");
+			throw new Exception("Cannot delete the asset because it belongs to one or more historical assignments. If the asset is not able to be used anymore, please update its state in ");
 		}
 
 		if (asset.getState().equals("Assigned")) {
-			throw new Exception("Cannot delete the asset because it is assigned to one or more users.");
+			throw new Exception("State of asset is assigned");
 		}
 
 		assetRepository.delete(asset);
