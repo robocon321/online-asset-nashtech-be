@@ -23,10 +23,10 @@ public class Assignment {
     private Date created_date;
 
     @ManyToOne
-    private Users assigned_by;
+    private Users assignedBy;
 
     @ManyToOne
-    private Users assigned_to;
+    private Users assignedTo;
 
     @ManyToOne
     private Asset asset;
@@ -37,8 +37,8 @@ public class Assignment {
         this.assigned_date = assigned_date;
         this.returned_date = returned_date;
         this.created_date = created_date;
-        this.assigned_by = assigned_by;
-        this.assigned_to = assigned_to;
+        this.assignedBy = assigned_by;
+        this.assignedTo = assigned_to;
         this.asset = asset;
     }
 }

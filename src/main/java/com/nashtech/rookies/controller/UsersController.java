@@ -2,6 +2,7 @@ package com.nashtech.rookies.controller;
 
 import com.nashtech.rookies.dto.request.user.UpdateUserRequestDto;
 import com.nashtech.rookies.dto.request.user.UserRequestDto;
+import com.nashtech.rookies.entity.Assignment;
 import com.nashtech.rookies.entity.Users;
 import com.nashtech.rookies.services.interfaces.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,4 +73,19 @@ public class UsersController {
 
     @PutMapping("/update")
     public Users updateUser(@Valid @RequestBody UpdateUserRequestDto dto){ return usersService.updateUser(dto);}
+
+    @GetMapping("/check-assignment")
+    public String checkValidUser(@RequestParam Long userId){
+        return usersService.checkValidAssigmentUser(userId);
+    }
+
+    @DeleteMapping("/{id}")
+    public String disableUser(@PathVariable Long id){
+        return usersService.disableUser(id);
+    }
+
+    @GetMapping("/getAll/{id}")
+    public List<Assignment> getAllAsmByUserId(@PathVariable Long id){
+        return usersService.getAllByUserIdGetAsm(id);
+    }
 }

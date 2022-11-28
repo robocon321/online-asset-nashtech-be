@@ -2,6 +2,7 @@ package com.nashtech.rookies.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,7 +15,7 @@ public class CategoryController {
 	@Autowired
 	CategoryService categoryService;
 
-	@RequestMapping("/")
+	@GetMapping("/")
 	ResponseEntity<?> getAll() {
         return ResponseEntity.ok().body(categoryService.getAll());
 	}
