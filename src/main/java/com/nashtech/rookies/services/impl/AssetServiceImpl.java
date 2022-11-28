@@ -1,17 +1,21 @@
 package com.nashtech.rookies.services.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 import com.nashtech.rookies.dto.request.asset.UpdateAssetRequestDto;
+import com.nashtech.rookies.dto.response.asset.AssetDetailResponseDto;
 import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
-
+import com.nashtech.rookies.dto.response.asset.AssignmentResponseDto;
 import com.nashtech.rookies.entity.Asset;
+import com.nashtech.rookies.entity.Assignment;
 import com.nashtech.rookies.entity.Category;
 import com.nashtech.rookies.entity.Users;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
@@ -21,6 +25,7 @@ import com.nashtech.rookies.repository.AssetRepository;
 import com.nashtech.rookies.repository.AssignmentRepository;
 import com.nashtech.rookies.repository.CategoryRepository;
 import com.nashtech.rookies.repository.UsersRepository;
+import com.nashtech.rookies.security.userprincal.UserPrinciple;
 import com.nashtech.rookies.services.interfaces.AssetService;
 import com.nashtech.rookies.utils.AssetUtil;
 import com.nashtech.rookies.utils.UserUtil;
@@ -35,9 +40,8 @@ public class AssetServiceImpl implements AssetService {
 	AssetMapper assetMapper;
 	UserUtil userUtil;
 	AssetUtil assetUtil;
-
 	UsersRepository usersRepository;
-
+	
 	@Autowired
 	public AssetServiceImpl(AssetRepository assetRepository, UserUtil userUtil, CategoryRepository categoryRepository,
 			CategoryMapper categoryMapper, AssetMapper assetMapper, AssetUtil assetUtil,
@@ -79,7 +83,7 @@ public class AssetServiceImpl implements AssetService {
 
 	//	region Create new asset
 	@Override
-	public Asset createAsset(CreateAssetRequestDto dto) {
+	public AssetResponseDto createAsset(CreateAssetRequestDto dto) {
 
 		if (!userUtil.isValidDate(dto.getInstalledDate())) {
 			throw new InvalidDataInputException("Install date is invalid");
@@ -125,7 +129,7 @@ public class AssetServiceImpl implements AssetService {
 
 		asset = assetRepository.save(asset);
 
-		return asset;
+		return assetMapper.mapToDto(asset);
 	}
 	//	endregion
 
@@ -166,15 +170,38 @@ public class AssetServiceImpl implements AssetService {
 		}
 
 		if (assignmentRepository.existsAssignmentByAsset_Id(id)) {
-			throw new Exception("Cannot delete the asset because it belongs to one or more historical assignments.");
+			throw new Exception("Cannot delete the asset because it belongs to one or more historical assignments. If the asset is not able to be used anymore, please update its state in ");
 		}
 
 		if (asset.getState().equals("Assigned")) {
-			throw new Exception("Cannot delete the asset because it is assigned to one or more users.");
+			throw new Exception("State of asset is assigned");
 		}
 
 		assetRepository.delete(asset);
 	}
 	//	endregion
+
+	@Override
+	public List<AssetResponseDto> showAll(){
+		UserPrinciple userPrinciple= (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Users users = usersRepository.findUsersById(userPrinciple.getId());
+		List<Asset> assetList = assetRepository.findByUsers(users);
+		List<AssetResponseDto> assetDtoList = assetUtil.mapAssetToAssetDto(assetList);
+		return assetDtoList;
+	}
+	
+	public AssetDetailResponseDto getAssetDetailById(Long id) {
+		Optional<Asset> assetOptional = assetRepository.findById(id);
+		if (assetOptional.isEmpty()) {
+			throw new InvalidDataInputException("Asset not found");
+		}
+		
+		AssetDetailResponseDto result = assetMapper.mapToDetailDto(assetOptional.get());
+		
+		List<Assignment> assignmentList = assignmentRepository.findByAsset(assetOptional.get());
+		result.setAssignments(assetUtil.mapAssetToAssetDetailDto(assignmentList));
+		
+		return result;
+	}
 
 }

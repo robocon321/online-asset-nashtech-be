@@ -2,20 +2,19 @@ package com.nashtech.rookies.services.impl;
 
 import com.nashtech.rookies.dto.request.user.UpdateUserRequestDto;
 import com.nashtech.rookies.dto.request.user.UserRequestDto;
+import com.nashtech.rookies.entity.Assignment;
 import com.nashtech.rookies.entity.Users;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
 import com.nashtech.rookies.mapper.UserMapper;
+import com.nashtech.rookies.repository.AssignmentRepository;
 import com.nashtech.rookies.repository.UsersRepository;
 import com.nashtech.rookies.utils.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UsersServiceImpl implements com.nashtech.rookies.services.interfaces.UsersService {
@@ -23,15 +22,18 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 	UsersRepository usersRepository;
 	UserMapper userMapper;
 	UserUtil userUtil;
+
+	AssignmentRepository assignmentRepository;
 	PasswordEncoder passwordEncoder;
 
 	@Autowired
 	public UsersServiceImpl(UserUtil userUtil, UsersRepository usersRepository, UserMapper userMapper,
-			PasswordEncoder passwordEncoder) {
+			PasswordEncoder passwordEncoder,AssignmentRepository repository) {
 		this.userUtil = userUtil;
 		this.usersRepository = usersRepository;
 		this.userMapper = userMapper;
 		this.passwordEncoder = passwordEncoder;
+		this.assignmentRepository =repository;
 	}
 
 	//    region Show information

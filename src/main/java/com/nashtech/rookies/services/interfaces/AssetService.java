@@ -1,14 +1,16 @@
 package com.nashtech.rookies.services.interfaces;
 
+import java.util.List;
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 
 import com.nashtech.rookies.dto.request.asset.UpdateAssetRequestDto;
+import com.nashtech.rookies.dto.response.asset.AssetDetailResponseDto;
 import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
 
 import com.nashtech.rookies.entity.Asset;
+import com.nashtech.rookies.entity.Users;
 
 public interface AssetService {
-	AssetDetailResponseDto getAssetDetailById(Long id);
 	AssetResponseDto createAsset(CreateAssetRequestDto dto);
     
     List<AssetResponseDto> showAll();
@@ -17,6 +19,6 @@ public interface AssetService {
 
 	AssetResponseDto updateAsset(UpdateAssetRequestDto dto);
 	
-
+	AssetDetailResponseDto getAssetDetailById(Long id);
 
 }

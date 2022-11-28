@@ -2,6 +2,7 @@ package com.nashtech.rookies.repository;
 
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Category;
+import com.nashtech.rookies.entity.Users;
 
 import java.util.List;
 
@@ -12,6 +13,8 @@ public interface AssetRepository extends JpaRepository<Asset, Long> {
     Asset findAssetById(Long id);
 
     List<Asset> findByCategory(Category category);
+    
+    List<Asset> findByUsers(Users users);
 
 //    Create assets
 

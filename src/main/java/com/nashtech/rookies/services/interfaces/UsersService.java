@@ -2,6 +2,7 @@ package com.nashtech.rookies.services.interfaces;
 
 import com.nashtech.rookies.dto.request.user.UpdateUserRequestDto;
 import com.nashtech.rookies.dto.request.user.UserRequestDto;
+import com.nashtech.rookies.entity.Assignment;
 import com.nashtech.rookies.entity.Users;
 import java.util.List;
 
@@ -38,4 +39,10 @@ public interface UsersService {
     Users createUser(UserRequestDto dto);
 
     Users updateUser(UpdateUserRequestDto userUpdateDto);
+
+    String checkValidAssigmentUser(Long userId);
+
+    String disableUser(Long userId);
+
+    List<Assignment> getAllByUserIdGetAsm(Long userId);
 }

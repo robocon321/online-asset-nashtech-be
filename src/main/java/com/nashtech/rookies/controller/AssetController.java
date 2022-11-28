@@ -1,5 +1,9 @@
 package com.nashtech.rookies.controller;
 
+import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
+import com.nashtech.rookies.dto.request.user.UserRequestDto;
+import com.nashtech.rookies.repository.AssetRepository;
+import com.nashtech.rookies.services.interfaces.AssetService;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;

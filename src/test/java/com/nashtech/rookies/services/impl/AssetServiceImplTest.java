@@ -8,26 +8,39 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 import com.nashtech.rookies.dto.request.asset.UpdateAssetRequestDto;
+import com.nashtech.rookies.dto.response.asset.AssetDetailResponseDto;
 import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
+import com.nashtech.rookies.dto.response.asset.AssignmentResponseDto;
 import com.nashtech.rookies.entity.Asset;
+import com.nashtech.rookies.entity.Assignment;
 import com.nashtech.rookies.entity.Category;
 import com.nashtech.rookies.entity.Users;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
+import com.nashtech.rookies.jwt.JwtProvider;
 import com.nashtech.rookies.mapper.AssetMapper;
 import com.nashtech.rookies.mapper.CategoryMapper;
 import com.nashtech.rookies.repository.AssetRepository;
 import com.nashtech.rookies.repository.AssignmentRepository;
 import com.nashtech.rookies.repository.CategoryRepository;
 import com.nashtech.rookies.repository.UsersRepository;
+import com.nashtech.rookies.security.userprincal.UserPrinciple;
+import com.nashtech.rookies.services.interfaces.AssetService;
 import com.nashtech.rookies.utils.AssetUtil;
 import com.nashtech.rookies.utils.UserUtil;
 
@@ -39,19 +52,23 @@ public class AssetServiceImplTest {
 	AssetMapper assetMapper;
 	UserUtil userUtil;
 	AssetUtil assetUtil;
-
-	AssetServiceImpl assetServiceImpl;
-
-	Asset initAsset;
-
 	UsersRepository usersRepository;
+	AssetServiceImpl assetServiceImpl;
+	AuthenticationManager authenticationManager;
+	JwtProvider jwtProvider;
+	AssetService assetService;
+	UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken;
+	Authentication authentication;
+
+	UserPrinciple userPrinciple;
+	AuthServiceImpl authServiceImpl;
+	Asset initAsset;
 
 	@BeforeEach
 	void beforeEach() {
 		assetRepository = mock(AssetRepository.class);
 		categoryRepository = mock(CategoryRepository.class);
 		assignmentRepository = mock(AssignmentRepository.class);
-
 		categoryMapper = mock(CategoryMapper.class);
 		assetMapper = mock(AssetMapper.class);
 		userUtil = mock(UserUtil.class);
@@ -99,7 +116,8 @@ public class AssetServiceImplTest {
 	void createAsset_ShouldReturnAsset_WhenCategoryIsNew() {
 		Category category = mock(Category.class);
 		Date installedDate = mock(Date.class);
-		Asset expectedAsset = mock(Asset.class);
+		Asset asset = mock(Asset.class);
+		AssetResponseDto expectedAsset = mock(AssetResponseDto.class);
 		Users user = mock(Users.class);
 
 		CreateAssetRequestDto dto = CreateAssetRequestDto.builder().installedDate("22/02/1992").state("Available")
@@ -120,13 +138,15 @@ public class AssetServiceImplTest {
 		when(usersRepository.findUsersById(2l)).thenReturn(user);
 
 		when(assetMapper.mapToAsset(dto.getName(), dto.getCategoryCode() + "000001", dto.getSpecification(),
-				dto.getState(), "TPHCM", installedDate, category)).thenReturn(expectedAsset);
+				dto.getState(), "TPHCM", installedDate, category)).thenReturn(asset);
 
-		when(assetRepository.save(expectedAsset)).thenReturn(expectedAsset);
+		when(assetRepository.save(asset)).thenReturn(asset);
 
-		Asset actualAsset = assetServiceImpl.createAsset(dto);
+		when(assetMapper.mapToDto(asset)).thenReturn(expectedAsset);
 
-		verify(expectedAsset).setUsers(user);
+		AssetResponseDto actualAsset = assetServiceImpl.createAsset(dto);
+
+		verify(asset).setUsers(user);
 
 		assertThat(expectedAsset, is(actualAsset));
 	}
@@ -135,7 +155,8 @@ public class AssetServiceImplTest {
 	void createAsset_ShouldReturnAsset_WhenCategoryIsAvailable() {
 		Category category = mock(Category.class);
 		Date installedDate = mock(Date.class);
-		Asset expectedAsset = mock(Asset.class);
+		Asset asset = mock(Asset.class);
+		AssetResponseDto expectedAsset = mock(AssetResponseDto.class);
 		@SuppressWarnings("unchecked")
 		List<Asset> listAsset = mock(List.class);
 		Users user = mock(Users.class);
@@ -158,13 +179,14 @@ public class AssetServiceImplTest {
 		when(usersRepository.findUsersById(2l)).thenReturn(user);
 
 		when(assetMapper.mapToAsset(dto.getName(), "categoryCode123", dto.getSpecification(), dto.getState(), "TPHCM",
-				installedDate, category)).thenReturn(expectedAsset);
+				installedDate, category)).thenReturn(asset);
 
-		when(assetRepository.save(expectedAsset)).thenReturn(expectedAsset);
+		when(assetRepository.save(asset)).thenReturn(asset);
+		when(assetMapper.mapToDto(asset)).thenReturn(expectedAsset);
 
-		Asset actualAsset = assetServiceImpl.createAsset(dto);
+		AssetResponseDto actualAsset = assetServiceImpl.createAsset(dto);
 
-		verify(expectedAsset).setUsers(user);
+		verify(asset).setUsers(user);
 
 		assertThat(expectedAsset, is(actualAsset));
 	}
@@ -203,7 +225,7 @@ public class AssetServiceImplTest {
 				.specification("Specification").state("Available").build();
 
 		Asset asset = mock(Asset.class);
-		
+
 		AssetResponseDto expectedAsset = mock(AssetResponseDto.class);
 		Date installedDate = mock(Date.class);
 
@@ -220,7 +242,7 @@ public class AssetServiceImplTest {
 		AssetResponseDto actualAsset = assetServiceImpl.updateAsset(dto);
 
 		verify(asset).setName("Name");
-		
+
 		verify(asset).setSpecification("Specification");
 
 		verify(asset).setState("Available");
@@ -258,7 +280,7 @@ public class AssetServiceImplTest {
 		Exception exception = assertThrows(Exception.class, () -> {
 			assetServiceImpl.deleteAsset(1L);
 		});
-		assertEquals("Cannot delete the asset because it belongs to one or more historical assignments.",
+		assertEquals("Cannot delete the asset because it belongs to one or more historical assignments. If the asset is not able to be used anymore, please update its state in ",
 				exception.getMessage());
 	}
 
@@ -272,7 +294,42 @@ public class AssetServiceImplTest {
 		Exception exception = assertThrows(Exception.class, () -> {
 			assetServiceImpl.deleteAsset(1L);
 		});
-		assertEquals("Cannot delete the asset because it is assigned to one or more users.", exception.getMessage());
+		assertEquals("State of asset is assigned", exception.getMessage());
 	}
 
+	@Test
+	void getAllAssets_ShouldReturnAllAssetsManagedByUser() {
+		Users user = new Users();
+		Authentication authentication = mock(Authentication.class);
+		SecurityContext securityContext = mock(SecurityContext.class);
+		UserPrinciple userPrinciple1 = new UserPrinciple();
+		when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		when(authentication.getPrincipal()).thenReturn(userPrinciple1);
+		when(usersRepository.findUsersById(userPrinciple1.getId())).thenReturn(user);
+		List<Asset> assetList = new ArrayList<>();
+		when(assetRepository.findByUsers(user)).thenReturn(assetList);
+		List<AssetResponseDto> assetDtoList = new ArrayList<>();
+		when(assetUtil.mapAssetToAssetDto(assetList)).thenReturn(assetDtoList);
+		List<AssetResponseDto> actual = assetServiceImpl.showAll();
+		assertEquals(assetDtoList, actual);
+	}
+
+	@Test
+	void getAssetDetail_ShouldReturnAssetDetail() {
+		Asset asset = new Asset();
+		when(assetRepository.findById(2l)).thenReturn(Optional.of(asset));
+		
+		AssetDetailResponseDto expectedAsset = mock(AssetDetailResponseDto.class);
+		when(assetMapper.mapToDetailDto(asset)).thenReturn(expectedAsset);
+		
+		List<Assignment> assignmentList = new ArrayList<>();
+		when(assignmentRepository.findByAsset(asset)).thenReturn(assignmentList);
+		List<AssignmentResponseDto> assignmentDtoList = new ArrayList<>();
+		when(assetUtil.mapAssetToAssetDetailDto(assignmentList)).thenReturn(assignmentDtoList);
+
+		AssetDetailResponseDto actualAsset = assetServiceImpl.getAssetDetailById(2l);
+		verify(expectedAsset).setAssignments(assignmentDtoList);
+		assertThat(expectedAsset, is(actualAsset));
+	}	
 }

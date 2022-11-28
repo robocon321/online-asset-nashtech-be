@@ -1,16 +1,25 @@
 package com.nashtech.rookies.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.nashtech.rookies.dto.response.asset.AssetDetailResponseDto;
+import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
+import com.nashtech.rookies.dto.response.asset.AssignmentResponseDto;
 import com.nashtech.rookies.entity.Asset;
+import com.nashtech.rookies.entity.Assignment;
+import com.nashtech.rookies.mapper.AssetMapper;
 
 @Component
 public class AssetUtil {
-
+	@Autowired
+	AssetMapper assetMapper;
+	
 	public String generateAssetCode(List<Asset> list, String categoryCode) {
 
 		List<String> assetCodes = list.stream().map(Asset::getCode).collect(Collectors.toList());
@@ -38,5 +47,28 @@ public class AssetUtil {
 		}
 
 		return assetCode;
+	}
+	
+	public List<AssetResponseDto> mapAssetToAssetDto(List<Asset> list){
+		List<AssetResponseDto> dtoList = new ArrayList<>();
+		for(Asset asset : list) {
+			AssetResponseDto assetDto = assetMapper.mapToDto(asset);
+			dtoList.add(assetDto);
+		}
+		return dtoList;
+	}
+	
+	public List<AssignmentResponseDto> mapAssetToAssetDetailDto(List<Assignment> list)
+	{
+		List<AssignmentResponseDto> assignmentDtoList = new ArrayList<>();
+		for(Assignment assignment : list) {
+			AssignmentResponseDto data = new AssignmentResponseDto();
+			data.setReturnDate(assignment.getReturnedDate());
+			data.setAssignedTo(assignment.getAssignedTo().getUsername());
+			data.setAssignedBy(assignment.getAssignedBy().getUsername());
+			data.setAssignedDate(assignment.getAssignedDate());
+			assignmentDtoList.add(data);
+		}
+		return assignmentDtoList;
 	}
 }
