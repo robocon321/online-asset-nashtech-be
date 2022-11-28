@@ -64,8 +64,8 @@ public class AssetUtil {
 		for(Assignment assignment : list) {
 			AssignmentResponseDto data = new AssignmentResponseDto();
 			data.setReturnDate(assignment.getReturned_date());
-			data.setAssignedTo(assignment.getAssigned_to().getUsername());
-			data.setAssignedBy(assignment.getAssigned_by().getUsername());
+			data.setAssignedTo(assignment.getAssignedTo().getUsername());
+			data.setAssignedBy(assignment.getAssignedBy().getUsername());
 			data.setAssignedDate(assignment.getAssigned_date());
 			assignmentDtoList.add(data);
 		}

@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.nashtech.rookies.dto.request.user.UpdateUserRequestDto;
+import com.nashtech.rookies.entity.Assignment;
+import com.nashtech.rookies.repository.AssignmentRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +35,7 @@ public class UsersServiceImplTest {
 
 	UsersServiceImpl usersServiceImpl;
 
+	AssignmentRepository assignmentRepository;
 	Users initUsers;
 	Users expectedUsers;
 
@@ -46,8 +49,8 @@ public class UsersServiceImplTest {
 		initUsers = mock(Users.class);
 		expectedUsers = mock(Users.class);
 		passwordEncoder = mock(PasswordEncoder.class);
-
-		usersServiceImpl = new UsersServiceImpl(userUtil, usersRepository, userMapper, passwordEncoder);
+		assignmentRepository = mock(AssignmentRepository.class);
+		usersServiceImpl = new UsersServiceImpl(userUtil, usersRepository, userMapper, passwordEncoder,assignmentRepository);
 
 		for(int i = 0; i < 10; i++){
 			mockUsers.add(
@@ -366,6 +369,68 @@ public class UsersServiceImplTest {
 		when(usersRepository.save(user)).thenReturn(user);
 	}
 
+	@Test
+	void when_CheckValid_IdNotFound(){
+		Long userId = 1L;
+		Users user= new Users();
+//		when(usersRepository.findUsersById(userId))
+		assertEquals("Not Found",usersServiceImpl.checkValidAssigmentUser(userId));
+	}
+
+	@Test
+	void whenCheckValid_UserByIsValidAsmSHouldReturn(){
+		Long userId = 1L;
+		Users user= new Users();
+		when(usersRepository.findUsersById(userId)).thenReturn(user);
+		List<Assignment> list = new ArrayList<>();
+		Assignment asm = new Assignment();
+		list.add(asm);
+		when(assignmentRepository.findAllByStateIsAndAssignedBy("Accepted",user)).thenReturn(list);
+		assertEquals("1",usersServiceImpl.checkValidAssigmentUser(userId));
+	}
+
+	@Test
+	void whenCheckValid_UserToIsValidAsmSHouldReturn(){
+		Long userId = 1L;
+		Users user= new Users();
+		when(usersRepository.findUsersById(userId)).thenReturn(user);
+		List<Assignment> list = new ArrayList<>();
+		Assignment asm = new Assignment();
+		list.add(asm);
+		when(assignmentRepository.findAllByStateIsAndAssignedTo("Accepted",user)).thenReturn(list);
+		assertEquals("1",usersServiceImpl.checkValidAssigmentUser(userId));
+	}
+	@Test
+	void whenCheckValid_UserhaveNotValidAsm(){
+		Long userId = 1L;
+		Users user= new Users();
+		when(usersRepository.findUsersById(userId)).thenReturn(user);
+		List<Assignment> list = new ArrayList<>();
+		Assignment asm = new Assignment();
+		list.add(asm);
+//		when(assignmentRepository.findAllByStateIsAndAssignedTo("Accepted",user)).thenReturn(list);
+		assertEquals("0",usersServiceImpl.checkValidAssigmentUser(userId));
+	}
+
+	@Test
+	void whenDisableUserHaveNoHistory(){
+		Long userId = 1L;
+		Users user= new Users();
+		when(usersRepository.findUsersById(userId)).thenReturn(user);
+//		verify(usersRepository).delete(user);
+		assertEquals("Success",usersServiceImpl.disableUser(userId));
+	}
+	@Test
+	void whenDisableUserHaveHistory(){
+		Long userId = 1L;
+		Users user= new Users();
+		when(usersRepository.findUsersById(userId)).thenReturn(user);
+		List<Assignment> list = new ArrayList<>();
+		Assignment asm = new Assignment();
+		list.add(asm);
+		when(assignmentRepository.findAllByAssignedByOrAssignedTo(user,user)).thenReturn(list);
+		assertEquals("User is hide",usersServiceImpl.disableUser(userId));
+	}
 //	endregion
 
 }
