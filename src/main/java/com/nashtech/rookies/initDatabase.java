@@ -96,8 +96,8 @@ public class initDatabase {
             }
 
             assetRepository.save(new Asset(
-                    "asset31",
-                    "ASSETS31",
+                    "asset32",
+                    "CATEGORY2_99",
                     "Day la asset, ahihi :v",
                     "HCM",
                     "Assigned",
@@ -107,7 +107,7 @@ public class initDatabase {
 
             assetRepository.save(new Asset(
                     "asset31",
-                    "ASSETS31",
+                    "CATEGORY1_99",
                     "Day la asset, ahihi :v",
                     "HCM",
                     "Not available",
@@ -141,7 +141,7 @@ public class initDatabase {
     }
 
     private String randomStateAssignment() {
-    	String[] states = {"Accepted", "Waiting for acceptance"};
+    	String[] states = {"Accepted", "Waiting for acceptance", "Finished"};
     	return states[new Random().nextInt(states.length)];
     }
 

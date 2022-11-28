@@ -12,7 +12,7 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
     Users findUsersById(Long id);
 
 //    Find all users by admin locations
-	List<Users> findByLocationAndDisabledIsFalse(String location);
+	List<Users> findByLocationAndDisabledIsFalseOrderByCodeAsc(String location);
 
 //    Sort users by JoinedDate
 	List<Users> findByLocationOrderByJoinedDateDesc(String location);

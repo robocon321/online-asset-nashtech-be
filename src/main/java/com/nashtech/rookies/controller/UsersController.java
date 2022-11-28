@@ -19,69 +19,36 @@ public class UsersController {
     @Autowired
     UsersService usersService;
 
-    @GetMapping("/")
+//    Show information
+    @GetMapping
     public ResponseEntity<?> showAllUsers() throws Exception {
         return ResponseEntity.ok(usersService.showAll());
     }
 
-    @GetMapping("/id")
-    public ResponseEntity<?> getUserById(@RequestParam Long id) throws Exception {
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Long id) throws Exception {
         return ResponseEntity.ok().body(usersService.findByUserId(id));
     }
 
-    @GetMapping("/sort-asc")
-    public ResponseEntity<?> sortAsc(@RequestParam String type) throws Exception {
-        switch (type) {
-            case "code":
-                return ResponseEntity.ok().body(usersService.sortByCodeAsc());
-            case "joinDate":
-                return ResponseEntity.ok().body(usersService.sortByJoinedDateAsc());
-            case "fullName":
-                return ResponseEntity.ok().body(usersService.sortByFullNameAsc());
-            case "role":
-                return ResponseEntity.ok().body(usersService.sortByRoleAsc());
-            default:
-                return ResponseEntity.ok().body("Invalid type");
-        }
-    }
-
-    @GetMapping("/sort-desc")
-    public ResponseEntity<?> sortDesc(@RequestParam String type){
-        switch (type) {
-            case "joinedDate":
-                return ResponseEntity.ok().body(usersService.sortByJoinedDateDesc());
-            case "code":
-                return ResponseEntity.ok().body(usersService.sortByCodeDesc());
-            case "fullName":
-                return ResponseEntity.ok().body(usersService.sortByFullNameDesc());
-            case "role":
-                return ResponseEntity.ok().body(usersService.sortByRoleDesc());
-            default:
-                return ResponseEntity.badRequest().body("Invalid type");
-        }
-    }
-
-    @GetMapping("/updated")
-    public ResponseEntity<?> sortUpdatedDateDesc(){
-        return ResponseEntity.ok().body(usersService.sortByUpdatedDateDesc());
-    }
-
-    @PostMapping("/create")
+//    Create user
+    @PostMapping
     public ResponseEntity<?> createUser(@Valid @RequestBody UserRequestDto dto) {
     	return ResponseEntity.ok().body(usersService.createUser(dto));
     }
 
-    @PutMapping("/update")
+//    Update user
+    @PutMapping
     public Users updateUser(@Valid @RequestBody UpdateUserRequestDto dto){ return usersService.updateUser(dto);}
+
+//    Delete user
+    @DeleteMapping
+    public String disableUser(@RequestParam Long id){
+        return usersService.disableUser(id);
+    }
 
     @GetMapping("/check-assignment")
     public String checkValidUser(@RequestParam Long userId){
         return usersService.checkValidAssigmentUser(userId);
-    }
-
-    @DeleteMapping("/{id}")
-    public String disableUser(@PathVariable Long id){
-        return usersService.disableUser(id);
     }
 
     @GetMapping("/getAll/{id}")

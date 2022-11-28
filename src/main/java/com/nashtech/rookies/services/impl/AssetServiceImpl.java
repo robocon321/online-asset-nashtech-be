@@ -56,6 +56,32 @@ public class AssetServiceImpl implements AssetService {
 		this.usersRepository = usersRepository;
 	}
 
+	//	region Show information
+	@Override
+	public List<AssetResponseDto> showAll(){
+		UserPrinciple userPrinciple= (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Users users = usersRepository.findUsersById(userPrinciple.getId());
+		List<Asset> assetList = assetRepository.findByUsers(users);
+		List<AssetResponseDto> assetDtoList = assetUtil.mapAssetToAssetDto(assetList);
+		return assetDtoList;
+	}
+
+	public AssetDetailResponseDto getAssetDetailById(Long id) {
+		Optional<Asset> assetOptional = assetRepository.findById(id);
+		if (assetOptional.isEmpty()) {
+			throw new InvalidDataInputException("Asset not found");
+		}
+
+		AssetDetailResponseDto result = assetMapper.mapToDetailDto(assetOptional.get());
+
+		List<Assignment> assignmentList = assignmentRepository.findByAsset(assetOptional.get());
+		result.setAssignments(assetUtil.mapAssetToAssetDetailDto(assignmentList));
+
+		return result;
+	}
+	//endregion
+
+	//	region Create new asset
 	@Override
 	public AssetResponseDto createAsset(CreateAssetRequestDto dto) {
 
@@ -105,9 +131,9 @@ public class AssetServiceImpl implements AssetService {
 
 		return assetMapper.mapToDto(asset);
 	}
+	//	endregion
 
-//    Update asset
-
+	//  region  Update asset
 	@Override
 	public AssetResponseDto updateAsset(UpdateAssetRequestDto dto) {
 
@@ -132,23 +158,9 @@ public class AssetServiceImpl implements AssetService {
 
 		return assetMapper.mapToDto(asset);
 	}
+	//	endregion
 
-// Get asset by id	
-
-	@Override
-	public AssetResponseDto getAssetById(Long id) {
-		Optional<Asset> assetOptional = assetRepository.findById(id);
-
-		if (assetOptional.isEmpty()) {
-			throw new InvalidDataInputException("Asset not found");
-		}
-
-		Asset asset = assetOptional.get();
-
-		return assetMapper.mapToDto(asset);
-	}
-//    Delete asset
-
+	//  region  Delete asset
 	@Override
 	public void deleteAsset(Long id) throws Exception {
 		Asset asset = assetRepository.findAssetById(id);
@@ -158,37 +170,16 @@ public class AssetServiceImpl implements AssetService {
 		}
 
 		if (assignmentRepository.existsAssignmentByAsset_Id(id)) {
-			throw new Exception("Cannot delete the asset because it belongs to one or more historical assignments.");
+			throw new Exception("Cannot delete the asset because it belongs to one or more historical assignments. If the asset is not able to be used anymore, please update its state in ");
 		}
 
 		if (asset.getState().equals("Assigned")) {
-			throw new Exception("Cannot delete the asset because it is assigned to one or more users.");
+			throw new Exception("State of asset is assigned");
 		}
 
 		assetRepository.delete(asset);
 	}
+	//	endregion
 
-	@Override
-	public List<AssetResponseDto> showAll(){
-		UserPrinciple userPrinciple= (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		Users users = usersRepository.findUsersById(userPrinciple.getId());
-		List<Asset> assetList = assetRepository.findByUsers(users);
-		List<AssetResponseDto> assetDtoList = assetUtil.mapAssetToAssetDto(assetList);
-		return assetDtoList;
-	}
-	
-	public AssetDetailResponseDto getAssetDetailById(Long id) {
-		Optional<Asset> assetOptional = assetRepository.findById(id);
-		if (assetOptional.isEmpty()) {
-			throw new InvalidDataInputException("Asset not found");
-		}
-		
-		AssetDetailResponseDto result = assetMapper.mapToDetailDto(assetOptional.get());
-		
-		List<Assignment> assignmentList = assignmentRepository.findByAsset(assetOptional.get());
-		result.setAssignments(assetUtil.mapAssetToAssetDetailDto(assignmentList));
-		
-		return result;
-	}
 
 }

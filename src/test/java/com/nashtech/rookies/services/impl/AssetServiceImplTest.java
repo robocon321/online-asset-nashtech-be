@@ -250,33 +250,6 @@ public class AssetServiceImplTest {
 		verify(asset).setInstalledDate(installedDate);
 
 		assertThat(expectedAsset, is(actualAsset));
-
-	}
-
-	// get asset by id
-	@Test
-	void getAssetById_ShouldThrowInvalidDataInputException_WhenIdInValid() {
-
-		when(assetRepository.findById(2l)).thenReturn(Optional.empty());
-
-		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
-			assetServiceImpl.getAssetById(2l);
-		});
-		assertEquals("Asset not found", actualException.getMessage());
-	}
-
-	@Test
-	void getAssetById_ShouldReturnAsset_WhenDataValid() {
-		Asset asset = mock(Asset.class);
-		AssetResponseDto expectedAsset = mock(AssetResponseDto.class);
-
-		when(assetRepository.findById(2l)).thenReturn(Optional.of(asset));
-
-		when(assetMapper.mapToDto(asset)).thenReturn(expectedAsset);
-
-		AssetResponseDto actualAsset = assetServiceImpl.getAssetById(2l);
-
-		assertThat(expectedAsset, is(actualAsset));
 	}
 
 	// delete
@@ -307,7 +280,7 @@ public class AssetServiceImplTest {
 		Exception exception = assertThrows(Exception.class, () -> {
 			assetServiceImpl.deleteAsset(1L);
 		});
-		assertEquals("Cannot delete the asset because it belongs to one or more historical assignments.",
+		assertEquals("Cannot delete the asset because it belongs to one or more historical assignments. If the asset is not able to be used anymore, please update its state in ",
 				exception.getMessage());
 	}
 
@@ -321,7 +294,7 @@ public class AssetServiceImplTest {
 		Exception exception = assertThrows(Exception.class, () -> {
 			assetServiceImpl.deleteAsset(1L);
 		});
-		assertEquals("Cannot delete the asset because it is assigned to one or more users.", exception.getMessage());
+		assertEquals("State of asset is assigned", exception.getMessage());
 	}
 
 	@Test
