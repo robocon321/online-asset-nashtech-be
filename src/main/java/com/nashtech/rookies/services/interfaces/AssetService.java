@@ -4,6 +4,7 @@ import java.util.List;
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 
 import com.nashtech.rookies.dto.request.asset.UpdateAssetRequestDto;
+import com.nashtech.rookies.dto.response.asset.AssetDetailResponseDto;
 import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
 
 import com.nashtech.rookies.entity.Asset;
@@ -19,5 +20,7 @@ public interface AssetService {
 	AssetResponseDto getAssetById(Long id);
 
 	AssetResponseDto updateAsset(UpdateAssetRequestDto dto);
+	
+	AssetDetailResponseDto getAssetDetailById(Long id);
 
 }

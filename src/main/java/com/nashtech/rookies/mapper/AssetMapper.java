@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
+import com.nashtech.rookies.dto.response.asset.AssetDetailResponseDto;
 import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Category;
@@ -34,6 +35,20 @@ public class AssetMapper {
 				.installedDate(asset.getInstalledDate())
 				.state(asset.getState())
 				.code(asset.getCode())
+				.build();
+	}
+	
+public AssetDetailResponseDto mapToDetailDto(Asset asset) {
+		
+		return AssetDetailResponseDto.builder()
+				.id(asset.getId())
+				.name(asset.getName())
+				.specification(asset.getSpecification())
+				.categoryName(asset.getCategory().getName())
+				.installedDate(asset.getInstalledDate())
+				.state(asset.getState())
+				.code(asset.getCode())
+				.location(asset.getLocation())
 				.build();
 	}
 	

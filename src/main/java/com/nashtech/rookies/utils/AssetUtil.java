@@ -8,8 +8,11 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.nashtech.rookies.dto.response.asset.AssetDetailResponseDto;
 import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
+import com.nashtech.rookies.dto.response.asset.AssignmentResponseDto;
 import com.nashtech.rookies.entity.Asset;
+import com.nashtech.rookies.entity.Assignment;
 import com.nashtech.rookies.mapper.AssetMapper;
 
 @Component
@@ -53,5 +56,19 @@ public class AssetUtil {
 			dtoList.add(assetDto);
 		}
 		return dtoList;
+	}
+	
+	public List<AssignmentResponseDto> mapAssetToAssetDetailDto(List<Assignment> list)
+	{
+		List<AssignmentResponseDto> assignmentDtoList = new ArrayList<>();
+		for(Assignment assignment : list) {
+			AssignmentResponseDto data = new AssignmentResponseDto();
+			data.setReturnDate(assignment.getReturned_date());
+			data.setAssignedTo(assignment.getAssigned_to().getUsername());
+			data.setAssignedBy(assignment.getAssigned_by().getUsername());
+			data.setAssignedDate(assignment.getAssigned_date());
+			assignmentDtoList.add(data);
+		}
+		return assignmentDtoList;
 	}
 }

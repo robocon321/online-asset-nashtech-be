@@ -1,7 +1,14 @@
 package com.nashtech.rookies.repository;
 
+import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Assignment;
+<<<<<<< HEAD
 import com.nashtech.rookies.entity.Users;
+=======
+
+import java.util.List;
+
+>>>>>>> main
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -21,4 +28,5 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
 //    @Query(value = "select a from Assignment a where a.assigned_to_id = ?1",nativeQuery = true)
     List<Assignment> findAllByAssignedTo(Users userGetAsm);
+    List<Assignment> findByAsset(Asset asset);
 }
