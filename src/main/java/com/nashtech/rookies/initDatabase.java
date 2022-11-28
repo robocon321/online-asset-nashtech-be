@@ -97,7 +97,7 @@ public class initDatabase {
 
             assetRepository.save(new Asset(
                     "asset32",
-                    "ASSETS32",
+                    "CATEGORY2_99",
                     "Day la asset, ahihi :v",
                     "HCM",
                     "Assigned",
@@ -107,7 +107,7 @@ public class initDatabase {
 
             assetRepository.save(new Asset(
                     "asset31",
-                    "ASSETS31",
+                    "CATEGORY1_99",
                     "Day la asset, ahihi :v",
                     "HCM",
                     "Not available",
