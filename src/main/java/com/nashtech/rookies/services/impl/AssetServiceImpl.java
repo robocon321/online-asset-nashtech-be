@@ -181,27 +181,5 @@ public class AssetServiceImpl implements AssetService {
 	}
 	//	endregion
 
-	@Override
-	public List<AssetResponseDto> showAll(){
-		UserPrinciple userPrinciple= (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		Users users = usersRepository.findUsersById(userPrinciple.getId());
-		List<Asset> assetList = assetRepository.findByUsers(users);
-		List<AssetResponseDto> assetDtoList = assetUtil.mapAssetToAssetDto(assetList);
-		return assetDtoList;
-	}
-	
-	public AssetDetailResponseDto getAssetDetailById(Long id) {
-		Optional<Asset> assetOptional = assetRepository.findById(id);
-		if (assetOptional.isEmpty()) {
-			throw new InvalidDataInputException("Asset not found");
-		}
-		
-		AssetDetailResponseDto result = assetMapper.mapToDetailDto(assetOptional.get());
-		
-		List<Assignment> assignmentList = assignmentRepository.findByAsset(assetOptional.get());
-		result.setAssignments(assetUtil.mapAssetToAssetDetailDto(assignmentList));
-		
-		return result;
-	}
 
 }
