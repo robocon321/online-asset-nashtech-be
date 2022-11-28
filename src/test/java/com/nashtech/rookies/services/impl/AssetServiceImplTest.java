@@ -24,8 +24,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 import com.nashtech.rookies.dto.request.asset.UpdateAssetRequestDto;
+import com.nashtech.rookies.dto.response.asset.AssetDetailResponseDto;
 import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
+import com.nashtech.rookies.dto.response.asset.AssignmentResponseDto;
 import com.nashtech.rookies.entity.Asset;
+import com.nashtech.rookies.entity.Assignment;
 import com.nashtech.rookies.entity.Category;
 import com.nashtech.rookies.entity.Users;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
@@ -339,4 +342,21 @@ public class AssetServiceImplTest {
 		assertEquals(assetDtoList, actual);
 	}
 
+	@Test
+	void getAssetDetail_ShouldReturnAssetDetail() {
+		Asset asset = new Asset();
+		when(assetRepository.findById(2l)).thenReturn(Optional.of(asset));
+		
+		AssetDetailResponseDto expectedAsset = mock(AssetDetailResponseDto.class);
+		when(assetMapper.mapToDetailDto(asset)).thenReturn(expectedAsset);
+		
+		List<Assignment> assignmentList = new ArrayList<>();
+		when(assignmentRepository.findByAsset(asset)).thenReturn(assignmentList);
+		List<AssignmentResponseDto> assignmentDtoList = new ArrayList<>();
+		when(assetUtil.mapAssetToAssetDetailDto(assignmentList)).thenReturn(assignmentDtoList);
+
+		AssetDetailResponseDto actualAsset = assetServiceImpl.getAssetDetailById(2l);
+		verify(expectedAsset).setAssignments(assignmentDtoList);
+		assertThat(expectedAsset, is(actualAsset));
+	}	
 }

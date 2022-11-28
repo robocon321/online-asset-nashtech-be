@@ -1,5 +1,6 @@
 package com.nashtech.rookies.services.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -10,9 +11,11 @@ import org.springframework.stereotype.Service;
 
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 import com.nashtech.rookies.dto.request.asset.UpdateAssetRequestDto;
+import com.nashtech.rookies.dto.response.asset.AssetDetailResponseDto;
 import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
-
+import com.nashtech.rookies.dto.response.asset.AssignmentResponseDto;
 import com.nashtech.rookies.entity.Asset;
+import com.nashtech.rookies.entity.Assignment;
 import com.nashtech.rookies.entity.Category;
 import com.nashtech.rookies.entity.Users;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
@@ -38,7 +41,7 @@ public class AssetServiceImpl implements AssetService {
 	UserUtil userUtil;
 	AssetUtil assetUtil;
 	UsersRepository usersRepository;
-
+	
 	@Autowired
 	public AssetServiceImpl(AssetRepository assetRepository, UserUtil userUtil, CategoryRepository categoryRepository,
 			CategoryMapper categoryMapper, AssetMapper assetMapper, AssetUtil assetUtil,
@@ -172,6 +175,20 @@ public class AssetServiceImpl implements AssetService {
 		List<Asset> assetList = assetRepository.findByUsers(users);
 		List<AssetResponseDto> assetDtoList = assetUtil.mapAssetToAssetDto(assetList);
 		return assetDtoList;
+	}
+	
+	public AssetDetailResponseDto getAssetDetailById(Long id) {
+		Optional<Asset> assetOptional = assetRepository.findById(id);
+		if (assetOptional.isEmpty()) {
+			throw new InvalidDataInputException("Asset not found");
+		}
+		
+		AssetDetailResponseDto result = assetMapper.mapToDetailDto(assetOptional.get());
+		
+		List<Assignment> assignmentList = assignmentRepository.findByAsset(assetOptional.get());
+		result.setAssignments(assetUtil.mapAssetToAssetDetailDto(assignmentList));
+		
+		return result;
 	}
 
 }
