@@ -250,33 +250,6 @@ public class AssetServiceImplTest {
 		verify(asset).setInstalledDate(installedDate);
 
 		assertThat(expectedAsset, is(actualAsset));
-
-	}
-
-	// get asset by id
-	@Test
-	void getAssetById_ShouldThrowInvalidDataInputException_WhenIdInValid() {
-
-		when(assetRepository.findById(2l)).thenReturn(Optional.empty());
-
-		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
-			assetServiceImpl.getAssetById(2l);
-		});
-		assertEquals("Asset not found", actualException.getMessage());
-	}
-
-	@Test
-	void getAssetById_ShouldReturnAsset_WhenDataValid() {
-		Asset asset = mock(Asset.class);
-		AssetResponseDto expectedAsset = mock(AssetResponseDto.class);
-
-		when(assetRepository.findById(2l)).thenReturn(Optional.of(asset));
-
-		when(assetMapper.mapToDto(asset)).thenReturn(expectedAsset);
-
-		AssetResponseDto actualAsset = assetServiceImpl.getAssetById(2l);
-
-		assertThat(expectedAsset, is(actualAsset));
 	}
 
 	// delete

@@ -29,32 +29,31 @@ public class AssetController {
 	@Autowired
 	AssetService assetService;
 
-	@PostMapping("/")
-	public ResponseEntity<?> createAsset(@Valid @RequestBody CreateAssetRequestDto dto) {
-		return ResponseEntity.ok().body(assetService.createAsset(dto));
-	}
-    
-    @GetMapping("/list")
-    public ResponseEntity<?> showAllAssets(){
-        return ResponseEntity.ok(assetService.showAll());
-    }
-    
-    @GetMapping("/detail/{id}")
+//	Show information
+	@GetMapping
+	public ResponseEntity<?> showAllAssets(){
+	return ResponseEntity.ok(assetService.showAll());
+}
+
+	@GetMapping("/{id}")
 	public ResponseEntity<?> getAssetDetailById(@PathVariable Long id) {
 		return ResponseEntity.ok().body(assetService.getAssetDetailById(id));
 	}
-    
-	@GetMapping("/{id}")
-	public ResponseEntity<?> getAssetById(@PathVariable Long id) {
-		return ResponseEntity.ok().body(assetService.getAssetById(id));
+
+//	Create asset
+	@PostMapping
+	public ResponseEntity<?> createAsset(@Valid @RequestBody CreateAssetRequestDto dto) {
+		return ResponseEntity.ok().body(assetService.createAsset(dto));
 	}
 
-	@PutMapping("/")
+//	Update asset
+	@PutMapping
 	public ResponseEntity<?> updateAsset(@Valid @RequestBody UpdateAssetRequestDto dto) {
 		return ResponseEntity.ok().body(assetService.updateAsset(dto));
 	}
 
-	@DeleteMapping("/")
+//	Delete asset
+	@DeleteMapping
 	public ResponseEntity<?> deleteAsset(@RequestParam Long id) throws Exception {
 		assetService.deleteAsset(id);
 		return ResponseEntity.ok().body("Delete asset successfully");

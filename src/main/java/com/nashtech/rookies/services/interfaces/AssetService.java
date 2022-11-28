@@ -17,8 +17,6 @@ public interface AssetService {
 
 	void deleteAsset(Long id) throws Exception;
 
-	AssetResponseDto getAssetById(Long id);
-
 	AssetResponseDto updateAsset(UpdateAssetRequestDto dto);
 	
 	AssetDetailResponseDto getAssetDetailById(Long id);

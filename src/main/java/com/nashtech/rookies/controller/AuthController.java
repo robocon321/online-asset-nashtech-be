@@ -24,7 +24,6 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto dto) {
-
 		return ResponseEntity.status(HttpStatus.OK).body(authService.login(dto));
 	}
 	@PutMapping("/changePassword")
