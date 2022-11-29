@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.nashtech.rookies.exceptions.ExistsAssignmentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -266,7 +267,7 @@ public class AssetServiceImplTest {
 	void deleteAssets_ShouldThrowException_WhenNotFound() {
 		when(assetRepository.findAssetById(1L)).thenReturn(null);
 
-		Exception exception = assertThrows(Exception.class, () -> {
+		InvalidDataInputException exception = assertThrows(InvalidDataInputException.class, () -> {
 			assetServiceImpl.deleteAsset(1L);
 		});
 		assertEquals("Asset not found", exception.getMessage());
@@ -274,14 +275,16 @@ public class AssetServiceImplTest {
 
 	@Test
 	void deleteAssets_ShouldThrowException_WhenAssetIsAssigned() {
-		when(assetRepository.findAssetById(1L)).thenReturn(initAsset);
-		when(assignmentRepository.existsAssignmentByAsset_Id(1L)).thenReturn(true);
+		long id = 1L;
+		when(assetRepository.findAssetById(id)).thenReturn(initAsset);
+		when(assignmentRepository.existsAssignmentByAsset_Id(id)).thenReturn(true);
 
-		Exception exception = assertThrows(Exception.class, () -> {
+		ExistsAssignmentException exception = assertThrows(ExistsAssignmentException.class, () -> {
 			assetServiceImpl.deleteAsset(1L);
 		});
 		assertEquals(
-				"Cannot delete the asset because it belongs to one or more historical assignments. If the asset is not able to be used anymore, please update its state in ",
+				"Cannot delete the asset because it belongs to one or more historical assignments. " +
+						"If the asset is not able to be used anymore, please update its state in <a href=/assets/edit/" + id + "> Edit Asset page </a>",
 				exception.getMessage());
 	}
 
@@ -292,7 +295,7 @@ public class AssetServiceImplTest {
 		when(assetRepository.findAssetById(1L)).thenReturn(initAsset);
 		when(assignmentRepository.existsAssignmentByAsset_Id(1L)).thenReturn(false);
 
-		Exception exception = assertThrows(Exception.class, () -> {
+		InvalidDataInputException exception = assertThrows(InvalidDataInputException.class, () -> {
 			assetServiceImpl.deleteAsset(1L);
 		});
 		assertEquals("State of asset is assigned", exception.getMessage());
