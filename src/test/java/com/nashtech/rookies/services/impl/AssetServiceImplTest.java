@@ -280,7 +280,8 @@ public class AssetServiceImplTest {
 		Exception exception = assertThrows(Exception.class, () -> {
 			assetServiceImpl.deleteAsset(1L);
 		});
-		assertEquals("Cannot delete the asset because it belongs to one or more historical assignments. If the asset is not able to be used anymore, please update its state in ",
+		assertEquals(
+				"Cannot delete the asset because it belongs to one or more historical assignments. If the asset is not able to be used anymore, please update its state in ",
 				exception.getMessage());
 	}
 
@@ -319,10 +320,10 @@ public class AssetServiceImplTest {
 	void getAssetDetail_ShouldReturnAssetDetail() {
 		Asset asset = new Asset();
 		when(assetRepository.findById(2l)).thenReturn(Optional.of(asset));
-		
+
 		AssetDetailResponseDto expectedAsset = mock(AssetDetailResponseDto.class);
 		when(assetMapper.mapToDetailDto(asset)).thenReturn(expectedAsset);
-		
+
 		List<Assignment> assignmentList = new ArrayList<>();
 		when(assignmentRepository.findByAsset(asset)).thenReturn(assignmentList);
 		List<AssignmentResponseDto> assignmentDtoList = new ArrayList<>();
@@ -331,5 +332,5 @@ public class AssetServiceImplTest {
 		AssetDetailResponseDto actualAsset = assetServiceImpl.getAssetDetailById(2l);
 		verify(expectedAsset).setAssignments(assignmentDtoList);
 		assertThat(expectedAsset, is(actualAsset));
-	}	
+	}
 }

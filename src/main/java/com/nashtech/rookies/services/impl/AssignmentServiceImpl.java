@@ -39,7 +39,6 @@ public class AssignmentServiceImpl implements AssignmentService {
 
 	@Override
 	public AssignmentResponseDto createAssignment(CreateAssignmentDto dto) {
-
 		if (!userUtil.isValidDate(dto.getAssignedDate())) {
 			throw new InvalidDataInputException("AssignedDate is invalid");
 		}

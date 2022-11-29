@@ -13,7 +13,6 @@ import com.nashtech.rookies.entity.Users;
 public class AssignmentMapper {
 	public Assignment mapToAssignment(Asset asset , Users assignedBy, Users assignedTo, String note, String state, Date assignedDate,
 			Date createdDate) {
-		System.out.println("Hello");
 		return Assignment.builder().asset(asset).assignedBy(assignedBy).assignedTo(assignedTo).note(note).state(state)
 				.assignedDate(assignedDate).createdDate(createdDate).build();
 	}
