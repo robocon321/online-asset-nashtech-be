@@ -40,7 +40,7 @@ public class initDatabase {
             for(int i = 1; i <= 30; i++) {
                 usersRepository.save(new Users(
                         "user" + i,
-                        passwordEncoder.encode("123456"),
+                        passwordEncoder.encode("User123456!@"),
                         true,
                         "dev",
                         "cute",
@@ -56,7 +56,7 @@ public class initDatabase {
             for(int i = 31; i <= 60; i++) {
                 usersRepository.save(new Users(
                         "user" + i,
-                        passwordEncoder.encode("123456"),
+                        passwordEncoder.encode("User123456!@"),
                         true,
                         "dev",
                         "cute",
