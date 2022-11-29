@@ -45,10 +45,11 @@ public class AssignmentServiceImpl implements AssignmentService {
 		}
 
 		Date assignedDate = userUtil.convertStrDateToObDate(dto.getAssignedDate());
-		Date nowDate = new Date();
+
+		Date nowDate = userUtil.generateFormatNowDay();
 
 		if (assignedDate.before(nowDate)) {
-			throw new InvalidDataInputException("AssignedDate is after NowDate");
+			throw new InvalidDataInputException("AssignedDate must be after NowDate");
 		}
 
 		Optional<Users> userOptional = usersRepository.findById(dto.getUserId());
