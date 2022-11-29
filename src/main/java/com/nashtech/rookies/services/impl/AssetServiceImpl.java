@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.nashtech.rookies.exceptions.ExistsAssignmentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -167,15 +168,16 @@ public class AssetServiceImpl implements AssetService {
 		Asset asset = assetRepository.findAssetById(id);
 
 		if (asset == null) {
-			throw new Exception("Asset not found");
+			throw new InvalidDataInputException("Asset not found");
 		}
 
 		if (assignmentRepository.existsAssignmentByAsset_Id(id)) {
-			throw new Exception("Cannot delete the asset because it belongs to one or more historical assignments. If the asset is not able to be used anymore, please update its state in ");
+			throw new ExistsAssignmentException("Cannot delete the asset because it belongs to one or more historical assignments. " +
+					"If the asset is not able to be used anymore, please update its state in <a href=/assets/edit/" + id + "> Edit Asset page </a>");
 		}
 
 		if (asset.getState().equals("Assigned")) {
-			throw new Exception("State of asset is assigned");
+			throw new InvalidDataInputException("State of asset is assigned");
 		}
 
 		assetRepository.delete(asset);
