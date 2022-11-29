@@ -412,23 +412,12 @@ public class UsersServiceImplTest {
 		assertEquals("0",usersServiceImpl.checkValidAssigmentUser(userId));
 	}
 
-	@Test
-	void whenDisableUserHaveNoHistory(){
-		Long userId = 1L;
-		Users user= new Users();
-		when(usersRepository.findUsersById(userId)).thenReturn(user);
-//		verify(usersRepository).delete(user);
-		assertEquals("Success",usersServiceImpl.disableUser(userId));
-	}
+	
 	@Test
 	void whenDisableUserHaveHistory(){
 		Long userId = 1L;
 		Users user= new Users();
 		when(usersRepository.findUsersById(userId)).thenReturn(user);
-		List<Assignment> list = new ArrayList<>();
-		Assignment asm = new Assignment();
-		list.add(asm);
-		when(assignmentRepository.findAllByAssignedByOrAssignedTo(user,user)).thenReturn(list);
 		assertEquals("User is hide",usersServiceImpl.disableUser(userId));
 	}
 //	endregion
