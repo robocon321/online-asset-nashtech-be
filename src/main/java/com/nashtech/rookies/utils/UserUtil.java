@@ -167,4 +167,16 @@ public class UserUtil {
 		return userPrinciple.getId();
 	}
 
+	public Date generateFormatNowDay() {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+		Date nowDate = null;
+		try {
+			nowDate = formatter.parse(formatter.format(new Date()));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return nowDate;
+	}
+
 }
