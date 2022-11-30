@@ -162,16 +162,18 @@ public class AssetServiceImpl implements AssetService {
 	//	endregion
 
 	//  region  Delete asset
+
+	@Override
+	public boolean checkHasExistAssignment(Long id) {
+		return assignmentRepository.existsAssignmentByAsset_Id(id);
+	}
+
 	@Override
 	public void deleteAsset(Long id) throws Exception {
 		Asset asset = assetRepository.findAssetById(id);
 
 		if (asset == null) {
 			throw new Exception("Asset not found");
-		}
-
-		if (assignmentRepository.existsAssignmentByAsset_Id(id)) {
-			throw new Exception("Cannot delete the asset because it belongs to one or more historical assignments. If the asset is not able to be used anymore, please update its state in ");
 		}
 
 		if (asset.getState().equals("Assigned")) {

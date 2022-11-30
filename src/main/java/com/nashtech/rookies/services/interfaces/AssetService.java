@@ -15,6 +15,7 @@ public interface AssetService {
     
     List<AssetResponseDto> showAll();
 
+	boolean checkHasExistAssignment(Long id);
 	void deleteAsset(Long id) throws Exception;
 
 	AssetResponseDto updateAsset(UpdateAssetRequestDto dto);
