@@ -23,6 +23,8 @@ public class Assignment {
     private Date returnedDate;
     private Date createdDate;
 
+    private boolean isDeleted = false;
+
     @ManyToOne
     private Users assignedBy;
 
