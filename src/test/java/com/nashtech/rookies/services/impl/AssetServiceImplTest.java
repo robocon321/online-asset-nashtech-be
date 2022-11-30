@@ -21,7 +21,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 import com.nashtech.rookies.dto.request.asset.UpdateAssetRequestDto;
@@ -336,4 +335,24 @@ public class AssetServiceImplTest {
 		verify(expectedAsset).setAssignments(assignmentDtoList);
 		assertThat(expectedAsset, is(actualAsset));
 	}
+	
+	@Test
+	void getAllAssetsByStateAndUser_ShouldReturnAllAssetsManagedByUser_WhenDataValid() {
+		String state = "Available";
+		Users user = mock(Users.class);
+		
+		when(userUtil.getIdFromUserPrinciple()).thenReturn(2l);
+		when(usersRepository.findById(2l)).thenReturn(Optional.of(user));	
+		
+		List<Asset> assetList = new ArrayList<>();
+		when(assetRepository.findByStateAndUsers(state, user)).thenReturn(assetList);
+		
+		List<AssetResponseDto> assetDtoList = new ArrayList<>();
+		when(assetUtil.mapAssetToAssetDto(assetList)).thenReturn(assetDtoList);
+		
+		List<AssetResponseDto> actual = assetServiceImpl.getAllAssetsByStateAndUser(state);
+		assertEquals(assetDtoList, actual);
+	}
+	
+	
 }
