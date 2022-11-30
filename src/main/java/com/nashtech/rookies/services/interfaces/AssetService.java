@@ -12,13 +12,15 @@ import com.nashtech.rookies.entity.Users;
 
 public interface AssetService {
 	AssetResponseDto createAsset(CreateAssetRequestDto dto);
-    
-    List<AssetResponseDto> showAll();
+
+	List<AssetResponseDto> showAll();
 
 	void deleteAsset(Long id) throws Exception;
 
 	AssetResponseDto updateAsset(UpdateAssetRequestDto dto);
-	
+
 	AssetDetailResponseDto getAssetDetailById(Long id);
+
+	List<AssetResponseDto> getAllAssetsByStateAndUser(String state);
 
 }
