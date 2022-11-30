@@ -4,6 +4,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,5 +25,10 @@ public class AssignmentController {
 	@PostMapping
 	public ResponseEntity<?> createAssign(@Valid @RequestBody CreateAssignmentDto dto) {
 		return ResponseEntity.ok().body(assignmentService.createAssignment(dto));
+	}
+
+	@GetMapping("update/{id}")
+	public ResponseEntity<?> getUpdateAssignmentById(@PathVariable Long id) {
+		return ResponseEntity.ok().body(assignmentService.getUpdateAssignmentById(id));
 	}
 }

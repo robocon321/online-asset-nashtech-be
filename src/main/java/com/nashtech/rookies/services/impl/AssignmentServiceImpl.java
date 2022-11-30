@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.nashtech.rookies.dto.request.assignment.CreateAssignmentDto;
 import com.nashtech.rookies.dto.response.assignment.AssignmentResponseDto;
+import com.nashtech.rookies.dto.response.assignment.AssignmentUpdateResponseDto;
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Assignment;
 import com.nashtech.rookies.entity.Users;
@@ -71,10 +72,29 @@ public class AssignmentServiceImpl implements AssignmentService {
 
 		Assignment assignment = assignmentMapper.mapToAssignment(assetOptional.get(), admin, userOptional.get(),
 				dto.getNote(), state, assignedDate, nowDate);
-
+		
+		assignment.getAsset().setState("Not available");
+		
 		assignment = assignmentRepository.save(assignment);
 
 		return assignmentMapper.mapToResponseAssignment(assignment);
+	}
+
+	@Override
+	public AssignmentUpdateResponseDto getUpdateAssignmentById(Long id) {
+		Optional<Assignment> assignmentOptional = assignmentRepository.findById(id);
+
+		if (assignmentOptional.isEmpty()) {
+			throw new InvalidDataInputException("Assignment not found");
+		}
+
+		Assignment assignment = assignmentOptional.get();
+
+		if (!assignment.getState().equals("Waiting for acceptance")) {
+			throw new InvalidDataInputException("Assignment state must be Waiting for acceptance");
+		}
+
+		return assignmentMapper.mapToUpdateResponseAssignment(assignment);
 	}
 
 }

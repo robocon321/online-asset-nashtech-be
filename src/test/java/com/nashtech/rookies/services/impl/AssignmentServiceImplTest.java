@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Date;
@@ -175,12 +176,15 @@ public class AssignmentServiceImplTest {
 
 		when(assignmentMapper.mapToAssignment(asset, admin, user, dto.getNote(), state, assignedDate, nowDate))
 				.thenReturn(assignment);
+		when(assignment.getAsset()).thenReturn(asset);
 
 		when(assignmentRepository.save(assignment)).thenReturn(assignment);
 
 		when(assignmentMapper.mapToResponseAssignment(assignment)).thenReturn(expectAssignment);
 
 		AssignmentResponseDto actualAssignment = assignmentServiceImpl.createAssignment(dto);
+
+		verify(asset).setState("Not available");
 
 		assertThat(expectAssignment, is(actualAssignment));
 
