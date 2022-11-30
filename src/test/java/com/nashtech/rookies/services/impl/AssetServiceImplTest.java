@@ -2,8 +2,7 @@ package com.nashtech.rookies.services.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -273,18 +272,13 @@ public class AssetServiceImplTest {
 	}
 
 	@Test
-	void deleteAssets_ShouldThrowException_WhenAssetIsAssigned() {
+	void checkHasExistAssignment_ShouldReturnTrue_WhenAssetIsAssigned() {
 		long id = 1L;
 		when(assetRepository.findAssetById(id)).thenReturn(initAsset);
 		when(assignmentRepository.existsAssignmentByAsset_Id(id)).thenReturn(true);
 
-		ExistsAssignmentException exception = assertThrows(ExistsAssignmentException.class, () -> {
-			assetServiceImpl.deleteAsset(1L);
-		});
-		assertEquals(
-				"Cannot delete the asset because it belongs to one or more historical assignments. " +
-						"If the asset is not able to be used anymore, please update its state in <a href=/assets/edit/" + id + "> Edit Asset page </a>",
-				exception.getMessage());
+		boolean actual = assetServiceImpl.checkHasExistAssignment(id);
+		assertTrue(actual);
 	}
 
 	@Test
