@@ -2,8 +2,7 @@ package com.nashtech.rookies.services.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.nashtech.rookies.exceptions.ExistsAssignmentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,7 +20,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 import com.nashtech.rookies.dto.request.asset.UpdateAssetRequestDto;
@@ -266,22 +265,20 @@ public class AssetServiceImplTest {
 	void deleteAssets_ShouldThrowException_WhenNotFound() {
 		when(assetRepository.findAssetById(1L)).thenReturn(null);
 
-		Exception exception = assertThrows(Exception.class, () -> {
+		InvalidDataInputException exception = assertThrows(InvalidDataInputException.class, () -> {
 			assetServiceImpl.deleteAsset(1L);
 		});
 		assertEquals("Asset not found", exception.getMessage());
 	}
 
 	@Test
-	void deleteAssets_ShouldThrowException_WhenAssetIsAssigned() {
-		when(assetRepository.findAssetById(1L)).thenReturn(initAsset);
-		when(assignmentRepository.existsAssignmentByAsset_Id(1L)).thenReturn(true);
+	void checkHasExistAssignment_ShouldReturnTrue_WhenAssetIsAssigned() {
+		long id = 1L;
+		when(assetRepository.findAssetById(id)).thenReturn(initAsset);
+		when(assignmentRepository.existsAssignmentByAsset_Id(id)).thenReturn(true);
 
-		Exception exception = assertThrows(Exception.class, () -> {
-			assetServiceImpl.deleteAsset(1L);
-		});
-		assertEquals("Cannot delete the asset because it belongs to one or more historical assignments. If the asset is not able to be used anymore, please update its state in ",
-				exception.getMessage());
+		boolean actual = assetServiceImpl.checkHasExistAssignment(id);
+		assertTrue(actual);
 	}
 
 	@Test
@@ -291,7 +288,7 @@ public class AssetServiceImplTest {
 		when(assetRepository.findAssetById(1L)).thenReturn(initAsset);
 		when(assignmentRepository.existsAssignmentByAsset_Id(1L)).thenReturn(false);
 
-		Exception exception = assertThrows(Exception.class, () -> {
+		InvalidDataInputException exception = assertThrows(InvalidDataInputException.class, () -> {
 			assetServiceImpl.deleteAsset(1L);
 		});
 		assertEquals("State of asset is assigned", exception.getMessage());
@@ -319,10 +316,10 @@ public class AssetServiceImplTest {
 	void getAssetDetail_ShouldReturnAssetDetail() {
 		Asset asset = new Asset();
 		when(assetRepository.findById(2l)).thenReturn(Optional.of(asset));
-		
+
 		AssetDetailResponseDto expectedAsset = mock(AssetDetailResponseDto.class);
 		when(assetMapper.mapToDetailDto(asset)).thenReturn(expectedAsset);
-		
+
 		List<Assignment> assignmentList = new ArrayList<>();
 		when(assignmentRepository.findByAsset(asset)).thenReturn(assignmentList);
 		List<AssignmentResponseDto> assignmentDtoList = new ArrayList<>();
@@ -331,5 +328,25 @@ public class AssetServiceImplTest {
 		AssetDetailResponseDto actualAsset = assetServiceImpl.getAssetDetailById(2l);
 		verify(expectedAsset).setAssignments(assignmentDtoList);
 		assertThat(expectedAsset, is(actualAsset));
-	}	
+	}
+	
+	@Test
+	void getAllAssetsByStateAndUser_ShouldReturnAllAssetsManagedByUser_WhenDataValid() {
+		String state = "Available";
+		Users user = mock(Users.class);
+		
+		when(userUtil.getIdFromUserPrinciple()).thenReturn(2l);
+		when(usersRepository.findById(2l)).thenReturn(Optional.of(user));	
+		
+		List<Asset> assetList = new ArrayList<>();
+		when(assetRepository.findByStateAndUsers(state, user)).thenReturn(assetList);
+		
+		List<AssetResponseDto> assetDtoList = new ArrayList<>();
+		when(assetUtil.mapAssetToAssetDto(assetList)).thenReturn(assetDtoList);
+		
+		List<AssetResponseDto> actual = assetServiceImpl.getAllAssetsByStateAndUser(state);
+		assertEquals(assetDtoList, actual);
+	}
+	
+	
 }

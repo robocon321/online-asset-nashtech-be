@@ -1,10 +1,10 @@
 package com.nashtech.rookies.services.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.nashtech.rookies.exceptions.ExistsAssignmentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,6 @@ import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 import com.nashtech.rookies.dto.request.asset.UpdateAssetRequestDto;
 import com.nashtech.rookies.dto.response.asset.AssetDetailResponseDto;
 import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
-import com.nashtech.rookies.dto.response.asset.AssignmentResponseDto;
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Assignment;
 import com.nashtech.rookies.entity.Category;
@@ -41,7 +40,7 @@ public class AssetServiceImpl implements AssetService {
 	UserUtil userUtil;
 	AssetUtil assetUtil;
 	UsersRepository usersRepository;
-	
+
 	@Autowired
 	public AssetServiceImpl(AssetRepository assetRepository, UserUtil userUtil, CategoryRepository categoryRepository,
 			CategoryMapper categoryMapper, AssetMapper assetMapper, AssetUtil assetUtil,
@@ -56,10 +55,11 @@ public class AssetServiceImpl implements AssetService {
 		this.usersRepository = usersRepository;
 	}
 
-	//	region Show information
+	// region Show information
 	@Override
-	public List<AssetResponseDto> showAll(){
-		UserPrinciple userPrinciple= (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	public List<AssetResponseDto> showAll() {
+		UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();
 		Users users = usersRepository.findUsersById(userPrinciple.getId());
 		List<Asset> assetList = assetRepository.findByUsers(users);
 		List<AssetResponseDto> assetDtoList = assetUtil.mapAssetToAssetDto(assetList);
@@ -80,9 +80,9 @@ public class AssetServiceImpl implements AssetService {
 
 		return result;
 	}
-	//endregion
+	// endregion
 
-	//	region Create new asset
+	// region Create new asset
 	@Override
 	public AssetResponseDto createAsset(CreateAssetRequestDto dto) {
 
@@ -132,9 +132,9 @@ public class AssetServiceImpl implements AssetService {
 
 		return assetMapper.mapToDto(asset);
 	}
-	//	endregion
+	// endregion
 
-	//  region  Update asset
+	// region Update asset
 	@Override
 	public AssetResponseDto updateAsset(UpdateAssetRequestDto dto) {
 
@@ -159,28 +159,43 @@ public class AssetServiceImpl implements AssetService {
 
 		return assetMapper.mapToDto(asset);
 	}
-	//	endregion
+	// endregion
 
 	//  region  Delete asset
+
+	@Override
+	public boolean checkHasExistAssignment(Long id) {
+		return assignmentRepository.existsAssignmentByAsset_Id(id);
+	}
+
 	@Override
 	public void deleteAsset(Long id) throws Exception {
 		Asset asset = assetRepository.findAssetById(id);
 
 		if (asset == null) {
-			throw new Exception("Asset not found");
-		}
-
-		if (assignmentRepository.existsAssignmentByAsset_Id(id)) {
-			throw new Exception("Cannot delete the asset because it belongs to one or more historical assignments. If the asset is not able to be used anymore, please update its state in ");
+			throw new InvalidDataInputException("Asset not found");
 		}
 
 		if (asset.getState().equals("Assigned")) {
-			throw new Exception("State of asset is assigned");
+			throw new InvalidDataInputException("State of asset is assigned");
 		}
 
 		assetRepository.delete(asset);
 	}
-	//	endregion
+	// endregion
 
+	@Override
+	public List<AssetResponseDto> getAllAssetsByStateAndUser(String state) {
+
+		Long userId = userUtil.getIdFromUserPrinciple();
+
+		Optional<Users> userOptional = usersRepository.findById(userId);
+
+		List<Asset> assetList = assetRepository.findByStateAndUsers(state, userOptional.get());
+
+		List<AssetResponseDto> assetDtoList = assetUtil.mapAssetToAssetDto(assetList);
+
+		return assetDtoList;
+	}
 
 }

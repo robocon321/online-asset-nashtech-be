@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Builder
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,6 +22,8 @@ public class Assignment {
     private Date assignedDate;
     private Date returnedDate;
     private Date createdDate;
+
+    private boolean isDeleted = false;
 
     @ManyToOne
     private Users assignedBy;
