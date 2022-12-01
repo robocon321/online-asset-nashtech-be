@@ -1,22 +1,21 @@
 package com.nashtech.rookies;
 
-import com.nashtech.rookies.entity.Asset;
-import com.nashtech.rookies.entity.Assignment;
-import com.nashtech.rookies.entity.Category;
-import com.nashtech.rookies.entity.Users;
-import com.nashtech.rookies.repository.AssetRepository;
-import com.nashtech.rookies.repository.AssignmentRepository;
-import com.nashtech.rookies.repository.CategoryRepository;
-import com.nashtech.rookies.repository.UsersRepository;
+import com.nashtech.rookies.entity.*;
+import com.nashtech.rookies.repository.*;
 
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
 @Configuration
@@ -29,12 +28,14 @@ public class initDatabase {
     CommandLineRunner loadDatabase(UsersRepository usersRepository,
                                    AssetRepository assetRepository,
                                    CategoryRepository categoryRepository,
-                                   AssignmentRepository assignmentRepository) {
+                                   AssignmentRepository assignmentRepository,
+                                   ReturnRequestRepository returnRequestRepository) {
         return args -> {
             usersRepository.deleteAll();
             assetRepository.deleteAll();
             categoryRepository.deleteAll();
             assignmentRepository.deleteAll();
+            returnRequestRepository.deleteAll();
 
             //            region Users
             for(int i = 1; i <= 30; i++) {
@@ -45,7 +46,7 @@ public class initDatabase {
                         "dev",
                         "cute",
                         randomGender(),
-                        new Date(),
+                        randomDob(),
                         renderLocationUser(i),
                         new Date(),
                         "ADMIN",
@@ -61,7 +62,7 @@ public class initDatabase {
                         "dev",
                         "cute",
                         randomGender(),
-                        new Date(),
+                        randomDob(),
                         renderLocationUser(i),
                         new Date(),
                         "STAFF",
@@ -132,6 +133,14 @@ public class initDatabase {
             }
             //            endregion
 
+            for(int i = 0; i <= 30; i++){
+                returnRequestRepository.save(new ReturnRequest(
+                        randomDate(),
+                        randomStateRequestReturn(),
+                        assignmentRepository.findById((long) new Random().nextInt(30) + 1 ).get()
+                ));
+            }
+
         };
     }
 
@@ -167,6 +176,33 @@ public class initDatabase {
     private boolean randomGender(){
         boolean[] states = {true, false};
         return states[new Random().nextInt(states.length)];
+    }
+
+    private Date randomDate() throws ParseException {
+        Random random = new Random();
+        int minDay = (int) LocalDate.of(2020, 1, 1).toEpochDay();
+        int maxDay = (int) LocalDate.of(2022, 1, 1).toEpochDay();
+        long randomDay = minDay + random.nextInt(maxDay - minDay);
+
+        LocalDate randomBirthDate = LocalDate.ofEpochDay(randomDay);
+
+        return java.sql.Date.valueOf(randomBirthDate);
+    }
+
+    private Date randomDob() throws ParseException {
+        Random random = new Random();
+        int minDay = (int) LocalDate.of(1990, 1, 1).toEpochDay();
+        int maxDay = (int) LocalDate.of(2000, 1, 1).toEpochDay();
+        long randomDay = minDay + random.nextInt(maxDay - minDay);
+
+        LocalDate randomBirthDate = LocalDate.ofEpochDay(randomDay);
+
+        return java.sql.Date.valueOf(randomBirthDate);
+    }
+
+    private String randomStateRequestReturn(){
+    	String[] states = {"Accepted", "Waiting for acceptance", "Declined"};
+    	return states[new Random().nextInt(states.length)];
     }
 
 }
