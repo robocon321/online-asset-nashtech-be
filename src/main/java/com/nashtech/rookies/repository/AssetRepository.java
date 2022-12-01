@@ -14,7 +14,7 @@ public interface AssetRepository extends JpaRepository<Asset, Long> {
 
     List<Asset> findByCategory(Category category);
     
-    List<Asset> findByUsers(Users users);
+    List<Asset> findByUsersOrderByCodeAsc(Users users);
     
     List<Asset> findByStateAndUsers(String state, Users users);
 
