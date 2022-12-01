@@ -412,7 +412,7 @@ public class UsersServiceImplTest {
 		assertEquals("0",usersServiceImpl.checkValidAssigmentUser(userId));
 	}
 
-	
+
 	@Test
 	void whenDisableUserHaveHistory(){
 		Long userId = 1L;
