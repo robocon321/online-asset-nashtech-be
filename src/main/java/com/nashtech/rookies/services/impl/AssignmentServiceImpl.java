@@ -123,9 +123,19 @@ public class AssignmentServiceImpl implements AssignmentService {
 			throw new InvalidDataInputException("Asset not found");
 		}
 
+		Asset asset = assetOptional.get();
+
+		if (!asset.getState().equals("Available")
+				&& (dto.getAssetId() != assignmentOptional.get().getAsset().getId())) {
+			throw new InvalidDataInputException("Asset state must be Available");
+		}
+
 		Long adminId = userUtil.getIdFromUserPrinciple();
 
 		Users admin = usersRepository.findUsersById(adminId);
+
+		asset.setState("Not available");
+		assignmentOptional.get().getAsset().setState("Available");
 
 		Assignment assignment = assignmentOptional.get();
 

@@ -43,7 +43,6 @@ public class AssignmentServiceImplTest {
 		assignmentRepository = mock(AssignmentRepository.class);
 		usersRepository = mock(UsersRepository.class);
 		assetRepository = mock(AssetRepository.class);
-
 		userUtil = mock(UserUtil.class);
 		assignmentMapper = mock(AssignmentMapper.class);
 
@@ -310,13 +309,8 @@ public class AssignmentServiceImplTest {
 		Date assignedDate = mock(Date.class);
 		AssignmentResponseDto expected = mock(AssignmentResponseDto.class);
 
-		UpdateAssignmentDto dto = UpdateAssignmentDto.builder()
-				.assignedDate("26/02/2022")
-				.assetId(1l)
-				.userId(2l)
-				.note("Note")
-				.id(3l)
-				.build();
+		UpdateAssignmentDto dto = UpdateAssignmentDto.builder().assignedDate("26/02/2022").assetId(1l).userId(2l)
+				.note("Note").id(3l).build();
 
 		when(userUtil.isValidDate("26/02/2022")).thenReturn(true);
 
@@ -331,19 +325,19 @@ public class AssignmentServiceImplTest {
 		when(usersRepository.findUsersById(3l)).thenReturn(admin);
 
 		when(userUtil.convertStrDateToObDate(dto.getAssignedDate())).thenReturn(assignedDate);
-		
+
 		when(assignmentRepository.save(assignment)).thenReturn(assignment);
-		
+
 		when(assignmentMapper.mapToResponseAssignment(assignment)).thenReturn(expected);
-		
+
 		AssignmentResponseDto actual = assignmentServiceImpl.updateAssignment(dto);
-		
+
 		verify(assignment).setAsset(asset);
 		verify(assignment).setAssignedTo(user);
 		verify(assignment).setAssignedBy(admin);
 		verify(assignment).setAssignedDate(assignedDate);
 		verify(assignment).setNote("Note");
-		
+
 		assertThat(expected, is(actual));
 	}
 }
