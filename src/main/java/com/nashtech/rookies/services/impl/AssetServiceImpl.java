@@ -61,7 +61,7 @@ public class AssetServiceImpl implements AssetService {
 		UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication()
 				.getPrincipal();
 		Users users = usersRepository.findUsersById(userPrinciple.getId());
-		List<Asset> assetList = assetRepository.findByUsers(users);
+		List<Asset> assetList = assetRepository.findByUsersOrderByCodeAsc(users);
 		List<AssetResponseDto> assetDtoList = assetUtil.mapAssetToAssetDto(assetList);
 		return assetDtoList;
 	}
