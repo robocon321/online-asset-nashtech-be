@@ -19,6 +19,7 @@ import java.util.List;
 @Service
 public class UsersServiceImpl implements com.nashtech.rookies.services.interfaces.UsersService {
 
+
 	UsersRepository usersRepository;
 	UserMapper userMapper;
 	UserUtil userUtil;
@@ -223,8 +224,8 @@ public class UsersServiceImpl implements com.nashtech.rookies.services.interface
 		if(user == null){
 			return "Not Found";
 		}
-		List<Assignment> listValidAsmBy = assignmentRepository.findAllByStateIsAndAssignedBy("Accepted",user);
-		List<Assignment> listValidAsmTo = assignmentRepository.findAllByStateIsAndAssignedTo("Accepted",user);
+		List<Assignment> listValidAsmBy = assignmentRepository.checkAssignmentUserAssignedBy(userId);
+		List<Assignment> listValidAsmTo = assignmentRepository.checkAssignmentUserAssignedTo(userId);
 
 		if(!listValidAsmBy.isEmpty()) {return "1";}
 		if(!listValidAsmTo.isEmpty()) {return "1";}

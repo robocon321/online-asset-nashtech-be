@@ -385,7 +385,7 @@ public class UsersServiceImplTest {
 		List<Assignment> list = new ArrayList<>();
 		Assignment asm = new Assignment();
 		list.add(asm);
-		when(assignmentRepository.findAllByStateIsAndAssignedBy("Accepted",user)).thenReturn(list);
+		when(assignmentRepository.checkAssignmentUserAssignedBy(userId)).thenReturn(list);
 		assertEquals("1",usersServiceImpl.checkValidAssigmentUser(userId));
 	}
 
@@ -397,7 +397,7 @@ public class UsersServiceImplTest {
 		List<Assignment> list = new ArrayList<>();
 		Assignment asm = new Assignment();
 		list.add(asm);
-		when(assignmentRepository.findAllByStateIsAndAssignedTo("Accepted",user)).thenReturn(list);
+		when(assignmentRepository.checkAssignmentUserAssignedTo(userId)).thenReturn(list);
 		assertEquals("1",usersServiceImpl.checkValidAssigmentUser(userId));
 	}
 	@Test
