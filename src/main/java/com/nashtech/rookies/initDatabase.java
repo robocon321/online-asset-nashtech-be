@@ -46,7 +46,7 @@ public class initDatabase {
                         "dev",
                         "cute",
                         randomGender(),
-                        new Date(),
+                        randomDob(),
                         renderLocationUser(i),
                         new Date(),
                         "ADMIN",
@@ -62,7 +62,7 @@ public class initDatabase {
                         "dev",
                         "cute",
                         randomGender(),
-                        new Date(),
+                        randomDob(),
                         renderLocationUser(i),
                         new Date(),
                         "STAFF",
@@ -182,6 +182,17 @@ public class initDatabase {
         Random random = new Random();
         int minDay = (int) LocalDate.of(2020, 1, 1).toEpochDay();
         int maxDay = (int) LocalDate.of(2022, 1, 1).toEpochDay();
+        long randomDay = minDay + random.nextInt(maxDay - minDay);
+
+        LocalDate randomBirthDate = LocalDate.ofEpochDay(randomDay);
+
+        return java.sql.Date.valueOf(randomBirthDate);
+    }
+
+    private Date randomDob() throws ParseException {
+        Random random = new Random();
+        int minDay = (int) LocalDate.of(1990, 1, 1).toEpochDay();
+        int maxDay = (int) LocalDate.of(2000, 1, 1).toEpochDay();
         long randomDay = minDay + random.nextInt(maxDay - minDay);
 
         LocalDate randomBirthDate = LocalDate.ofEpochDay(randomDay);
