@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import com.nashtech.rookies.dto.request.assignment.CreateAssignmentDto;
 import com.nashtech.rookies.dto.response.assignment.AssignmentResponseDto;
+import com.nashtech.rookies.dto.response.assignment.AssignmentUpdateResponseDto;
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Assignment;
 import com.nashtech.rookies.entity.Users;
@@ -187,6 +188,45 @@ public class AssignmentServiceImplTest {
 		verify(asset).setState("Not available");
 
 		assertThat(expectAssignment, is(actualAssignment));
+
+	}
+
+	@Test
+	void getUpdateAssignmentById_ShouldThrowInvalidDataInputException_WhenIdInValid() {
+
+		when(assignmentRepository.findById(2l)).thenReturn(Optional.empty());
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.getUpdateAssignmentById(2l);
+		});
+		assertEquals("Assignment not found", actualException.getMessage());
+	}
+
+	@Test
+	void getUpdateAssignmentById_ShouldThrowInvalidDataInputException_WhenStatusInValid() {
+
+		Assignment assignment = Assignment.builder().state("Hello state").build();
+
+		when(assignmentRepository.findById(2l)).thenReturn(Optional.of(assignment));
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.getUpdateAssignmentById(2l);
+		});
+		assertEquals("Assignment state must be Waiting for acceptance", actualException.getMessage());
+	}
+
+	@Test
+	void getUpdateAssignmentById_ShouldReturnData_WhenDataValid() {
+
+		Assignment assignment = Assignment.builder().state("Waiting for acceptance").build();
+		AssignmentUpdateResponseDto expectedAssignment = mock(AssignmentUpdateResponseDto.class);
+		when(assignmentRepository.findById(2l)).thenReturn(Optional.of(assignment));
+
+		when(assignmentMapper.mapToUpdateResponseAssignment(assignment)).thenReturn(expectedAssignment);
+
+		AssignmentUpdateResponseDto actualAssignment = assignmentServiceImpl.getUpdateAssignmentById(2l);
+
+		assertThat(expectedAssignment, is(actualAssignment));
 
 	}
 
