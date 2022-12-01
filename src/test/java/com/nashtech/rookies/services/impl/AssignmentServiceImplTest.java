@@ -7,9 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
+import com.nashtech.rookies.security.userprincal.UserPrinciple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,12 +28,19 @@ import com.nashtech.rookies.repository.AssetRepository;
 import com.nashtech.rookies.repository.AssignmentRepository;
 import com.nashtech.rookies.repository.UsersRepository;
 import com.nashtech.rookies.utils.UserUtil;
+import org.mockito.Mockito;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class AssignmentServiceImplTest {
 	AssignmentRepository assignmentRepository;
 	UsersRepository usersRepository;
 	AssetRepository assetRepository;
+	Authentication authentication;
 
+
+	UserPrinciple userPrinciple;
 	UserUtil userUtil;
 	AssignmentMapper assignmentMapper;
 
@@ -40,7 +51,8 @@ public class AssignmentServiceImplTest {
 		assignmentRepository = mock(AssignmentRepository.class);
 		usersRepository = mock(UsersRepository.class);
 		assetRepository = mock(AssetRepository.class);
-
+		authentication = mock(Authentication.class);
+		userPrinciple=mock(UserPrinciple.class);
 		userUtil = mock(UserUtil.class);
 		assignmentMapper = mock(AssignmentMapper.class);
 
@@ -183,6 +195,40 @@ public class AssignmentServiceImplTest {
 		AssignmentResponseDto actualAssignment = assignmentServiceImpl.createAssignment(dto);
 
 		assertThat(expectAssignment, is(actualAssignment));
+
+	}
+	@Test
+	void whenUserNotHaveAnyAssignment(){
+		Authentication authentication = mock(Authentication.class);
+		SecurityContext securityContext = mock(SecurityContext.class);
+		UserPrinciple userPrinciple1 = new UserPrinciple();
+		when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		when(authentication.getPrincipal()).thenReturn(userPrinciple1);
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.getListAssignmentofUser();
+		});
+		assertEquals("Not found assignment", actualException.getMessage());
+	}
+
+	@Test
+	void whenUserGetListAsmShouldReturnList(){
+		Authentication authentication = mock(Authentication.class);
+		SecurityContext securityContext = mock(SecurityContext.class);
+		UserPrinciple userPrinciple1 = new UserPrinciple();
+		when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		when(authentication.getPrincipal()).thenReturn(userPrinciple1);
+		List<Assignment> assignmentList = new ArrayList<>();
+		Assignment assignment= new Assignment();
+		assignmentList.add(assignment);
+		assignmentList.add(assignment);
+		when(assignmentRepository.getAllAssignmentOfUser(Mockito.any(Timestamp.class),Mockito.any())).thenReturn(assignmentList);
+
+		List<AssignmentResponseDto> assignmentResponseDtos = new ArrayList<>();
+		when(assignmentMapper.mapListAssignmentEntityToDto(assignmentList)).thenReturn(assignmentResponseDtos);
+		assertEquals(assignmentResponseDtos,assignmentServiceImpl.getListAssignmentofUser());
 
 	}
 

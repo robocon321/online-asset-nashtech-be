@@ -1,8 +1,12 @@
 package com.nashtech.rookies.services.impl;
 
+import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
+import com.nashtech.rookies.security.userprincal.UserPrinciple;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.nashtech.rookies.dto.request.assignment.CreateAssignmentDto;
@@ -75,6 +79,20 @@ public class AssignmentServiceImpl implements AssignmentService {
 		assignment = assignmentRepository.save(assignment);
 
 		return assignmentMapper.mapToResponseAssignment(assignment);
+	}
+
+	@Override
+	public List<AssignmentResponseDto> getListAssignmentofUser(){
+		UserPrinciple userPrinciple= (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		List<Assignment> assignmentList = assignmentRepository.getAllAssignmentOfUser(timestamp,userPrinciple.getId());
+		if(assignmentList.size()>0){
+			return assignmentMapper.mapListAssignmentEntityToDto(assignmentList);
+		}
+		else {
+			throw new InvalidDataInputException("Not found assignment");
+		}
+
 	}
 
 }

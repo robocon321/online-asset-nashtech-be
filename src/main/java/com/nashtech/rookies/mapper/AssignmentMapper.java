@@ -1,6 +1,8 @@
 package com.nashtech.rookies.mapper;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -22,10 +24,16 @@ public class AssignmentMapper {
 				.id(assignment.getId())
 				.assetCode(assignment.getAsset().getCode())
 				.assetName(assignment.getAsset().getName())
+				.categoryName(assignment.getAsset().getCategory().getName())
 				.assignedTo(assignment.getAssignedTo().getUsername())
 				.assignedBy(assignment.getAssignedBy().getUsername())
 				.assignedDate(assignment.getAssignedDate())
 				.state(assignment.getState())
 				.build();
+	}
+
+	public List<AssignmentResponseDto> mapListAssignmentEntityToDto(List<Assignment> assignmentList){
+		return assignmentList.stream().map(assignment ->mapToResponseAssignment(assignment)).collect(Collectors.toList());
+
 	}
 }
