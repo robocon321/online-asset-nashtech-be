@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.nashtech.rookies.dto.response.assignment.AssignmentDetailResponseDto;
 import com.nashtech.rookies.security.userprincal.UserPrinciple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -230,6 +231,45 @@ public class AssignmentServiceImplTest {
 		when(assignmentMapper.mapListAssignmentEntityToDto(assignmentList)).thenReturn(assignmentResponseDtos);
 		assertEquals(assignmentResponseDtos,assignmentServiceImpl.getListAssignmentofUser());
 
+	}
+
+	@Test
+	void whenGetAssignmentDetailNotFoundShouldReturnException(){
+		Long id = 1L;
+//		Assignment assignment = new Assignment();
+//		Optional<Assignment> checkAssignment= Optional.of(assignment);
+//		when( assignmentRepository.findById(id)).thenReturn(checkAssignment);
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.getAssignmentDetail(id);
+		});
+		assertEquals("Not found this assignment", actualException.getMessage());
+
+	}
+	@Test
+	void whenFoundAsmButIsDeleted(){
+		Long id = 1L;
+		Assignment assignment = new Assignment();
+		Optional<Assignment> checkAssignment= Optional.of(assignment);
+		when( assignmentRepository.findById(id)).thenReturn(checkAssignment);
+		assignment=checkAssignment.get();
+		assignment.setDeleted(true);
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.getAssignmentDetail(id);
+		});
+		assertEquals("This assignment is deleted", actualException.getMessage());
+
+	}
+	@Test
+	void whenFoundAsmValid(){
+		Long id = 1L;
+		Assignment assignment = new Assignment();
+		Optional<Assignment> checkAssignment= Optional.of(assignment);
+		when( assignmentRepository.findById(id)).thenReturn(checkAssignment);
+		assignment=checkAssignment.get();
+		assignment.setDeleted(false);
+		AssignmentDetailResponseDto dto = new AssignmentDetailResponseDto();
+		when(assignmentMapper.mapToResponseAssigmentDetail(assignment)).thenReturn(dto);
+		assertEquals(dto,assignmentServiceImpl.getAssignmentDetail(id));
 	}
 
 }

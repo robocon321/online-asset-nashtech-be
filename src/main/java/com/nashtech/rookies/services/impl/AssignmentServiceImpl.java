@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.nashtech.rookies.dto.response.assignment.AssignmentDetailResponseDto;
 import com.nashtech.rookies.security.userprincal.UserPrinciple;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -92,7 +93,19 @@ public class AssignmentServiceImpl implements AssignmentService {
 		else {
 			throw new InvalidDataInputException("Not found assignment");
 		}
+	}
 
+	@Override
+	public AssignmentDetailResponseDto getAssignmentDetail(Long id){
+		Optional<Assignment> checkAssignment = assignmentRepository.findById(id);
+		if(!checkAssignment.isPresent()){
+			throw new InvalidDataInputException("Not found this assignment");
+		}
+		Assignment assignment = checkAssignment.get();
+		if(assignment.isDeleted()){
+			throw new InvalidDataInputException("This assignment is deleted");
+		}
+		return assignmentMapper.mapToResponseAssigmentDetail(assignment);
 	}
 
 }

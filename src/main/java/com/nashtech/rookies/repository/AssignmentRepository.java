@@ -26,4 +26,5 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
     @Query(value = "select a.* from assignment a where a.assigned_date <=  ?1 and a.is_deleted = false  and a.assigned_to_id =?2 and a.state != 'Declined' ",nativeQuery = true)
     List<Assignment> getAllAssignmentOfUser(Timestamp date,Long id);
+
 }

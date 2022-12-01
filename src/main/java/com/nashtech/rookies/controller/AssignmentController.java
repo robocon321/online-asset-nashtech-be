@@ -23,7 +23,12 @@ public class AssignmentController {
 	}
 
 	@GetMapping
-	public ResponseEntity<?> getAsignmentOfUser(){
+	public ResponseEntity<?> getAssignmentOfUser(){
 		return ResponseEntity.ok().body(assignmentService.getListAssignmentofUser());
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<?> getAssignmentDetails(@PathVariable Long id){
+		return ResponseEntity.ok().body(assignmentService.getAssignmentDetail(id));
 	}
 }
