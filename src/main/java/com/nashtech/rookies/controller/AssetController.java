@@ -59,9 +59,16 @@ public class AssetController {
 	}
 
 //	Delete asset
-	@DeleteMapping
-	public ResponseEntity<?> deleteAsset(@RequestParam Long id) throws Exception {
-		assetService.deleteAsset(id);
-		return ResponseEntity.ok().body("Delete asset successfully");
+	@DeleteMapping("/checkHasExistAssignment")
+	public ResponseEntity<?> checkExistAssign(@RequestParam Long id){
+		return ResponseEntity.ok().body(assetService.checkHasExistAssignment(id));
 	}
+
+	@DeleteMapping()
+	public ResponseEntity<?> deleteAssign(@RequestParam Long id) throws Exception {
+		assetService.deleteAsset(id);
+		return ResponseEntity.ok().body("Delete successfully");
+	}
+
+
 }

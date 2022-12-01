@@ -4,9 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import com.nashtech.rookies.exceptions.ExistsAssignmentException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
@@ -24,7 +22,6 @@ import com.nashtech.rookies.repository.AssetRepository;
 import com.nashtech.rookies.repository.AssignmentRepository;
 import com.nashtech.rookies.repository.CategoryRepository;
 import com.nashtech.rookies.repository.UsersRepository;
-import com.nashtech.rookies.security.userprincal.UserPrinciple;
 import com.nashtech.rookies.services.interfaces.AssetService;
 import com.nashtech.rookies.utils.AssetUtil;
 import com.nashtech.rookies.utils.UserUtil;
@@ -58,10 +55,9 @@ public class AssetServiceImpl implements AssetService {
 	// region Show information
 	@Override
 	public List<AssetResponseDto> showAll() {
-		UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication()
-				.getPrincipal();
-		Users users = usersRepository.findUsersById(userPrinciple.getId());
-		List<Asset> assetList = assetRepository.findByUsers(users);
+		Long id = userUtil.getIdFromUserPrinciple();
+		Users users = usersRepository.findUsersById(id);
+		List<Asset> assetList = assetRepository.findByUsersOrderByCodeAsc(users);
 		List<AssetResponseDto> assetDtoList = assetUtil.mapAssetToAssetDto(assetList);
 		return assetDtoList;
 	}
@@ -162,21 +158,18 @@ public class AssetServiceImpl implements AssetService {
 	// endregion
 
 	// region Delete asset
+
+	@Override
+	public boolean checkHasExistAssignment(Long id) {
+		return assignmentRepository.existsAssignmentByAsset_Id(id);
+	}
+
 	@Override
 	public void deleteAsset(Long id) throws Exception {
 		Asset asset = assetRepository.findAssetById(id);
 
 		if (asset == null) {
 			throw new InvalidDataInputException("Asset not found");
-		}
-
-		if (assignmentRepository.existsAssignmentByAsset_Id(id)) {
-
-			throw new ExistsAssignmentException(
-					"Cannot delete the asset because it belongs to one or more historical assignments. "
-							+ "If the asset is not able to be used anymore, please update its state in <a href=/assets/edit/"
-							+ id + "> Edit Asset page </a>");
-
 		}
 
 		if (asset.getState().equals("Assigned")) {
