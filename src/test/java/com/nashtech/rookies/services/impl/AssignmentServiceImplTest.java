@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.nashtech.rookies.dto.request.assignment.CreateAssignmentDto;
+import com.nashtech.rookies.dto.request.assignment.UpdateAssignmentDto;
 import com.nashtech.rookies.dto.response.assignment.AssignmentResponseDto;
 import com.nashtech.rookies.dto.response.assignment.AssignmentUpdateResponseDto;
 import com.nashtech.rookies.entity.Asset;
@@ -230,4 +231,119 @@ public class AssignmentServiceImplTest {
 
 	}
 
+	@Test
+	void updateAssignment_ShouldThrowInvalidDataInputException_WhenAssignedDateInValid() {
+
+		UpdateAssignmentDto dto = UpdateAssignmentDto.builder().assignedDate("26/02/2022").build();
+
+		when(userUtil.isValidDate("26/02/2022")).thenReturn(false);
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.updateAssignment(dto);
+		});
+		assertEquals("AssignedDate is invalid", actualException.getMessage());
+	}
+
+	@Test
+	void updateAssignment_ShouldThrowInvalidDataInputException_WhenAssignmentInValid() {
+
+		UpdateAssignmentDto dto = UpdateAssignmentDto.builder().assignedDate("26/02/2022").build();
+
+		when(userUtil.isValidDate("26/02/2022")).thenReturn(true);
+
+		when(assignmentRepository.findById(dto.getId())).thenReturn(Optional.empty());
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.updateAssignment(dto);
+		});
+		assertEquals("Assignment not found", actualException.getMessage());
+	}
+
+	@Test
+	void updateAssignment_ShouldThrowInvalidDataInputException_WhenUserInValid() {
+
+		Assignment assignment = mock(Assignment.class);
+
+		UpdateAssignmentDto dto = UpdateAssignmentDto.builder().assignedDate("26/02/2022").build();
+
+		when(userUtil.isValidDate("26/02/2022")).thenReturn(true);
+
+		when(assignmentRepository.findById(dto.getId())).thenReturn(Optional.of(assignment));
+
+		when(usersRepository.findById(dto.getUserId())).thenReturn(Optional.empty());
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.updateAssignment(dto);
+		});
+		assertEquals("User not found", actualException.getMessage());
+	}
+
+	@Test
+	void updateAssignment_ShouldThrowInvalidDataInputException_WhenAssetInValid() {
+
+		Assignment assignment = mock(Assignment.class);
+		Users user = mock(Users.class);
+
+		UpdateAssignmentDto dto = UpdateAssignmentDto.builder().assignedDate("26/02/2022").assetId(2l).build();
+
+		when(userUtil.isValidDate("26/02/2022")).thenReturn(true);
+
+		when(assignmentRepository.findById(dto.getId())).thenReturn(Optional.of(assignment));
+
+		when(usersRepository.findById(dto.getUserId())).thenReturn(Optional.of(user));
+
+		when(assetRepository.findById(dto.getAssetId())).thenReturn(Optional.empty());
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.updateAssignment(dto);
+		});
+		assertEquals("Asset not found", actualException.getMessage());
+	}
+
+	@Test
+	void updateAssignment_ShouldReturnData_WhenDataValid() {
+
+		Assignment assignment = mock(Assignment.class);
+		Users user = mock(Users.class);
+		Users admin = mock(Users.class);
+		Asset asset = mock(Asset.class);
+		Date assignedDate = mock(Date.class);
+		AssignmentResponseDto expected = mock(AssignmentResponseDto.class);
+
+		UpdateAssignmentDto dto = UpdateAssignmentDto.builder()
+				.assignedDate("26/02/2022")
+				.assetId(1l)
+				.userId(2l)
+				.note("Note")
+				.id(3l)
+				.build();
+
+		when(userUtil.isValidDate("26/02/2022")).thenReturn(true);
+
+		when(assignmentRepository.findById(3l)).thenReturn(Optional.of(assignment));
+
+		when(usersRepository.findById(2l)).thenReturn(Optional.of(user));
+
+		when(assetRepository.findById(1l)).thenReturn(Optional.of(asset));
+
+		when(userUtil.getIdFromUserPrinciple()).thenReturn(3l);
+
+		when(usersRepository.findUsersById(3l)).thenReturn(admin);
+
+		when(userUtil.convertStrDateToObDate(dto.getAssignedDate())).thenReturn(assignedDate);
+		
+		when(assignmentRepository.save(assignment)).thenReturn(assignment);
+		
+		when(assignmentMapper.mapToResponseAssignment(assignment)).thenReturn(expected);
+		
+		AssignmentResponseDto actual = assignmentServiceImpl.updateAssignment(dto);
+		
+		verify(assignment).setAsset(asset);
+		verify(assignment).setAssignedTo(user);
+		verify(assignment).setAssignedBy(admin);
+		verify(assignment).setAssignedDate(assignedDate);
+		verify(assignment).setNote("Note");
+		
+		assertThat(expected, is(actual));
+	}
 }

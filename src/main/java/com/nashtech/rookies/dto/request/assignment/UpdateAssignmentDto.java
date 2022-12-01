@@ -12,7 +12,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class CreateAssignmentDto {
+public class UpdateAssignmentDto {
+	private Long id;
 
 	@NotNull(message = "User is required.")
 	private Long userId;

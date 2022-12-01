@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.nashtech.rookies.dto.request.assignment.CreateAssignmentDto;
+import com.nashtech.rookies.dto.request.assignment.UpdateAssignmentDto;
 import com.nashtech.rookies.dto.response.assignment.AssignmentResponseDto;
 import com.nashtech.rookies.dto.response.assignment.AssignmentUpdateResponseDto;
 import com.nashtech.rookies.entity.Asset;
@@ -72,9 +73,9 @@ public class AssignmentServiceImpl implements AssignmentService {
 
 		Assignment assignment = assignmentMapper.mapToAssignment(assetOptional.get(), admin, userOptional.get(),
 				dto.getNote(), state, assignedDate, nowDate);
-		
+
 		assignment.getAsset().setState("Not available");
-		
+
 		assignment = assignmentRepository.save(assignment);
 
 		return assignmentMapper.mapToResponseAssignment(assignment);
@@ -95,6 +96,50 @@ public class AssignmentServiceImpl implements AssignmentService {
 		}
 
 		return assignmentMapper.mapToUpdateResponseAssignment(assignment);
+	}
+
+	@Override
+	public AssignmentResponseDto updateAssignment(UpdateAssignmentDto dto) {
+
+		if (!userUtil.isValidDate(dto.getAssignedDate())) {
+			throw new InvalidDataInputException("AssignedDate is invalid");
+		}
+
+		Optional<Assignment> assignmentOptional = assignmentRepository.findById(dto.getId());
+
+		if (assignmentOptional.isEmpty()) {
+			throw new InvalidDataInputException("Assignment not found");
+		}
+
+		Optional<Users> userOptional = usersRepository.findById(dto.getUserId());
+
+		if (userOptional.isEmpty()) {
+			throw new InvalidDataInputException("User not found");
+		}
+
+		Optional<Asset> assetOptional = assetRepository.findById(dto.getAssetId());
+
+		if (assetOptional.isEmpty()) {
+			throw new InvalidDataInputException("Asset not found");
+		}
+
+		Long adminId = userUtil.getIdFromUserPrinciple();
+
+		Users admin = usersRepository.findUsersById(adminId);
+
+		Assignment assignment = assignmentOptional.get();
+
+		Date assignedDate = userUtil.convertStrDateToObDate(dto.getAssignedDate());
+
+		assignment.setAsset(assetOptional.get());
+		assignment.setAssignedTo(userOptional.get());
+		assignment.setAssignedBy(admin);
+		assignment.setAssignedDate(assignedDate);
+		assignment.setNote(dto.getNote());
+
+		assignment = assignmentRepository.save(assignment);
+
+		return assignmentMapper.mapToResponseAssignment(assignment);
 	}
 
 }
