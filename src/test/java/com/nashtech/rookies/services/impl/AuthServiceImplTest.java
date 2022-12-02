@@ -41,7 +41,6 @@ public class AuthServiceImplTest {
 	UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken;
 	Authentication authentication;
 
-
 	UserPrinciple userPrinciple;
 	AuthServiceImpl authServiceImpl;
 
@@ -54,7 +53,7 @@ public class AuthServiceImplTest {
 		passwordEncoder = mock(PasswordEncoder.class);
 		usernamePasswordAuthenticationToken = mock(UsernamePasswordAuthenticationToken.class);
 		authentication = mock(Authentication.class);
-		userPrinciple=mock(UserPrinciple.class);
+		userPrinciple = mock(UserPrinciple.class);
 		authServiceImpl = new AuthServiceImpl(authenticationManager, jwtProvider, usersRepository, passwordEncoder);
 	}
 
@@ -69,6 +68,20 @@ public class AuthServiceImplTest {
 		});
 
 		Assertions.assertEquals("Username or password is incorrect. Please try again", actualException.getMessage());
+	}
+
+	@Test
+	void login_ShouldThrowInvalidDataInputException_WhenAccountIsBlock() {
+		LoginRequestDto dto = LoginRequestDto.builder().username("trongbt123").password("123456").build();
+		Users user = Users.builder().username("trongbt123").password("123456").disabled(true).build();
+
+		when(usersRepository.findByUsername("trongbt123")).thenReturn(Optional.of(user));
+
+		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
+			authServiceImpl.login(dto);
+		});
+
+		Assertions.assertEquals("Your account is blocked", actualException.getMessage());
 	}
 
 	@Test
@@ -98,90 +111,98 @@ public class AuthServiceImplTest {
 
 		when(authenticationManager.authenticate(usernamePasswordAuthenticationToken)).thenReturn(authentication);
 
-
 		authServiceImpl.login(dto);
 	}
 
 	@Test
-	void changePassword_ShouldReturnErr_WhenDataNotValid(){
+	void changePassword_ShouldReturnErr_WhenDataNotValid() {
 
-		ChangePasswordRequestDto dto = ChangePasswordRequestDto.builder().oldPassword("trongbt123").newPassword("123456").build();
+		ChangePasswordRequestDto dto = ChangePasswordRequestDto.builder().oldPassword("trongbt123")
+				.newPassword("123456").build();
 		Users user = new Users();
 		Long id = 1L;
 
 		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
 			authServiceImpl.changePassword(dto);
 		});
-		Assertions.assertEquals("Minimum eight characters and Maximum fifty characters, at least one letter, one number and one special character", actualException.getMessage() );
+		Assertions.assertEquals(
+				"Minimum eight characters and Maximum fifty characters, at least one letter, one number and one special character",
+				actualException.getMessage());
 	}
 
 	@Test
-	void changePassword_ShouldReturnSuccess_WhenRegexValid(){
+	void changePassword_ShouldReturnSuccess_WhenRegexValid() {
 		Authentication authentication = mock(Authentication.class);
 		SecurityContext securityContext = mock(SecurityContext.class);
 		UserPrinciple userPrinciple1 = new UserPrinciple();
 		when(securityContext.getAuthentication()).thenReturn(authentication);
 		SecurityContextHolder.setContext(securityContext);
 		when(authentication.getPrincipal()).thenReturn(userPrinciple1);
-		ChangePasswordRequestDto dto = ChangePasswordRequestDto.builder().oldPassword("trongbt123").newPassword("abcd1234!@#$").build();
+		ChangePasswordRequestDto dto = ChangePasswordRequestDto.builder().oldPassword("trongbt123")
+				.newPassword("abcd1234!@#$").build();
 		Users user = new Users();
 		user.setEnabled(false);
 		when(usersRepository.findUsersById(userPrinciple1.getId())).thenReturn(user);
 		String actual = authServiceImpl.changePassword(dto);
-		Assertions.assertEquals("Successfully", actual );
+		Assertions.assertEquals("Successfully", actual);
 	}
 
 	@Test
-	void changePassword_ShouldReturnErr_WhenOldPasswordInCorrect(){
+	void changePassword_ShouldReturnErr_WhenOldPasswordInCorrect() {
 		Authentication authentication = mock(Authentication.class);
 		SecurityContext securityContext = mock(SecurityContext.class);
 		UserPrinciple userPrinciple1 = new UserPrinciple();
 		when(securityContext.getAuthentication()).thenReturn(authentication);
 		SecurityContextHolder.setContext(securityContext);
 		when(authentication.getPrincipal()).thenReturn(userPrinciple1);
-		ChangePasswordRequestDto dto = ChangePasswordRequestDto.builder().oldPassword("").newPassword("abcd1234!@#$").build();
+		ChangePasswordRequestDto dto = ChangePasswordRequestDto.builder().oldPassword("").newPassword("abcd1234!@#$")
+				.build();
 		Users user = new Users();
 		user.setEnabled(true);
 		when(usersRepository.findUsersById(userPrinciple1.getId())).thenReturn(user);
 		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
 			authServiceImpl.changePassword(dto);
 		});
-		Assertions.assertEquals("Old Password incorrect", actualException.getMessage() );
+		Assertions.assertEquals("Old Password incorrect", actualException.getMessage());
 	}
+
 	@Test
-	void changePassword_ShouldReturnErr_WhenOldPasswordIsNull(){
+	void changePassword_ShouldReturnErr_WhenOldPasswordIsNull() {
 		Authentication authentication = mock(Authentication.class);
 		SecurityContext securityContext = mock(SecurityContext.class);
 		UserPrinciple userPrinciple1 = new UserPrinciple();
 		when(securityContext.getAuthentication()).thenReturn(authentication);
 		SecurityContextHolder.setContext(securityContext);
 		when(authentication.getPrincipal()).thenReturn(userPrinciple1);
-		ChangePasswordRequestDto dto = ChangePasswordRequestDto.builder().oldPassword(null).newPassword("abcd1234!@#$").build();
+		ChangePasswordRequestDto dto = ChangePasswordRequestDto.builder().oldPassword(null).newPassword("abcd1234!@#$")
+				.build();
 		Users user = new Users();
 		user.setEnabled(true);
 		when(usersRepository.findUsersById(userPrinciple1.getId())).thenReturn(user);
 		InvalidDataInputException actualException = Assertions.assertThrows(InvalidDataInputException.class, () -> {
 			authServiceImpl.changePassword(dto);
 		});
-		Assertions.assertEquals("Old password not empty", actualException.getMessage() );
+		Assertions.assertEquals("Old password not empty", actualException.getMessage());
 	}
+
 	@Test
-	void changePassword_ShouldReturnSuccess(){
+	void changePassword_ShouldReturnSuccess() {
 		Authentication authentication = mock(Authentication.class);
 		SecurityContext securityContext = mock(SecurityContext.class);
 		UserPrinciple userPrinciple1 = new UserPrinciple();
 		when(securityContext.getAuthentication()).thenReturn(authentication);
 		SecurityContextHolder.setContext(securityContext);
 		when(authentication.getPrincipal()).thenReturn(userPrinciple1);
-		ChangePasswordRequestDto dto = ChangePasswordRequestDto.builder().oldPassword("abcd1111!!!!").newPassword("abcd1234!@#$").build();
+		ChangePasswordRequestDto dto = ChangePasswordRequestDto.builder().oldPassword("abcd1111!!!!")
+				.newPassword("abcd1234!@#$").build();
 		Users user = new Users();
 		user.setEnabled(true);
 		user.setPassword("abcd1111!!!!");
 		when(usersRepository.findUsersById(userPrinciple1.getId())).thenReturn(user);
-		when(passwordEncoder.matches(dto.getOldPassword(),user.getPassword())).thenReturn(true);
+		when(passwordEncoder.matches(dto.getOldPassword(), user.getPassword())).thenReturn(true);
 		String actual = authServiceImpl.changePassword(dto);
 
-		Assertions.assertEquals("Successfully", actual );
+		Assertions.assertEquals("Successfully", actual);
 	}
 
 }
