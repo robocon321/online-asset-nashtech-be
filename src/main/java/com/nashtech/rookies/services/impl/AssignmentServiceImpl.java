@@ -159,29 +159,42 @@ public class AssignmentServiceImpl implements AssignmentService {
 	}
 
 	@Override
-	public List<AssignmentResponseDto> getListAssignmentofUser(){
-		UserPrinciple userPrinciple= (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	public List<AssignmentResponseDto> getListAssignmentofUser() {
+		UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		List<Assignment> assignmentList = assignmentRepository.getAllAssignmentOfUser(timestamp,userPrinciple.getId());
-		if(assignmentList.size()>0){
+		List<Assignment> assignmentList = assignmentRepository.getAllAssignmentOfUser(timestamp, userPrinciple.getId());
+		if (assignmentList.size() > 0) {
 			return assignmentMapper.mapListAssignmentEntityToDto(assignmentList);
-		}
-		else {
+		} else {
 			throw new InvalidDataInputException("Not found assignment");
 		}
 	}
 
 	@Override
-	public AssignmentDetailResponseDto getAssignmentDetail(Long id){
+	public AssignmentDetailResponseDto getAssignmentDetail(Long id) {
 		Optional<Assignment> checkAssignment = assignmentRepository.findById(id);
-		if(!checkAssignment.isPresent()){
+		if (!checkAssignment.isPresent()) {
 			throw new InvalidDataInputException("Not found this assignment");
 		}
 		Assignment assignment = checkAssignment.get();
-		if(assignment.isDeleted()){
+		if (assignment.isDeleted()) {
 			throw new InvalidDataInputException("This assignment is deleted");
 		}
 		return assignmentMapper.mapToResponseAssigmentDetail(assignment);
+	}
+
+	@Override
+	public List<AssignmentResponseDto> getListAssignmentofAdmin() {
+		String location = userUtil.getAddressFromUserPrinciple();
+
+		List<Assignment> assignmentList = assignmentRepository.findByAssetLocation(location);
+
+		if (assignmentList.size() == 0) {
+			throw new InvalidDataInputException("Assignment not found");
+
+		}
+		return assignmentMapper.mapListAssignmentEntityToDto(assignmentList);
 	}
 
 }

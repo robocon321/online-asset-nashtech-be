@@ -451,4 +451,40 @@ public class AssignmentServiceImplTest {
 
 		assertThat(expected, is(actual));
 	}
+
+	@Test
+	void getListAssignmentofAdmin_ShouldThrowInvalidDataInputException_WhenAssignmentIsEmpty() {
+		List<Assignment> assignmentList = new ArrayList<Assignment>();
+
+		when(userUtil.getAddressFromUserPrinciple()).thenReturn("HCM");
+
+		when(assignmentRepository.findByAssetLocation("HCM")).thenReturn(assignmentList);
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.getListAssignmentofAdmin();
+		});
+		assertEquals("Assignment not found", actualException.getMessage());
+	}
+
+	@Test
+	void getListAssignmentofAdmin_ShouldReturnAssignmentList_WhenDatavalid() {
+
+		List<Assignment> assignmentList = new ArrayList<Assignment>();
+		List<AssignmentResponseDto> expected = new ArrayList<AssignmentResponseDto>();
+
+		Assignment assignment = Assignment.builder().id(2l).build();
+		assignmentList.add(assignment);
+
+		when(userUtil.getAddressFromUserPrinciple()).thenReturn("HCM");
+
+		when(assignmentRepository.findByAssetLocation("HCM")).thenReturn(assignmentList);
+
+		when(assignmentMapper.mapListAssignmentEntityToDto(assignmentList)).thenReturn(expected);
+
+		List<AssignmentResponseDto> actual = assignmentServiceImpl.getListAssignmentofAdmin();
+
+		assertThat(expected, is(actual));
+
+	}
+
 }
