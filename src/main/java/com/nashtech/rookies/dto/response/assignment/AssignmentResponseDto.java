@@ -17,7 +17,7 @@ public class AssignmentResponseDto {
 	private Long id;
 	private String assetCode;
 	private String assetName;
-	
+	private String categoryName;
 	private String assignedTo;
 	private String assignedBy;
 	private Date assignedDate;

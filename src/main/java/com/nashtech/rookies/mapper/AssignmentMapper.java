@@ -1,7 +1,10 @@
 package com.nashtech.rookies.mapper;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import com.nashtech.rookies.dto.response.assignment.AssignmentDetailResponseDto;
 import org.springframework.stereotype.Component;
 
 import com.nashtech.rookies.dto.response.assignment.AssignmentResponseDto;
@@ -22,10 +25,27 @@ public class AssignmentMapper {
 				.id(assignment.getId())
 				.assetCode(assignment.getAsset().getCode())
 				.assetName(assignment.getAsset().getName())
+				.categoryName(assignment.getAsset().getCategory().getName())
 				.assignedTo(assignment.getAssignedTo().getUsername())
 				.assignedBy(assignment.getAssignedBy().getUsername())
 				.assignedDate(assignment.getAssignedDate())
 				.state(assignment.getState())
+				.build();
+	}
+
+	public List<AssignmentResponseDto> mapListAssignmentEntityToDto(List<Assignment> assignmentList){
+		return assignmentList.stream().map(assignment ->mapToResponseAssignment(assignment)).collect(Collectors.toList());
+	}
+	public AssignmentDetailResponseDto mapToResponseAssigmentDetail(Assignment assignment){
+		return AssignmentDetailResponseDto.builder()
+				.assetCode(assignment.getAsset().getCode())
+				.assetName(assignment.getAsset().getName())
+				.specification(assignment.getAsset().getSpecification())
+				.assignedTo(assignment.getAssignedTo().getUsername())
+				.assignedBy(assignment.getAssignedBy().getUsername())
+				.assignedDate(assignment.getAssignedDate())
+				.state(assignment.getState())
+				.note(assignment.getNote())
 				.build();
 	}
 }
