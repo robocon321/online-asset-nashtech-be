@@ -23,7 +23,9 @@ public class Assignment {
     private Date returnedDate;
     private Date createdDate;
 
-    private boolean isDeleted = false;
+    private boolean checkReturn = false;
+
+    private boolean isComplete = false;
 
     @ManyToOne
     private Users assignedBy;
@@ -34,7 +36,7 @@ public class Assignment {
     @ManyToOne
     private Asset asset;
 
-    public Assignment(String note, String state, Date assignedDate, Date returnedDate, Date createdDate, Users assignedBy, Users assignedTo, Asset asset) {
+    public Assignment(String note, String state, Date assignedDate, Date returnedDate, Date createdDate, Users assignedBy, Users assignedTo, Asset asset,boolean checkReturn) {
         this.note = note;
         this.state = state;
         this.assignedDate = assignedDate;
@@ -43,5 +45,6 @@ public class Assignment {
         this.assignedBy = assignedBy;
         this.assignedTo = assignedTo;
         this.asset = asset;
+        this.checkReturn = checkReturn;
     }
 }

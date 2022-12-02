@@ -97,8 +97,8 @@ public class AuthServiceImplTest {
 		when(passwordEncoder.matches("123456", user.getPassword())).thenReturn(true);
 
 		when(authenticationManager.authenticate(usernamePasswordAuthenticationToken)).thenReturn(authentication);
-		
-		
+
+
 		authServiceImpl.login(dto);
 	}
 

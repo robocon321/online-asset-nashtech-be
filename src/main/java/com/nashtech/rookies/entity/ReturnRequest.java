@@ -1,15 +1,13 @@
 package com.nashtech.rookies.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Getter
+@Builder
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,10 +17,12 @@ public class ReturnRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private Date returnDate = new Date();
+    private Date returnDate;
 
     private String state;
 
+    private String requestBy;
+    private String acceptedBy;
     @OneToOne
     Assignment assignment;
 
@@ -34,6 +34,14 @@ public class ReturnRequest {
     public ReturnRequest(Date returnDate, String state, Assignment assignment) {
         this.returnDate = returnDate;
         this.state = state;
+        this.assignment = assignment;
+    }
+
+    public ReturnRequest(Date returnDate, String state, String requestBy, String acceptedBy, Assignment assignment) {
+        this.returnDate = returnDate;
+        this.state = state;
+        this.requestBy = requestBy;
+        this.acceptedBy = acceptedBy;
         this.assignment = assignment;
     }
 }

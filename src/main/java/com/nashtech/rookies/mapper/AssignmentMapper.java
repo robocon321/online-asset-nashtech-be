@@ -29,8 +29,12 @@ public class AssignmentMapper {
 	}
 
 	public AssignmentResponseDto mapToResponseAssignment(Assignment assignment) {
-		return AssignmentResponseDto.builder().id(assignment.getId()).assetCode(assignment.getAsset().getCode())
-				.assetName(assignment.getAsset().getName()).categoryName(assignment.getAsset().getCategory().getName())
+		return AssignmentResponseDto.builder()
+				.id(assignment.getId())
+				.assetCode(assignment.getAsset().getCode())
+				.assetName(assignment.getAsset().getName())
+				.categoryName(assignment.getAsset().getCategory().getName())
+				.stateReturnRequest(assignment.isCheckReturn())
 				.assignedTo(assignment.getAssignedTo().getUsername())
 				.assignedBy(assignment.getAssignedBy().getUsername()).assignedDate(assignment.getAssignedDate())
 				.state(assignment.getState()).build();

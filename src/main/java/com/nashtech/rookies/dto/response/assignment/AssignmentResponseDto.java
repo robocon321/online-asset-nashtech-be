@@ -23,5 +23,8 @@ public class AssignmentResponseDto {
 	private String assignedTo;
 	private String assignedBy;
 	private Date assignedDate;
+
+	private boolean stateReturnRequest;
+
 	private String state;
 }
