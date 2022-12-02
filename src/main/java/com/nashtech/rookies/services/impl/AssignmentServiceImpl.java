@@ -11,7 +11,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.nashtech.rookies.dto.request.assignment.CreateAssignmentDto;
+import com.nashtech.rookies.dto.request.assignment.UpdateAssignmentDto;
 import com.nashtech.rookies.dto.response.assignment.AssignmentResponseDto;
+import com.nashtech.rookies.dto.response.assignment.AssignmentUpdateResponseDto;
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Assignment;
 import com.nashtech.rookies.entity.Users;
@@ -76,6 +78,80 @@ public class AssignmentServiceImpl implements AssignmentService {
 
 		Assignment assignment = assignmentMapper.mapToAssignment(assetOptional.get(), admin, userOptional.get(),
 				dto.getNote(), state, assignedDate, nowDate);
+
+		assignment.getAsset().setState("Not available");
+
+		assignment = assignmentRepository.save(assignment);
+
+		return assignmentMapper.mapToResponseAssignment(assignment);
+	}
+
+	@Override
+	public AssignmentUpdateResponseDto getUpdateAssignmentById(Long id) {
+		Optional<Assignment> assignmentOptional = assignmentRepository.findById(id);
+
+		if (assignmentOptional.isEmpty()) {
+			throw new InvalidDataInputException("Assignment not found");
+		}
+
+		Assignment assignment = assignmentOptional.get();
+
+		if (!assignment.getState().equals("Waiting for acceptance")) {
+			throw new InvalidDataInputException("Assignment state must be Waiting for acceptance");
+		}
+
+		return assignmentMapper.mapToUpdateResponseAssignment(assignment);
+	}
+
+	@Override
+	public AssignmentResponseDto updateAssignment(UpdateAssignmentDto dto) {
+
+		if (!userUtil.isValidDate(dto.getAssignedDate())) {
+			throw new InvalidDataInputException("AssignedDate is invalid");
+		}
+
+		Optional<Assignment> assignmentOptional = assignmentRepository.findById(dto.getId());
+
+		if (assignmentOptional.isEmpty()) {
+			throw new InvalidDataInputException("Assignment not found");
+		}
+
+		Optional<Users> userOptional = usersRepository.findById(dto.getUserId());
+
+		if (userOptional.isEmpty()) {
+			throw new InvalidDataInputException("User not found");
+		}
+
+		Optional<Asset> assetOptional = assetRepository.findById(dto.getAssetId());
+
+		if (assetOptional.isEmpty()) {
+			throw new InvalidDataInputException("Asset not found");
+		}
+
+		Asset asset = assetOptional.get();
+
+		if (!asset.getState().equals("Available")
+				&& (dto.getAssetId() != assignmentOptional.get().getAsset().getId())) {
+			throw new InvalidDataInputException("Asset state must be Available");
+		}
+
+		assignmentOptional.get().getAsset().setState("Available");
+
+		asset.setState("Not available");
+
+		Long adminId = userUtil.getIdFromUserPrinciple();
+
+		Users admin = usersRepository.findUsersById(adminId);
+
+		Assignment assignment = assignmentOptional.get();
+
+		Date assignedDate = userUtil.convertStrDateToObDate(dto.getAssignedDate());
+
+		assignment.setAsset(assetOptional.get());
+		assignment.setAssignedTo(userOptional.get());
+		assignment.setAssignedBy(admin);
+		assignment.setAssignedDate(assignedDate);
+		assignment.setNote(dto.getNote());
 
 		assignment = assignmentRepository.save(assignment);
 

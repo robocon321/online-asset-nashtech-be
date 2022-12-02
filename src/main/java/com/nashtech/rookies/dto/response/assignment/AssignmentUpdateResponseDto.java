@@ -2,6 +2,9 @@ package com.nashtech.rookies.dto.response.assignment;
 
 import java.util.Date;
 
+import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
+import com.nashtech.rookies.entity.Users;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,15 +16,10 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AssignmentResponseDto {
+public class AssignmentUpdateResponseDto {
 	private Long id;
-	private String assetCode;
-	private String assetName;
-
-	private String categoryName;
-
-	private String assignedTo;
-	private String assignedBy;
+	private Users user;
+	private AssetResponseDto asset;
 	private Date assignedDate;
-	private String state;
+	private String note;
 }
