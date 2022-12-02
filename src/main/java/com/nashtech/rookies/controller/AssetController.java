@@ -60,7 +60,7 @@ public class AssetController {
 
 //	Delete asset
 	@DeleteMapping("/checkHasExistAssignment")
-	public ResponseEntity<?> checkExistAssign(@RequestParam Long id){
+	public ResponseEntity<?> checkExistAssign(@RequestParam Long id) {
 		return ResponseEntity.ok().body(assetService.checkHasExistAssignment(id));
 	}
 
@@ -69,6 +69,5 @@ public class AssetController {
 		assetService.deleteAsset(id);
 		return ResponseEntity.ok().body("Delete successfully");
 	}
-
 
 }

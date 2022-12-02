@@ -151,7 +151,7 @@ public class initDatabase {
     }
 
     private String randomStateAssignment() {
-    	String[] states = {"Accepted", "Waiting for acceptance", "Finished"};
+    	String[] states = {"Accepted", "Waiting for acceptance", "Declined"};
     	return states[new Random().nextInt(states.length)];
     }
 
