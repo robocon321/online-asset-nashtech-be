@@ -128,7 +128,8 @@ public class initDatabase {
                         new Date(),
                         usersRepository.findById((long) new Random().nextInt(30) + 1 ).get(),
                         usersRepository.findById((long) new Random().nextInt(30) + 1 ).get(),
-                        assetRepository.findById((long) new Random().nextInt(30) + 1 ).get()
+                        assetRepository.findById((long) new Random().nextInt(30) + 1 ).get(),
+                        false
                 ));
             }
             //            endregion

@@ -26,6 +26,7 @@ public class AssignmentMapper {
 				.assetCode(assignment.getAsset().getCode())
 				.assetName(assignment.getAsset().getName())
 				.categoryName(assignment.getAsset().getCategory().getName())
+				.stateReturnRequest(assignment.isCheckReturn())
 				.assignedTo(assignment.getAssignedTo().getUsername())
 				.assignedBy(assignment.getAssignedBy().getUsername())
 				.assignedDate(assignment.getAssignedDate())

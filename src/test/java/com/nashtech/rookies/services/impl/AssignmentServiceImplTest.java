@@ -246,27 +246,13 @@ public class AssignmentServiceImplTest {
 
 	}
 	@Test
-	void whenFoundAsmButIsDeleted(){
-		Long id = 1L;
-		Assignment assignment = new Assignment();
-		Optional<Assignment> checkAssignment= Optional.of(assignment);
-		when( assignmentRepository.findById(id)).thenReturn(checkAssignment);
-		assignment=checkAssignment.get();
-		assignment.setDeleted(true);
-		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
-			assignmentServiceImpl.getAssignmentDetail(id);
-		});
-		assertEquals("This assignment is deleted", actualException.getMessage());
-
-	}
-	@Test
 	void whenFoundAsmValid(){
 		Long id = 1L;
 		Assignment assignment = new Assignment();
 		Optional<Assignment> checkAssignment= Optional.of(assignment);
 		when( assignmentRepository.findById(id)).thenReturn(checkAssignment);
 		assignment=checkAssignment.get();
-		assignment.setDeleted(false);
+		assignment.setComplete(false);
 		AssignmentDetailResponseDto dto = new AssignmentDetailResponseDto();
 		when(assignmentMapper.mapToResponseAssigmentDetail(assignment)).thenReturn(dto);
 		assertEquals(dto,assignmentServiceImpl.getAssignmentDetail(id));

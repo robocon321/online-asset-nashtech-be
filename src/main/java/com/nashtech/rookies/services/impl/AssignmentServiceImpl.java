@@ -102,10 +102,8 @@ public class AssignmentServiceImpl implements AssignmentService {
 			throw new InvalidDataInputException("Not found this assignment");
 		}
 		Assignment assignment = checkAssignment.get();
-		if(assignment.isDeleted()){
-			throw new InvalidDataInputException("This assignment is deleted");
-		}
 		return assignmentMapper.mapToResponseAssigmentDetail(assignment);
 	}
+
 
 }
