@@ -60,6 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/v1/assets/**").hasAuthority("ADMIN")
 				.antMatchers( "/api/v1/categories/**").hasAuthority("ADMIN")
 				.antMatchers( "/api/v1/assignments/**").hasAuthority("ADMIN")
+				.antMatchers( "/api/v1/return-requests/**").hasAuthority("ADMIN")
 
 				.anyRequest().authenticated().and().exceptionHandling().authenticationEntryPoint(jwtEntryPoint).and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
