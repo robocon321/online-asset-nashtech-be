@@ -64,10 +64,19 @@ public class AssignmentServiceImpl implements AssignmentService {
 			throw new InvalidDataInputException("User not found");
 		}
 
+		if (userOptional.get().isDisabled()) {
+			throw new InvalidDataInputException("User account is blocked");
+
+		}
+
 		Optional<Asset> assetOptional = assetRepository.findById(dto.getAssetId());
 
 		if (assetOptional.isEmpty()) {
 			throw new InvalidDataInputException("Asset not found");
+		}
+
+		if (!"Available".equals(assetOptional.get().getState())) {
+			throw new InvalidDataInputException("Asset state must be Available");
 		}
 
 		Long adminId = userUtil.getIdFromUserPrinciple();
@@ -180,8 +189,6 @@ public class AssignmentServiceImpl implements AssignmentService {
 		Assignment assignment = checkAssignment.get();
 		return assignmentMapper.mapToResponseAssigmentDetail(assignment);
 	}
-
-
 
 	@Override
 	public List<AssignmentResponseDto> getListAssignmentofAdmin() {
