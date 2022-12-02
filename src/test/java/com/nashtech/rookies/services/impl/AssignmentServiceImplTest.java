@@ -8,14 +8,22 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.nashtech.rookies.dto.request.assignment.CreateAssignmentDto;
 import com.nashtech.rookies.dto.request.assignment.UpdateAssignmentDto;
+import com.nashtech.rookies.dto.response.assignment.AssignmentDetailResponseDto;
 import com.nashtech.rookies.dto.response.assignment.AssignmentResponseDto;
 import com.nashtech.rookies.dto.response.assignment.AssignmentUpdateResponseDto;
 import com.nashtech.rookies.entity.Asset;
@@ -26,13 +34,16 @@ import com.nashtech.rookies.mapper.AssignmentMapper;
 import com.nashtech.rookies.repository.AssetRepository;
 import com.nashtech.rookies.repository.AssignmentRepository;
 import com.nashtech.rookies.repository.UsersRepository;
+import com.nashtech.rookies.security.userprincal.UserPrinciple;
 import com.nashtech.rookies.utils.UserUtil;
 
 public class AssignmentServiceImplTest {
 	AssignmentRepository assignmentRepository;
 	UsersRepository usersRepository;
 	AssetRepository assetRepository;
+	Authentication authentication;
 
+	UserPrinciple userPrinciple;
 	UserUtil userUtil;
 	AssignmentMapper assignmentMapper;
 
@@ -43,6 +54,9 @@ public class AssignmentServiceImplTest {
 		assignmentRepository = mock(AssignmentRepository.class);
 		usersRepository = mock(UsersRepository.class);
 		assetRepository = mock(AssetRepository.class);
+
+		authentication = mock(Authentication.class);
+		userPrinciple = mock(UserPrinciple.class);
 		userUtil = mock(UserUtil.class);
 		assignmentMapper = mock(AssignmentMapper.class);
 
@@ -189,6 +203,83 @@ public class AssignmentServiceImplTest {
 
 		assertThat(expectAssignment, is(actualAssignment));
 
+	}
+
+	@Test
+	void whenUserNotHaveAnyAssignment() {
+		Authentication authentication = mock(Authentication.class);
+		SecurityContext securityContext = mock(SecurityContext.class);
+		UserPrinciple userPrinciple1 = new UserPrinciple();
+		when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		when(authentication.getPrincipal()).thenReturn(userPrinciple1);
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.getListAssignmentofUser();
+		});
+		assertEquals("Not found assignment", actualException.getMessage());
+	}
+
+	@Test
+	void whenUserGetListAsmShouldReturnList() {
+		Authentication authentication = mock(Authentication.class);
+		SecurityContext securityContext = mock(SecurityContext.class);
+		UserPrinciple userPrinciple1 = new UserPrinciple();
+		when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		when(authentication.getPrincipal()).thenReturn(userPrinciple1);
+		List<Assignment> assignmentList = new ArrayList<>();
+		Assignment assignment = new Assignment();
+		assignmentList.add(assignment);
+		assignmentList.add(assignment);
+		when(assignmentRepository.getAllAssignmentOfUser(Mockito.any(Timestamp.class), Mockito.any()))
+				.thenReturn(assignmentList);
+
+		List<AssignmentResponseDto> assignmentResponseDtos = new ArrayList<>();
+		when(assignmentMapper.mapListAssignmentEntityToDto(assignmentList)).thenReturn(assignmentResponseDtos);
+		assertEquals(assignmentResponseDtos, assignmentServiceImpl.getListAssignmentofUser());
+
+	}
+
+	@Test
+	void whenGetAssignmentDetailNotFoundShouldReturnException() {
+		Long id = 1L;
+//		Assignment assignment = new Assignment();
+//		Optional<Assignment> checkAssignment= Optional.of(assignment);
+//		when( assignmentRepository.findById(id)).thenReturn(checkAssignment);
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.getAssignmentDetail(id);
+		});
+		assertEquals("Not found this assignment", actualException.getMessage());
+
+	}
+
+	@Test
+	void whenFoundAsmButIsDeleted() {
+		Long id = 1L;
+		Assignment assignment = new Assignment();
+		Optional<Assignment> checkAssignment = Optional.of(assignment);
+		when(assignmentRepository.findById(id)).thenReturn(checkAssignment);
+		assignment = checkAssignment.get();
+		assignment.setDeleted(true);
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.getAssignmentDetail(id);
+		});
+		assertEquals("This assignment is deleted", actualException.getMessage());
+
+	}
+
+	@Test
+	void whenFoundAsmValid() {
+		Long id = 1L;
+		Assignment assignment = new Assignment();
+		Optional<Assignment> checkAssignment = Optional.of(assignment);
+		when(assignmentRepository.findById(id)).thenReturn(checkAssignment);
+		assignment = checkAssignment.get();
+		assignment.setDeleted(false);
+		AssignmentDetailResponseDto dto = new AssignmentDetailResponseDto();
+		when(assignmentMapper.mapToResponseAssigmentDetail(assignment)).thenReturn(dto);
+		assertEquals(dto, assignmentServiceImpl.getAssignmentDetail(id));
 	}
 
 	@Test

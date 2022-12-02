@@ -1,8 +1,13 @@
 package com.nashtech.rookies.mapper;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.nashtech.rookies.dto.response.assignment.AssignmentDetailResponseDto;
+
 import org.springframework.stereotype.Component;
 
 import com.nashtech.rookies.dto.response.assignment.AssignmentResponseDto;
@@ -13,34 +18,41 @@ import com.nashtech.rookies.entity.Users;
 
 @Component
 public class AssignmentMapper {
-	
+
 	@Autowired
 	AssetMapper assetMapper;
-	
-	public Assignment mapToAssignment(Asset asset , Users assignedBy, Users assignedTo, String note, String state, Date assignedDate,
-			Date createdDate) {
+
+	public Assignment mapToAssignment(Asset asset, Users assignedBy, Users assignedTo, String note, String state,
+			Date assignedDate, Date createdDate) {
 		return Assignment.builder().asset(asset).assignedBy(assignedBy).assignedTo(assignedTo).note(note).state(state)
 				.assignedDate(assignedDate).createdDate(createdDate).build();
 	}
-	
+
 	public AssignmentResponseDto mapToResponseAssignment(Assignment assignment) {
-		return AssignmentResponseDto.builder()
-				.id(assignment.getId())
-				.assetCode(assignment.getAsset().getCode())
-				.assetName(assignment.getAsset().getName())
+		return AssignmentResponseDto.builder().id(assignment.getId()).assetCode(assignment.getAsset().getCode())
+				.assetName(assignment.getAsset().getName()).categoryName(assignment.getAsset().getCategory().getName())
 				.assignedTo(assignment.getAssignedTo().getUsername())
-				.assignedBy(assignment.getAssignedBy().getUsername())
-				.assignedDate(assignment.getAssignedDate())
-				.state(assignment.getState())
-				.build();
+				.assignedBy(assignment.getAssignedBy().getUsername()).assignedDate(assignment.getAssignedDate())
+				.state(assignment.getState()).build();
 	}
-	
-	public AssignmentUpdateResponseDto  mapToUpdateResponseAssignment(Assignment assignment) {
-		return AssignmentUpdateResponseDto.builder()
-				.id(assignment.getId())
-				.user(assignment.getAssignedTo())
-				.asset(assetMapper.mapToDto(assignment.getAsset()))
-				.assignedDate(assignment.getAssignedDate())
+
+	public AssignmentUpdateResponseDto mapToUpdateResponseAssignment(Assignment assignment) {
+		return AssignmentUpdateResponseDto.builder().id(assignment.getId()).user(assignment.getAssignedTo())
+				.asset(assetMapper.mapToDto(assignment.getAsset())).assignedDate(assignment.getAssignedDate())
 				.note(assignment.getNote()).build();
+	}
+
+	public List<AssignmentResponseDto> mapListAssignmentEntityToDto(List<Assignment> assignmentList) {
+		return assignmentList.stream().map(assignment -> mapToResponseAssignment(assignment))
+				.collect(Collectors.toList());
+	}
+
+	public AssignmentDetailResponseDto mapToResponseAssigmentDetail(Assignment assignment) {
+		return AssignmentDetailResponseDto.builder().assetCode(assignment.getAsset().getCode())
+				.assetName(assignment.getAsset().getName()).specification(assignment.getAsset().getSpecification())
+				.assignedTo(assignment.getAssignedTo().getUsername())
+				.assignedBy(assignment.getAssignedBy().getUsername()).assignedDate(assignment.getAssignedDate())
+				.state(assignment.getState()).note(assignment.getNote()).build();
+
 	}
 }
