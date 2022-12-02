@@ -48,6 +48,11 @@ public class AssignmentController {
 		return ResponseEntity.ok().body(assignmentService.getListAssignmentofUser());
 	}
 
+	@GetMapping("/admin")
+	public ResponseEntity<?> getAssignmentOfAdmin() {
+		return ResponseEntity.ok().body(assignmentService.getListAssignmentofAdmin());
+	}
+
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getAssignmentDetails(@PathVariable Long id) {
 		return ResponseEntity.ok().body(assignmentService.getAssignmentDetail(id));
