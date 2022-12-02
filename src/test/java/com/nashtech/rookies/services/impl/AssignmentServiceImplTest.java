@@ -300,12 +300,38 @@ public class AssignmentServiceImplTest {
 	}
 
 	@Test
-	void updateAssignment_ShouldReturnData_WhenDataValid() {
+	void updateAssignment_ShouldThrowInvalidDataInputException_WhenAssetStateInValid() {
+		Asset ass = Asset.builder().id(10l).build();
 
-		Assignment assignment = mock(Assignment.class);
+		Assignment assignment = Assignment.builder().asset(ass).build();
 		Users user = mock(Users.class);
+		Asset asset = Asset.builder().state("Not Available").id(1l).build();
+
+		UpdateAssignmentDto dto = UpdateAssignmentDto.builder().assignedDate("26/02/2022").assetId(2l).build();
+
+		when(userUtil.isValidDate("26/02/2022")).thenReturn(true);
+
+		when(assignmentRepository.findById(dto.getId())).thenReturn(Optional.of(assignment));
+
+		when(usersRepository.findById(dto.getUserId())).thenReturn(Optional.of(user));
+
+		when(assetRepository.findById(dto.getAssetId())).thenReturn(Optional.of(asset));
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.updateAssignment(dto);
+		});
+		assertEquals("Asset state must be Available", actualException.getMessage());
+	}
+
+	@Test
+	void updateAssignment_ShouldReturnData_WhenDataValid() {
+		Asset ass = Asset.builder().id(1l).build();
+
+		Assignment assignment = Assignment.builder().asset(ass).build();
+		Users user = mock(Users.class);
+		Asset asset = Asset.builder().state("Available").id(1l).build();
+
 		Users admin = mock(Users.class);
-		Asset asset = mock(Asset.class);
 		Date assignedDate = mock(Date.class);
 		AssignmentResponseDto expected = mock(AssignmentResponseDto.class);
 
@@ -331,12 +357,6 @@ public class AssignmentServiceImplTest {
 		when(assignmentMapper.mapToResponseAssignment(assignment)).thenReturn(expected);
 
 		AssignmentResponseDto actual = assignmentServiceImpl.updateAssignment(dto);
-
-		verify(assignment).setAsset(asset);
-		verify(assignment).setAssignedTo(user);
-		verify(assignment).setAssignedBy(admin);
-		verify(assignment).setAssignedDate(assignedDate);
-		verify(assignment).setNote("Note");
 
 		assertThat(expected, is(actual));
 	}

@@ -130,12 +130,13 @@ public class AssignmentServiceImpl implements AssignmentService {
 			throw new InvalidDataInputException("Asset state must be Available");
 		}
 
+		assignmentOptional.get().getAsset().setState("Available");
+
+		asset.setState("Not available");
+
 		Long adminId = userUtil.getIdFromUserPrinciple();
 
 		Users admin = usersRepository.findUsersById(adminId);
-
-		asset.setState("Not available");
-		assignmentOptional.get().getAsset().setState("Available");
 
 		Assignment assignment = assignmentOptional.get();
 
