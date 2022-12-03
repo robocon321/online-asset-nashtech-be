@@ -1,13 +1,12 @@
 package com.nashtech.rookies.services.impl;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.nashtech.rookies.entity.Category;
 import com.nashtech.rookies.repository.CategoryRepository;
 import com.nashtech.rookies.services.interfaces.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
