@@ -134,6 +134,7 @@ public class initDatabase {
             }
             //            endregion
 
+//            region    ReturnRequest
             for(int i = 0; i <= 30; i++){
                 returnRequestRepository.save(new ReturnRequest(
                         randomDate(),
@@ -141,6 +142,7 @@ public class initDatabase {
                         assignmentRepository.findById((long) new Random().nextInt(30) + 1 ).get()
                 ));
             }
+//            endregion
 
         };
     }
@@ -202,7 +204,7 @@ public class initDatabase {
     }
 
     private String randomStateRequestReturn(){
-    	String[] states = {"Accepted", "Waiting for returning"};
+    	String[] states = {"Completed", "Waiting for returning"};
     	return states[new Random().nextInt(states.length)];
     }
 
