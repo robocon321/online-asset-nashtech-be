@@ -76,4 +76,24 @@ public class ReturnRequestServiceImpl implements com.nashtech.rookies.services.i
 
 //    Delete return request
 
+	@Override
+	public void deleteReturnRequest(Long id) {
+		Optional<ReturnRequest> returnRequestOptional = returnRequestRepository.findById(id);
+
+		if (returnRequestOptional.isEmpty()) {
+			throw new InvalidDataInputException("ReturnRequest not found");
+		}
+
+		ReturnRequest returnRequest = returnRequestOptional.get();
+
+		if (!"Waiting for returning".equals(returnRequest.getState())) {
+			throw new InvalidDataInputException("ReturnRequest State must be Waiting for returning");
+		}
+
+		returnRequest.getAssignment().setCheckReturn(false);
+
+		returnRequestRepository.delete(returnRequest);
+
+	}
+
 }

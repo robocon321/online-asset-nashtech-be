@@ -9,4 +9,6 @@ public interface ReturnRequestService {
 	ReturnRequestDto createReturnRequest(Long id);
 
 	List<ReturnRequestDto> getAllReturnRequests();
+
+	void deleteReturnRequest(Long id);
 }

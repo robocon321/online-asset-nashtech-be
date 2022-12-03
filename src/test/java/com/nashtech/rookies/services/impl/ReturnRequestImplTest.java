@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ReturnRequestImplTest {
@@ -158,6 +159,42 @@ public class ReturnRequestImplTest {
 
 		assertThat(expected, is(actual));
 
+	}
+
+	@Test
+	void deleteReturnRequests_ShouldThrowInvalidDataInputException_WhenIdInvalid() {
+
+		when(returnRequestRepository.findById(2l)).thenReturn(Optional.empty());
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			returnRequestServiceImpl.deleteReturnRequest(2l);
+		});
+		assertEquals("ReturnRequest not found", actualException.getMessage());
+	}
+	
+	@Test
+	void deleteReturnRequests_ShouldThrowInvalidDataInputException_WhenStateInvalid() {
+		ReturnRequest returnRequest = ReturnRequest.builder().state("ABC").build();
+
+		when(returnRequestRepository.findById(2l)).thenReturn(Optional.of(returnRequest));
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			returnRequestServiceImpl.deleteReturnRequest(2l);
+		});
+		assertEquals("ReturnRequest State must be Waiting for returning", actualException.getMessage());
+	}
+	
+	@Test
+	void deleteReturnRequests_ShouldReturnData_WhenDataValid() {
+		ReturnRequest returnRequest = ReturnRequest.builder().state("Waiting for returning")
+				.assignment(Assignment.builder().build())
+				.build();
+
+		when(returnRequestRepository.findById(2l)).thenReturn(Optional.of(returnRequest));
+		
+		returnRequestServiceImpl.deleteReturnRequest(2l);
+
+		verify(returnRequestRepository).delete(returnRequest);
 	}
 
 }
