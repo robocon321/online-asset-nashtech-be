@@ -124,6 +124,31 @@ public class AssignmentServiceImplTest {
 	}
 
 	@Test
+	void createAssignment_ShouldThrowInvalidDataInputException_WhenUserIsDisable() {
+		Date assignedDate = mock(Date.class);
+		Date nowDate = mock(Date.class);
+		Users user = Users.builder().disabled(true).build();
+
+		CreateAssignmentDto dto = CreateAssignmentDto.builder().assignedDate("28/02/2022").userId(2l).build();
+
+		when(userUtil.isValidDate("28/02/2022")).thenReturn(true);
+
+		when(userUtil.convertStrDateToObDate(dto.getAssignedDate())).thenReturn(assignedDate);
+
+		when(userUtil.generateFormatNowDay()).thenReturn(nowDate);
+
+		when(assignedDate.before(nowDate)).thenReturn(false);
+
+		when(usersRepository.findById(dto.getUserId())).thenReturn(Optional.of(user));
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.createAssignment(dto);
+		});
+		assertEquals("User account is blocked", actualException.getMessage());
+
+	}
+
+	@Test
 	void createAssignment_ShouldThrowInvalidDataInputException_WhenAssetIdInvalid() {
 		Date assignedDate = mock(Date.class);
 		Date nowDate = mock(Date.class);
@@ -153,6 +178,36 @@ public class AssignmentServiceImplTest {
 	}
 
 	@Test
+	void createAssignment_ShouldThrowInvalidDataInputException_WhenAssetStateInvalid() {
+		Date assignedDate = mock(Date.class);
+		Date nowDate = mock(Date.class);
+
+		Users user = mock(Users.class);
+		Asset asset = Asset.builder().state("ABC").build();
+
+		CreateAssignmentDto dto = CreateAssignmentDto.builder().assignedDate("28/02/2022").userId(2l).assetId(2l)
+				.build();
+
+		when(userUtil.isValidDate("28/02/2022")).thenReturn(true);
+
+		when(userUtil.convertStrDateToObDate(dto.getAssignedDate())).thenReturn(assignedDate);
+
+		when(userUtil.generateFormatNowDay()).thenReturn(nowDate);
+
+		when(assignedDate.before(nowDate)).thenReturn(false);
+
+		when(usersRepository.findById(2l)).thenReturn(Optional.of(user));
+
+		when(assetRepository.findById(dto.getAssetId())).thenReturn(Optional.of(asset));
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.createAssignment(dto);
+		});
+		assertEquals("Asset state must be Available", actualException.getMessage());
+
+	}
+
+	@Test
 	void createAssignment_ShouldReturnDto_WhenDataValid() {
 		String state = "Waiting for acceptance";
 
@@ -162,7 +217,7 @@ public class AssignmentServiceImplTest {
 
 		Users user = mock(Users.class);
 
-		Asset asset = mock(Asset.class);
+		Asset asset = Asset.builder().state("Available").build();
 
 		Users admin = mock(Users.class);
 
@@ -198,8 +253,6 @@ public class AssignmentServiceImplTest {
 		when(assignmentMapper.mapToResponseAssignment(assignment)).thenReturn(expectAssignment);
 
 		AssignmentResponseDto actualAssignment = assignmentServiceImpl.createAssignment(dto);
-
-		verify(asset).setState("Not available");
 
 		assertThat(expectAssignment, is(actualAssignment));
 
@@ -255,12 +308,12 @@ public class AssignmentServiceImplTest {
 	}
 
 	@Test
-	void whenFoundAsmValid(){
+	void whenFoundAsmValid() {
 		Long id = 1L;
 		Assignment assignment = new Assignment();
-		Optional<Assignment> checkAssignment= Optional.of(assignment);
-		when( assignmentRepository.findById(id)).thenReturn(checkAssignment);
-		assignment=checkAssignment.get();
+		Optional<Assignment> checkAssignment = Optional.of(assignment);
+		when(assignmentRepository.findById(id)).thenReturn(checkAssignment);
+		assignment = checkAssignment.get();
 		assignment.setComplete(false);
 		AssignmentDetailResponseDto dto = new AssignmentDetailResponseDto();
 		when(assignmentMapper.mapToResponseAssigmentDetail(assignment)).thenReturn(dto);
