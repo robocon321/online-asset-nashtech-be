@@ -202,7 +202,7 @@ public class initDatabase {
     }
 
     private String randomStateRequestReturn(){
-    	String[] states = {"Accepted", "Waiting for returning"};
+    	String[] states = {"Completed", "Waiting for returning"};
     	return states[new Random().nextInt(states.length)];
     }
 
