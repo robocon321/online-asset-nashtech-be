@@ -95,28 +95,7 @@ public class initDatabase {
             	asset.setCode(asset.getCategory().getCode() + i);
                 assetRepository.save(asset);
             }
-
-            assetRepository.save(new Asset(
-                    "asset32",
-                    "CATEGORY2_99",
-                    "Day la asset, ahihi :v",
-                    "HCM",
-                    "Assigned",
-                    categoryRepository.findById((long) new Random().nextInt(5) + 1).get(),
-                    usersRepository.findById(2L).get()
-            ));
-
-            assetRepository.save(new Asset(
-                    "asset31",
-                    "CATEGORY1_99",
-                    "Day la asset, ahihi :v",
-                    "HCM",
-                    "Not available",
-                    categoryRepository.findById((long) new Random().nextInt(5) + 1).get(),
-                    usersRepository.findById(1L).get()
-            ));
-
-//            endregion
+//            endregionm
 
             //            region    Assignment
             for(int i = 0; i <= 30; i++){

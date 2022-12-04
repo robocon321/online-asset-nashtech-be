@@ -4,8 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -524,4 +523,91 @@ public class AssignmentServiceImplTest {
 
 	}
 
+	@Test
+	void acceptAssignment_ShouldChangeStateToAccept_WhenChangeStateSuccess(){
+		Long idCheck = 4L;
+
+		Assignment initAsm = Assignment.builder().id(idCheck).note("XCXC").state("Waiting for acceptance").build();
+
+		AssignmentResponseDto expectedDto = mock(AssignmentResponseDto.class);
+
+		when(assignmentRepository.findById(idCheck)).thenReturn(Optional.of((initAsm)));
+
+		when(assignmentRepository.save(initAsm)).thenReturn(initAsm);
+		when(assignmentMapper.mapToResponseAssignment(initAsm)).thenReturn(expectedDto);
+
+		AssignmentResponseDto actual = assignmentServiceImpl.acceptAssignment(idCheck);
+
+		assertThat(expectedDto, is(actual));
+		assertEquals("Accepted", initAsm.getState());
+	}
+
+	@Test
+	void declinedAssignment_ShouldChangeStateToDeclined_WhenChangeStateSuccess(){
+		Long idCheck = 4L;
+
+		Assignment initAsm = Assignment.builder().id(idCheck).note("XCXC").state("Waiting for acceptance").build();
+
+		AssignmentResponseDto expectedDto = mock(AssignmentResponseDto.class);
+
+		when(assignmentRepository.findById(idCheck)).thenReturn(Optional.of((initAsm)));
+
+		when(assignmentRepository.save(initAsm)).thenReturn(initAsm);
+		when(assignmentMapper.mapToResponseAssignment(initAsm)).thenReturn(expectedDto);
+
+		AssignmentResponseDto actual = assignmentServiceImpl.declinedAssignment(idCheck);
+
+		assertThat(expectedDto, is(actual));
+		assertEquals("Declined", initAsm.getState());
+	}
+
+	@Test
+	void acceptAssignment_ShouldThrowException_WhenNotFoundAssignment(){
+		Long idCheck = 4L;
+
+		when(assignmentRepository.findById(idCheck)).thenReturn(Optional.empty());
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.acceptAssignment(idCheck);
+		});
+		assertEquals("Assignment not found", actualException.getMessage());
+	}
+
+	@Test
+	void declinedAssignment_ShouldThrowException_WhenNotFoundAssignment(){
+		Long idCheck = 4L;
+
+		when(assignmentRepository.findById(idCheck)).thenReturn(Optional.empty());
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.declinedAssignment(idCheck);
+		});
+		assertEquals("Assignment not found", actualException.getMessage());
+	}
+
+	@Test
+	void acceptAssignment_ShouldThrowException_WhenStateNotValid(){
+		Long idCheck = 4L;
+		Assignment initAssignment = Assignment.builder().id(idCheck).state("Accepted").build();
+
+		when(assignmentRepository.findById(idCheck)).thenReturn(Optional.of(initAssignment));
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.acceptAssignment(idCheck);
+		});
+		assertEquals("Assignment state must be Waiting for acceptance", actualException.getMessage());
+	}
+
+	@Test
+	void declinedAssignment_ShouldThrowException_WhenStateNotValid(){
+		Long idCheck = 4L;
+		Assignment initAssignment = Assignment.builder().id(idCheck).state("Accepted").build();
+
+		when(assignmentRepository.findById(idCheck)).thenReturn(Optional.of(initAssignment));
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.declinedAssignment(idCheck);
+		});
+		assertEquals("Assignment state must be Waiting for acceptance", actualException.getMessage());
+	}
 }
