@@ -1,17 +1,8 @@
 package com.nashtech.rookies.services.impl;
 
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import com.nashtech.rookies.dto.response.assignment.AssignmentDetailResponseDto;
-import com.nashtech.rookies.security.userprincal.UserPrinciple;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
 import com.nashtech.rookies.dto.request.assignment.CreateAssignmentDto;
 import com.nashtech.rookies.dto.request.assignment.UpdateAssignmentDto;
+import com.nashtech.rookies.dto.response.assignment.AssignmentDetailResponseDto;
 import com.nashtech.rookies.dto.response.assignment.AssignmentResponseDto;
 import com.nashtech.rookies.dto.response.assignment.AssignmentUpdateResponseDto;
 import com.nashtech.rookies.entity.Asset;
@@ -22,8 +13,16 @@ import com.nashtech.rookies.mapper.AssignmentMapper;
 import com.nashtech.rookies.repository.AssetRepository;
 import com.nashtech.rookies.repository.AssignmentRepository;
 import com.nashtech.rookies.repository.UsersRepository;
+import com.nashtech.rookies.security.userprincal.UserPrinciple;
 import com.nashtech.rookies.services.interfaces.AssignmentService;
 import com.nashtech.rookies.utils.UserUtil;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AssignmentServiceImpl implements AssignmentService {
@@ -34,6 +33,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 
 	UserUtil userUtil;
 	AssignmentMapper assignmentMapper;
+
 
 	public AssignmentServiceImpl(AssignmentRepository assignmentRepository, UsersRepository usersRepository,
 			AssetRepository assetRepository, UserUtil userUtil, AssignmentMapper assignmentMapper) {
@@ -64,10 +64,19 @@ public class AssignmentServiceImpl implements AssignmentService {
 			throw new InvalidDataInputException("User not found");
 		}
 
+		if (userOptional.get().isDisabled()) {
+			throw new InvalidDataInputException("User account is blocked");
+
+		}
+
 		Optional<Asset> assetOptional = assetRepository.findById(dto.getAssetId());
 
 		if (assetOptional.isEmpty()) {
 			throw new InvalidDataInputException("Asset not found");
+		}
+
+		if (!"Available".equals(assetOptional.get().getState())) {
+			throw new InvalidDataInputException("Asset state must be Available");
 		}
 
 		Long adminId = userUtil.getIdFromUserPrinciple();
@@ -181,8 +190,6 @@ public class AssignmentServiceImpl implements AssignmentService {
 		return assignmentMapper.mapToResponseAssigmentDetail(assignment);
 	}
 
-
-
 	@Override
 	public List<AssignmentResponseDto> getListAssignmentofAdmin() {
 		String location = userUtil.getAddressFromUserPrinciple();
@@ -194,6 +201,49 @@ public class AssignmentServiceImpl implements AssignmentService {
 
 		}
 		return assignmentMapper.mapListAssignmentEntityToDto(assignmentList);
+	}
+
+	@Override
+	public AssignmentResponseDto acceptAssignment(Long id) {
+		Optional<Assignment> assignmentOptional = assignmentRepository.findById(id);
+
+
+		if (assignmentOptional.isEmpty()) {
+			throw new InvalidDataInputException("Assignment not found");
+		}
+
+		Assignment assignment = assignmentOptional.get();
+
+		if (!assignment.getState().equals("Waiting for acceptance")) {
+			throw new InvalidDataInputException("Assignment state must be Waiting for acceptance");
+		}
+
+		assignment.setState("Accepted");
+
+		assignment = assignmentRepository.save(assignment);
+
+		return assignmentMapper.mapToResponseAssignment(assignment);
+	}
+
+	@Override
+	public AssignmentResponseDto declinedAssignment(Long id) {
+		Optional<Assignment> assignmentOptional = assignmentRepository.findById(id);
+
+		if (assignmentOptional.isEmpty()) {
+			throw new InvalidDataInputException("Assignment not found");
+		}
+
+		Assignment assignment = assignmentOptional.get();
+
+		if (!assignment.getState().equals("Waiting for acceptance")) {
+			throw new InvalidDataInputException("Assignment state must be Waiting for acceptance");
+		}
+
+		assignment.setState("Declined");
+
+		assignment = assignmentRepository.save(assignment);
+
+		return assignmentMapper.mapToResponseAssignment(assignment);
 	}
 
 }

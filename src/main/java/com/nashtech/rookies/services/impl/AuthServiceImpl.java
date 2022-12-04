@@ -43,6 +43,10 @@ public class AuthServiceImpl implements AuthService {
 		if (userOptional.isEmpty()) {
 			throw new InvalidDataInputException("Username or password is incorrect. Please try again");
 		}
+		
+		if(userOptional.get().isDisabled()) {
+			throw new InvalidDataInputException("Your account is blocked");
+		}
 
 		Users user = userOptional.get();
 

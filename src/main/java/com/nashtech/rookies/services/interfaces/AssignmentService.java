@@ -21,7 +21,10 @@ public interface AssignmentService {
 	List<AssignmentResponseDto> getListAssignmentofUser();
 
 	AssignmentDetailResponseDto getAssignmentDetail(Long id);
-	
+
 	List<AssignmentResponseDto> getListAssignmentofAdmin();
+
+	AssignmentResponseDto acceptAssignment(Long id);
+	AssignmentResponseDto declinedAssignment(Long id);
 
 }

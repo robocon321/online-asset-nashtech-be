@@ -43,6 +43,16 @@ public class AssignmentController {
 		return ResponseEntity.ok().body(assignmentService.getUpdateAssignmentById(id));
 	}
 
+	@PutMapping("accept/{id}")
+	public ResponseEntity<?> acceptAssignment(@PathVariable Long id) {
+		return ResponseEntity.ok().body(assignmentService.acceptAssignment(id));
+	}
+
+	@PutMapping("decline/{id}")
+	public ResponseEntity<?> declinedAssignment(@PathVariable Long id) {
+		return ResponseEntity.ok().body(assignmentService.declinedAssignment(id));
+	}
+
 	@GetMapping
 	public ResponseEntity<?> getAssignmentOfUser() {
 		return ResponseEntity.ok().body(assignmentService.getListAssignmentofUser());
