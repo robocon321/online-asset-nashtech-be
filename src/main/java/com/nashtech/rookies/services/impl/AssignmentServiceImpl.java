@@ -88,7 +88,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 		Assignment assignment = assignmentMapper.mapToAssignment(assetOptional.get(), admin, userOptional.get(),
 				dto.getNote(), state, assignedDate, nowDate);
 
-		assignment.getAsset().setState("Not available");
+		assignment.getAsset().setState("Assigned");
 
 		assignment = assignmentRepository.save(assignment);
 
@@ -215,7 +215,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 		Assignment assignment = assignmentOptional.get();
 
 		if (!assignment.getState().equals("Waiting for acceptance")) {
-			throw new InvalidDataInputException("Assignment state must be Waiting for acceptance");
+			throw new InvalidDataInputException("Assignment is accepted");
 		}
 
 		assignment.setState("Accepted");
