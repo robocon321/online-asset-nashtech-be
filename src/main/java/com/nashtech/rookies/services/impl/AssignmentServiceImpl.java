@@ -89,7 +89,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 		Assignment assignment = assignmentMapper.mapToAssignment(assetOptional.get(), admin, userOptional.get(),
 				dto.getNote(), state, assignedDate, nowDate);
 
-		assignment.getAsset().setState("Not available");
+		assignment.getAsset().setState("Assigned");
 
 		assignment = assignmentRepository.save(assignment);
 
@@ -132,6 +132,11 @@ public class AssignmentServiceImpl implements AssignmentService {
 			throw new InvalidDataInputException("User not found");
 		}
 
+		if (userOptional.get().isDisabled()) {
+			throw new InvalidDataInputException("User account is blocked");
+
+		}
+
 		Optional<Asset> assetOptional = assetRepository.findById(dto.getAssetId());
 
 		if (assetOptional.isEmpty()) {
@@ -147,7 +152,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 
 		assignmentOptional.get().getAsset().setState("Available");
 
-		asset.setState("Not available");
+		asset.setState("Assigned");
 
 		Long adminId = userUtil.getIdFromUserPrinciple();
 

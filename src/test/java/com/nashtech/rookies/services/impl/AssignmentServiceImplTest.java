@@ -404,6 +404,26 @@ public class AssignmentServiceImplTest {
 		});
 		assertEquals("User not found", actualException.getMessage());
 	}
+	
+	@Test
+	void updateAssignment_ShouldThrowInvalidDataInputException_WhenUserIsDisable() {
+
+		Assignment assignment = mock(Assignment.class);
+		Users user = Users.builder().disabled(true).build();
+
+		UpdateAssignmentDto dto = UpdateAssignmentDto.builder().assignedDate("26/02/2022").build();
+
+		when(userUtil.isValidDate("26/02/2022")).thenReturn(true);
+
+		when(assignmentRepository.findById(dto.getId())).thenReturn(Optional.of(assignment));
+
+		when(usersRepository.findById(dto.getUserId())).thenReturn(Optional.of(user));
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.updateAssignment(dto);
+		});
+		assertEquals("User account is blocked", actualException.getMessage());
+	}
 
 	@Test
 	void updateAssignment_ShouldThrowInvalidDataInputException_WhenAssetInValid() {
