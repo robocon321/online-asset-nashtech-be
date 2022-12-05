@@ -4,7 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -524,7 +525,7 @@ public class AssignmentServiceImplTest {
 	}
 
 	@Test
-	void acceptAssignment_ShouldChangeStateToAccept_WhenChangeStateSuccess(){
+	void acceptAssignment_ShouldChangeStateToAccept_WhenChangeStateSuccess() {
 		Long idCheck = 4L;
 
 		Assignment initAsm = Assignment.builder().id(idCheck).note("XCXC").state("Waiting for acceptance").build();
@@ -543,7 +544,7 @@ public class AssignmentServiceImplTest {
 	}
 
 	@Test
-	void declinedAssignment_ShouldChangeStateToDeclined_WhenChangeStateSuccess(){
+	void declinedAssignment_ShouldChangeStateToDeclined_WhenChangeStateSuccess() {
 		Long idCheck = 4L;
 
 		Assignment initAsm = Assignment.builder().id(idCheck).note("XCXC").state("Waiting for acceptance").build();
@@ -562,7 +563,7 @@ public class AssignmentServiceImplTest {
 	}
 
 	@Test
-	void acceptAssignment_ShouldThrowException_WhenNotFoundAssignment(){
+	void acceptAssignment_ShouldThrowException_WhenNotFoundAssignment() {
 		Long idCheck = 4L;
 
 		when(assignmentRepository.findById(idCheck)).thenReturn(Optional.empty());
@@ -574,7 +575,7 @@ public class AssignmentServiceImplTest {
 	}
 
 	@Test
-	void declinedAssignment_ShouldThrowException_WhenNotFoundAssignment(){
+	void declinedAssignment_ShouldThrowException_WhenNotFoundAssignment() {
 		Long idCheck = 4L;
 
 		when(assignmentRepository.findById(idCheck)).thenReturn(Optional.empty());
@@ -586,7 +587,7 @@ public class AssignmentServiceImplTest {
 	}
 
 	@Test
-	void acceptAssignment_ShouldThrowException_WhenStateNotValid(){
+	void acceptAssignment_ShouldThrowException_WhenStateNotValid() {
 		Long idCheck = 4L;
 		Assignment initAssignment = Assignment.builder().id(idCheck).state("Accepted").build();
 
@@ -599,7 +600,7 @@ public class AssignmentServiceImplTest {
 	}
 
 	@Test
-	void declinedAssignment_ShouldThrowException_WhenStateNotValid(){
+	void declinedAssignment_ShouldThrowException_WhenStateNotValid() {
 		Long idCheck = 4L;
 		Assignment initAssignment = Assignment.builder().id(idCheck).state("Accepted").build();
 
