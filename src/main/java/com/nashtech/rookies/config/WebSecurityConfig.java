@@ -59,8 +59,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/v1/users/**").hasAuthority("ADMIN")
 				.antMatchers("/api/v1/assets/**").hasAuthority("ADMIN")
 				.antMatchers( "/api/v1/categories/**").hasAuthority("ADMIN")
-				.antMatchers( "/api/v1/assignments/**").hasAuthority("ADMIN")
-				.antMatchers( "/api/v1/return-requests/**").hasAuthority("ADMIN")
+
+//				assignment - ADMIN
+				.antMatchers( HttpMethod.POST,"/api/v1/assignments/**").hasAnyAuthority("ADMIN")
+				.antMatchers( HttpMethod.PUT,"/api/v1/assignments/**").hasAnyAuthority("ADMIN")
+
+				.antMatchers( HttpMethod.GET,"/api/v1/assignments/**").hasAnyAuthority("ADMIN","STAFF")
+				.antMatchers( HttpMethod.PUT,"/api/v1/assignments/accept/**").hasAnyAuthority("ADMIN","STAFF")
+				.antMatchers( HttpMethod.PUT,"/api/v1/assignments/decline/**").hasAnyAuthority("ADMIN","STAFF")
+
+				.antMatchers( HttpMethod.DELETE,"/api/v1/return-requests/**").hasAnyAuthority("ADMIN")
 
 				.anyRequest().authenticated().and().exceptionHandling().authenticationEntryPoint(jwtEntryPoint).and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
