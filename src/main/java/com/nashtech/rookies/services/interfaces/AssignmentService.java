@@ -27,4 +27,6 @@ public interface AssignmentService {
 	AssignmentResponseDto acceptAssignment(Long id);
 	AssignmentResponseDto declinedAssignment(Long id);
 
+	
+	void deleteAssignment(Long id) throws Exception;
 }
