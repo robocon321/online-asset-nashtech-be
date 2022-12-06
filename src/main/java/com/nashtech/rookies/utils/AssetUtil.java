@@ -19,8 +19,11 @@ import com.nashtech.rookies.mapper.AssetMapper;
 public class AssetUtil {
 	@Autowired
 	AssetMapper assetMapper;
-	
+
 	public String generateAssetCode(List<Asset> list, String categoryCode) {
+		if (list.isEmpty()) {
+			return categoryCode + "000001";
+		}
 
 		List<String> assetCodes = list.stream().map(Asset::getCode).collect(Collectors.toList());
 		List<Integer> suffixAssetCodes = assetCodes.stream()
@@ -48,20 +51,19 @@ public class AssetUtil {
 
 		return assetCode;
 	}
-	
-	public List<AssetResponseDto> mapAssetToAssetDto(List<Asset> list){
+
+	public List<AssetResponseDto> mapAssetToAssetDto(List<Asset> list) {
 		List<AssetResponseDto> dtoList = new ArrayList<>();
-		for(Asset asset : list) {
+		for (Asset asset : list) {
 			AssetResponseDto assetDto = assetMapper.mapToDto(asset);
 			dtoList.add(assetDto);
 		}
 		return dtoList;
 	}
-	
-	public List<AssignmentResponseDto> mapAssetToAssetDetailDto(List<Assignment> list)
-	{
+
+	public List<AssignmentResponseDto> mapAssetToAssetDetailDto(List<Assignment> list) {
 		List<AssignmentResponseDto> assignmentDtoList = new ArrayList<>();
-		for(Assignment assignment : list) {
+		for (Assignment assignment : list) {
 			AssignmentResponseDto data = new AssignmentResponseDto();
 			data.setReturnDate(assignment.getReturnedDate());
 			data.setAssignedTo(assignment.getAssignedTo().getUsername());
