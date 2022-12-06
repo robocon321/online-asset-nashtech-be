@@ -26,17 +26,6 @@ public class ReturnRequest {
     @OneToOne
     Assignment assignment;
 
-    public ReturnRequest(String state, Assignment assignment) {
-        this.state = state;
-        this.assignment = assignment;
-    }
-
-    public ReturnRequest(Date returnDate, String state, Assignment assignment) {
-        this.returnDate = returnDate;
-        this.state = state;
-        this.assignment = assignment;
-    }
-
     public ReturnRequest(Date returnDate, String state, String requestBy, String acceptedBy, Assignment assignment) {
         this.returnDate = returnDate;
         this.state = state;
