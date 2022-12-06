@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,6 +94,30 @@ public class ReturnRequestServiceImpl implements com.nashtech.rookies.services.i
 
 		returnRequestRepository.delete(returnRequest);
 
+	}
+
+	@Override
+	public ReturnRequestDto updateReturnRequest(Long id) {
+		// TODO Auto-generated method stub
+		Optional<ReturnRequest> returnRequestOptional = returnRequestRepository.findById(id);
+
+		if (returnRequestOptional.isEmpty()) {
+			throw new InvalidDataInputException("ReturnRequest not found");
+		}
+
+		ReturnRequest returnRequest = returnRequestOptional.get();
+
+		if (!"Waiting for returning".equals(returnRequest.getState())) {
+			throw new InvalidDataInputException("ReturnRequest State must be Waiting for returning");
+		}
+		
+		returnRequest.setState("Completed");
+		returnRequest.setReturnDate( new Date());
+		returnRequest.getAssignment().setComplete(true);
+		returnRequest.getAssignment().setCheckReturn(true);
+		returnRequestRepository.save(returnRequest);
+		
+		return returnRequestMapper.mapToReturnRequestDto(returnRequest);
 	}
 
 }
