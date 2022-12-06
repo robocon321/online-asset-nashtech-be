@@ -23,13 +23,24 @@ public class initDatabase {
 	
 	@Autowired
 	PasswordEncoder passwordEncoder;
+
+    @Autowired
+    UsersRepository usersRepository;
+
+    @Autowired
+    AssetRepository assetRepository;
+
+    @Autowired
+    CategoryRepository categoryRepository;
+
+    @Autowired
+    AssignmentRepository assignmentRepository;
+
+    @Autowired
+    ReturnRequestRepository returnRequestRepository;
 	
     @Bean
-    CommandLineRunner loadDatabase(UsersRepository usersRepository,
-                                   AssetRepository assetRepository,
-                                   CategoryRepository categoryRepository,
-                                   AssignmentRepository assignmentRepository,
-                                   ReturnRequestRepository returnRequestRepository) {
+    CommandLineRunner loadDatabase() {
         return args -> {
             usersRepository.deleteAll();
             assetRepository.deleteAll();
@@ -114,13 +125,20 @@ public class initDatabase {
             //            endregion
 
 //            region    ReturnRequest
+
+
             for(int i = 0; i <= 30; i++){
+                String[] resultRandom = randomStateRequestReturn();
                 returnRequestRepository.save(new ReturnRequest(
                         randomDate(),
-                        randomStateRequestReturn(),
+                        resultRandom[0],
+                        usersRepository.findById((long) new Random().nextInt(30) + 1 ).get().getUsername(),
+                        resultRandom[1],
                         assignmentRepository.findById((long) new Random().nextInt(30) + 1 ).get()
                 ));
             }
+
+
 //            endregion
 
         };
@@ -182,9 +200,16 @@ public class initDatabase {
         return java.sql.Date.valueOf(randomBirthDate);
     }
 
-    private String randomStateRequestReturn(){
+    private String[] randomStateRequestReturn(){
     	String[] states = {"Completed", "Waiting for returning"};
-    	return states[new Random().nextInt(states.length)];
+    	String randomState = states[new Random().nextInt(states.length)];
+        String username;
+        if(randomState.equals("Completed")){
+            username = usersRepository.findById((long) new Random().nextInt(30) + 1 ).get().getUsername();
+        }else{
+            username = null;
+        }
+        return new String[]{randomState, username};
     }
 
 }
