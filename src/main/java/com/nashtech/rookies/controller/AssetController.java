@@ -2,6 +2,7 @@ package com.nashtech.rookies.controller;
 
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 import com.nashtech.rookies.dto.request.user.UserRequestDto;
+import com.nashtech.rookies.dto.response.report.ReportCategoryResponseDto;
 import com.nashtech.rookies.repository.AssetRepository;
 import com.nashtech.rookies.services.interfaces.AssetService;
 import javax.validation.Valid;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 import com.nashtech.rookies.dto.request.asset.UpdateAssetRequestDto;
 import com.nashtech.rookies.services.interfaces.AssetService;
+
+import java.util.List;
 
 @RequestMapping("/api/v1/assets")
 @RestController
@@ -68,6 +71,11 @@ public class AssetController {
 	public ResponseEntity<?> deleteAssign(@RequestParam Long id) throws Exception {
 		assetService.deleteAsset(id);
 		return ResponseEntity.ok().body("Delete successfully");
+	}
+
+	@GetMapping("/report")
+	public List<ReportCategoryResponseDto> reportList(){
+		return assetService.getAllReport();
 	}
 
 }

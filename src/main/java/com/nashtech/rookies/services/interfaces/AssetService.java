@@ -6,9 +6,7 @@ import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 import com.nashtech.rookies.dto.request.asset.UpdateAssetRequestDto;
 import com.nashtech.rookies.dto.response.asset.AssetDetailResponseDto;
 import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
-
-import com.nashtech.rookies.entity.Asset;
-import com.nashtech.rookies.entity.Users;
+import com.nashtech.rookies.dto.response.report.ReportCategoryResponseDto;
 
 public interface AssetService {
 	AssetResponseDto createAsset(CreateAssetRequestDto dto);
@@ -24,4 +22,5 @@ public interface AssetService {
 
 	List<AssetResponseDto> getAllAssetsByStateAndUser(String state);
 
+	List<ReportCategoryResponseDto> getAllReport();
 }

@@ -616,7 +616,7 @@ public class AssignmentServiceImplTest {
 		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
 			assignmentServiceImpl.acceptAssignment(idCheck);
 		});
-		assertEquals("Assignment state must be Waiting for acceptance", actualException.getMessage());
+		assertEquals("Assignment is accepted", actualException.getMessage());
 	}
 
 	@Test

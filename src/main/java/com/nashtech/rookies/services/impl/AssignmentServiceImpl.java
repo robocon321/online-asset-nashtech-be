@@ -220,7 +220,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 		Assignment assignment = assignmentOptional.get();
 
 		if (!assignment.getState().equals("Waiting for acceptance")) {
-			throw new InvalidDataInputException("Assignment state must be Waiting for acceptance");
+			throw new InvalidDataInputException("Assignment is accepted");
 		}
 
 		assignment.setState("Accepted");

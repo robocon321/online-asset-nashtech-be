@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.nashtech.rookies.dto.response.report.ReportCategoryResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -342,6 +343,22 @@ public class AssetServiceImplTest {
 
 		List<AssetResponseDto> actual = assetServiceImpl.getAllAssetsByStateAndUser(state);
 		assertEquals(assetDtoList, actual);
+	}
+
+	@Test
+	void getAllReport_ShouldThrowException_WhenListEmpty(){
+		List<ReportCategoryResponseDto> responseDtos = new ArrayList<>();
+		InvalidDataInputException exception = assertThrows(InvalidDataInputException.class, () -> {
+			assetServiceImpl.getAllReport();
+		});
+		assertEquals("List empty", exception.getMessage());
+	}
+
+	@Test
+	void getAllReport_ShouldReturnData_WhenListNotEmpty(){
+		List<ReportCategoryResponseDto> responseDtos = mock(List.class);
+		when(assetRepository.getReport()).thenReturn(responseDtos);
+		assertEquals(responseDtos,assetServiceImpl.getAllReport());
 	}
 
 }
