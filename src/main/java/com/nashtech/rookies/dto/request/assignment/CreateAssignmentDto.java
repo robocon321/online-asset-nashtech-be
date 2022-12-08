@@ -20,7 +20,6 @@ public class CreateAssignmentDto {
 	@NotNull(message = "Asset is required.")
 	private Long assetId;
 
-	@NotBlank(message = "Note is required.")
 	private String note;
 
 	@NotBlank(message = "AssignedDate is required.")
