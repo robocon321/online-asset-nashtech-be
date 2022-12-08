@@ -27,6 +27,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     @Query(value = "select a.* from assignment a join asset a2 on a.asset_id =a2.id where a.assigned_date <=  ?1  and a.assigned_to_id =?2 and a.state != 'Declined' order by a2.code  ASC ",nativeQuery = true)
     List<Assignment> getAllAssignmentOfUser(Timestamp date,Long id);
 
+    @Query("select a from Assignment a where a.asset.location = ?1")
     List<Assignment> findByAssetLocation(String location);
 
 }

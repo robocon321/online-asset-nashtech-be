@@ -4,6 +4,7 @@ import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 import com.nashtech.rookies.dto.request.asset.UpdateAssetRequestDto;
 import com.nashtech.rookies.dto.response.asset.AssetDetailResponseDto;
 import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
+import com.nashtech.rookies.dto.response.report.ReportCategoryResponseDto;
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Assignment;
 import com.nashtech.rookies.entity.Category;
@@ -191,6 +192,15 @@ public class AssetServiceImpl implements AssetService {
 		List<AssetResponseDto> assetDtoList = assetUtil.mapAssetToAssetDto(assetList);
 
 		return assetDtoList;
+	}
+
+	@Override
+	public List<ReportCategoryResponseDto> getAllReport(){
+		List<ReportCategoryResponseDto> responseDtos =assetRepository.getReport();
+		if(responseDtos.isEmpty()){
+			throw new InvalidDataInputException("List empty");
+		}
+		return responseDtos;
 	}
 
 }

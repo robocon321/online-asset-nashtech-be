@@ -1,7 +1,10 @@
 package com.nashtech.rookies.mapper;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import com.nashtech.rookies.dto.response.report.ReportCategoryResponseDto;
 import org.springframework.stereotype.Component;
 
 import com.nashtech.rookies.dto.response.asset.AssetDetailResponseDto;
@@ -51,5 +54,13 @@ public AssetDetailResponseDto mapToDetailDto(Asset asset) {
 				.location(asset.getLocation())
 				.build();
 	}
+//	public List<ReportCategoryResponseDto> mapReportToDto (List<Object> listReport){
+//		List<ReportCategoryResponseDto> responseDtos =new ArrayList<>();
+//		for (Object o:listReport) {
+//
+//		}
+//		return null;
+//	}
+
 	
 }
