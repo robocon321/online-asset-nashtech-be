@@ -1,23 +1,16 @@
 package com.nashtech.rookies.services.impl;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Pattern;
-import java.util.regex.Pattern;
 import com.nashtech.rookies.dto.request.user.ChangePasswordRequestDto;
+import com.nashtech.rookies.dto.request.user.LoginRequestDto;
+import com.nashtech.rookies.entity.Users;
+import com.nashtech.rookies.exceptions.InvalidDataInputException;
+import com.nashtech.rookies.jwt.JwtProvider;
+import com.nashtech.rookies.repository.UsersRepository;
 import com.nashtech.rookies.security.userprincal.UserPrinciple;
 import com.nashtech.rookies.utils.UserUtil;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,11 +18,10 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.nashtech.rookies.dto.request.user.LoginRequestDto;
-import com.nashtech.rookies.entity.Users;
-import com.nashtech.rookies.exceptions.InvalidDataInputException;
-import com.nashtech.rookies.jwt.JwtProvider;
-import com.nashtech.rookies.repository.UsersRepository;
+import java.util.Optional;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class AuthServiceImplTest {
 	AuthenticationManager authenticationManager;

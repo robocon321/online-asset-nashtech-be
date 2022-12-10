@@ -1,14 +1,13 @@
 package com.nashtech.rookies.controller;
 
-import javax.validation.Valid;
-
+import com.nashtech.rookies.dto.request.assignment.CreateAssignmentDto;
+import com.nashtech.rookies.dto.request.assignment.UpdateAssignmentDto;
+import com.nashtech.rookies.services.interfaces.AssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.nashtech.rookies.dto.request.assignment.CreateAssignmentDto;
-import com.nashtech.rookies.dto.request.assignment.UpdateAssignmentDto;
-import com.nashtech.rookies.services.interfaces.AssignmentService;
+import javax.validation.Valid;
 
 @RequestMapping("/api/v1/assignments")
 @RestController

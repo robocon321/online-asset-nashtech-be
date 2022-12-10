@@ -1,17 +1,16 @@
 package com.nashtech.rookies.services.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.nashtech.rookies.entity.Category;
+import com.nashtech.rookies.repository.CategoryRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import com.nashtech.rookies.entity.Category;
-import com.nashtech.rookies.repository.CategoryRepository;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class CategoryServiceImplTest {
 	CategoryRepository categoryRepository;

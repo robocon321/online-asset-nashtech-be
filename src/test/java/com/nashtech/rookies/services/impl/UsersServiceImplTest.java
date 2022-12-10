@@ -1,30 +1,26 @@
 package com.nashtech.rookies.services.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.nashtech.rookies.dto.request.user.UpdateUserRequestDto;
+import com.nashtech.rookies.dto.request.user.UserRequestDto;
+import com.nashtech.rookies.entity.Assignment;
+import com.nashtech.rookies.entity.Users;
+import com.nashtech.rookies.exceptions.InvalidDataInputException;
+import com.nashtech.rookies.mapper.UserMapper;
+import com.nashtech.rookies.repository.AssignmentRepository;
+import com.nashtech.rookies.repository.UsersRepository;
+import com.nashtech.rookies.utils.UserUtil;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.nashtech.rookies.dto.request.user.UpdateUserRequestDto;
-import com.nashtech.rookies.entity.Assignment;
-import com.nashtech.rookies.repository.AssignmentRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import com.nashtech.rookies.dto.request.user.UserRequestDto;
-import com.nashtech.rookies.entity.Users;
-import com.nashtech.rookies.exceptions.InvalidDataInputException;
-import com.nashtech.rookies.mapper.UserMapper;
-import com.nashtech.rookies.repository.UsersRepository;
-import com.nashtech.rookies.utils.UserUtil;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 public class UsersServiceImplTest {
 

@@ -1,14 +1,10 @@
 package com.nashtech.rookies.mapper;
 
-import java.util.Date;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 import com.nashtech.rookies.dto.request.user.UserRequestDto;
 import com.nashtech.rookies.entity.Users;
-import com.nashtech.rookies.utils.UserUtil;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 @Component
 public class UserMapper {

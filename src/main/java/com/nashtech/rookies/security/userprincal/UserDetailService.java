@@ -1,15 +1,14 @@
 package com.nashtech.rookies.security.userprincal;
 
-import javax.transaction.Transactional;
-
+import com.nashtech.rookies.entity.Users;
+import com.nashtech.rookies.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.nashtech.rookies.entity.Users;
-import com.nashtech.rookies.repository.UsersRepository;
+import javax.transaction.Transactional;
 
 @Service
 public class UserDetailService implements UserDetailsService {
