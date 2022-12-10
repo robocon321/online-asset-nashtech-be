@@ -1,47 +1,36 @@
 package com.nashtech.rookies.services.impl;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import com.nashtech.rookies.dto.response.report.ReportCategoryResponseDto;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-
 import com.nashtech.rookies.dto.request.asset.CreateAssetRequestDto;
 import com.nashtech.rookies.dto.request.asset.UpdateAssetRequestDto;
 import com.nashtech.rookies.dto.response.asset.AssetDetailResponseDto;
 import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
 import com.nashtech.rookies.dto.response.asset.AssignmentResponseDto;
+import com.nashtech.rookies.dto.response.report.ReportCategoryResponseDto;
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Assignment;
 import com.nashtech.rookies.entity.Category;
 import com.nashtech.rookies.entity.Users;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
-import com.nashtech.rookies.jwt.JwtProvider;
 import com.nashtech.rookies.mapper.AssetMapper;
 import com.nashtech.rookies.mapper.CategoryMapper;
 import com.nashtech.rookies.repository.AssetRepository;
 import com.nashtech.rookies.repository.AssignmentRepository;
 import com.nashtech.rookies.repository.CategoryRepository;
 import com.nashtech.rookies.repository.UsersRepository;
-import com.nashtech.rookies.security.userprincal.UserPrinciple;
-import com.nashtech.rookies.services.interfaces.AssetService;
 import com.nashtech.rookies.utils.AssetUtil;
 import com.nashtech.rookies.utils.UserUtil;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class AssetServiceImplTest {
 	AssetRepository assetRepository;
@@ -53,14 +42,6 @@ public class AssetServiceImplTest {
 	AssetUtil assetUtil;
 	UsersRepository usersRepository;
 	AssetServiceImpl assetServiceImpl;
-	AuthenticationManager authenticationManager;
-	JwtProvider jwtProvider;
-	AssetService assetService;
-	UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken;
-	Authentication authentication;
-
-	UserPrinciple userPrinciple;
-	AuthServiceImpl authServiceImpl;
 	Asset initAsset;
 
 	@BeforeEach
@@ -130,14 +111,14 @@ public class AssetServiceImplTest {
 
 		when(userUtil.convertStrDateToObDate(dto.getInstalledDate())).thenReturn(installedDate);
 
-		when(userUtil.getAddressFromUserPrinciple()).thenReturn("TPHCM");
+		when(userUtil.getAddressFromUserPrinciple()).thenReturn("HCM");
 
-		when(userUtil.getIdFromUserPrinciple()).thenReturn(2l);
+		when(userUtil.getIdFromUserPrinciple()).thenReturn(2L);
 
-		when(usersRepository.findUsersById(2l)).thenReturn(user);
+		when(usersRepository.findUsersById(2L)).thenReturn(user);
 
 		when(assetMapper.mapToAsset(dto.getName(), dto.getCategoryCode() + "000001", dto.getSpecification(),
-				dto.getState(), "TPHCM", installedDate, category)).thenReturn(asset);
+				dto.getState(), "HCM", installedDate, category)).thenReturn(asset);
 
 		when(assetRepository.save(asset)).thenReturn(asset);
 
@@ -171,13 +152,13 @@ public class AssetServiceImplTest {
 
 		when(userUtil.convertStrDateToObDate(dto.getInstalledDate())).thenReturn(installedDate);
 
-		when(userUtil.getAddressFromUserPrinciple()).thenReturn("TPHCM");
+		when(userUtil.getAddressFromUserPrinciple()).thenReturn("HCM");
 
-		when(userUtil.getIdFromUserPrinciple()).thenReturn(2l);
+		when(userUtil.getIdFromUserPrinciple()).thenReturn(2L);
 
-		when(usersRepository.findUsersById(2l)).thenReturn(user);
+		when(usersRepository.findUsersById(2L)).thenReturn(user);
 
-		when(assetMapper.mapToAsset(dto.getName(), "categoryCode123", dto.getSpecification(), dto.getState(), "TPHCM",
+		when(assetMapper.mapToAsset(dto.getName(), "categoryCode123", dto.getSpecification(), dto.getState(), "HCM",
 				installedDate, category)).thenReturn(asset);
 
 		when(assetRepository.save(asset)).thenReturn(asset);
@@ -207,10 +188,10 @@ public class AssetServiceImplTest {
 
 	@Test
 	void updateAsset_ShouldThrowInvalidDataInputException_WhenIdInValid() {
-		UpdateAssetRequestDto dto = UpdateAssetRequestDto.builder().id(2l).installedDate("18/02/2020").build();
+		UpdateAssetRequestDto dto = UpdateAssetRequestDto.builder().id(2L).installedDate("18/02/2020").build();
 		when(userUtil.isValidDate(dto.getInstalledDate())).thenReturn(true);
 
-		when(assetRepository.findById(2l)).thenReturn(Optional.empty());
+		when(assetRepository.findById(2L)).thenReturn(Optional.empty());
 
 		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
 			assetServiceImpl.updateAsset(dto);
@@ -220,7 +201,7 @@ public class AssetServiceImplTest {
 
 	@Test
 	void updateAsset_ShouldReturnAsset_WhenDataValid() {
-		UpdateAssetRequestDto dto = UpdateAssetRequestDto.builder().id(2l).installedDate("18/02/2020").name("Name")
+		UpdateAssetRequestDto dto = UpdateAssetRequestDto.builder().id(2L).installedDate("18/02/2020").name("Name")
 				.specification("Specification").state("Available").build();
 
 		Asset asset = mock(Asset.class);
@@ -230,7 +211,7 @@ public class AssetServiceImplTest {
 
 		when(userUtil.isValidDate(dto.getInstalledDate())).thenReturn(true);
 
-		when(assetRepository.findById(2l)).thenReturn(Optional.of(asset));
+		when(assetRepository.findById(2L)).thenReturn(Optional.of(asset));
 
 		when(userUtil.convertStrDateToObDate(dto.getInstalledDate())).thenReturn(installedDate);
 
@@ -297,8 +278,8 @@ public class AssetServiceImplTest {
 	@Test
 	void getAllAssets_ShouldReturnAllAssetsManagedByUser() {
 		Users user = mock(Users.class);
-		when(userUtil.getIdFromUserPrinciple()).thenReturn(2l);
-		when(usersRepository.findUsersById(2l)).thenReturn(user);
+		when(userUtil.getIdFromUserPrinciple()).thenReturn(2L);
+		when(usersRepository.findUsersById(2L)).thenReturn(user);
 
 		List<Asset> assetList = new ArrayList<>();
 		when(assetRepository.findByUsersOrderByCodeAsc(user)).thenReturn(assetList);
@@ -311,18 +292,18 @@ public class AssetServiceImplTest {
 	@Test
 	void getAssetDetailById_ShouldReturnAssetDetail() {
 		Asset asset = mock(Asset.class);
-		when(assetRepository.findById(2l)).thenReturn(Optional.of(asset));
+		when(assetRepository.findById(2L)).thenReturn(Optional.of(asset));
 
 		AssetDetailResponseDto expectedAsset = mock(AssetDetailResponseDto.class);
 		when(assetMapper.mapToDetailDto(asset)).thenReturn(expectedAsset);
 
 		List<Assignment> assignmentList = new ArrayList<>();
-		Assignment assignment = Assignment.builder().id(1l).build();
+		Assignment assignment = Assignment.builder().id(1L).build();
 		assignmentList.add(assignment);
 		when(assignmentRepository.findByAsset(asset)).thenReturn(assignmentList);
 		List<AssignmentResponseDto> assignmentDtoList = new ArrayList<>();
 		when(assetUtil.mapAssetToAssetDetailDto(assignmentList)).thenReturn(assignmentDtoList);
-		AssetDetailResponseDto actualAsset = assetServiceImpl.getAssetDetailById(2l);
+		AssetDetailResponseDto actualAsset = assetServiceImpl.getAssetDetailById(2L);
 		verify(expectedAsset).setAssignments(assignmentDtoList);
 		assertEquals(expectedAsset, actualAsset);
 	}
@@ -332,8 +313,8 @@ public class AssetServiceImplTest {
 		String state = "Available";
 		Users user = mock(Users.class);
 
-		when(userUtil.getIdFromUserPrinciple()).thenReturn(2l);
-		when(usersRepository.findById(2l)).thenReturn(Optional.of(user));
+		when(userUtil.getIdFromUserPrinciple()).thenReturn(2L);
+		when(usersRepository.findById(2L)).thenReturn(Optional.of(user));
 
 		List<Asset> assetList = new ArrayList<>();
 		when(assetRepository.findByStateAndUsers(state, user)).thenReturn(assetList);

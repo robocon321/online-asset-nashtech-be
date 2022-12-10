@@ -1,8 +1,7 @@
 package com.nashtech.rookies.mapper;
 
-import org.springframework.stereotype.Component;
-
 import com.nashtech.rookies.entity.Category;
+import org.springframework.stereotype.Component;
 
 @Component
 public class CategoryMapper {

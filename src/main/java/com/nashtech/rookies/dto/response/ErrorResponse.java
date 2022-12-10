@@ -1,9 +1,9 @@
 package com.nashtech.rookies.dto.response;
 
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import java.util.Map;
 
 public class ErrorResponse {
 	String code;

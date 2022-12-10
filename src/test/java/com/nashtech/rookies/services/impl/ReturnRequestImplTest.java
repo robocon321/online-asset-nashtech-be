@@ -5,17 +5,13 @@ import com.nashtech.rookies.entity.Assignment;
 import com.nashtech.rookies.entity.ReturnRequest;
 import com.nashtech.rookies.entity.Users;
 import com.nashtech.rookies.exceptions.InvalidDataInputException;
-import com.nashtech.rookies.mapper.AssignmentMapper;
 import com.nashtech.rookies.mapper.ReturnRequestMapper;
-import com.nashtech.rookies.repository.AssetRepository;
 import com.nashtech.rookies.repository.AssignmentRepository;
 import com.nashtech.rookies.repository.ReturnRequestRepository;
 import com.nashtech.rookies.repository.UsersRepository;
 import com.nashtech.rookies.security.userprincal.UserPrinciple;
-import com.nashtech.rookies.utils.UserUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,9 +25,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class ReturnRequestImplTest {
 	ReturnRequestRepository returnRequestRepository;

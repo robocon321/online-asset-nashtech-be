@@ -1,13 +1,5 @@
 package com.nashtech.rookies.services.impl;
 
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
 import com.nashtech.rookies.dto.request.assignment.CreateAssignmentDto;
 import com.nashtech.rookies.dto.request.assignment.UpdateAssignmentDto;
 import com.nashtech.rookies.dto.response.assignment.AssignmentDetailResponseDto;
@@ -24,6 +16,13 @@ import com.nashtech.rookies.repository.UsersRepository;
 import com.nashtech.rookies.security.userprincal.UserPrinciple;
 import com.nashtech.rookies.services.interfaces.AssignmentService;
 import com.nashtech.rookies.utils.UserUtil;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AssignmentServiceImpl implements AssignmentService {
@@ -189,7 +188,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 	@Override
 	public AssignmentDetailResponseDto getAssignmentDetail(Long id) {
 		Optional<Assignment> checkAssignment = assignmentRepository.findById(id);
-		if (!checkAssignment.isPresent()) {
+		if (checkAssignment.isEmpty()) {
 			throw new InvalidDataInputException("Not found this assignment");
 		}
 		Assignment assignment = checkAssignment.get();

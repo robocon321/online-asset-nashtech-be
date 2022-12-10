@@ -1,15 +1,9 @@
 package com.nashtech.rookies.dto.response.asset;
 
+import lombok.*;
+
 import java.util.Date;
 import java.util.List;
-
-import com.nashtech.rookies.entity.Assignment;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Builder
 @Setter

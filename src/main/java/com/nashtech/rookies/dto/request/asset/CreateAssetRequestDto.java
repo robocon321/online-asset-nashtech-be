@@ -1,11 +1,11 @@
 package com.nashtech.rookies.dto.request.asset;
 
-import javax.validation.constraints.NotBlank;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.validation.constraints.NotBlank;
 
 @Builder
 @Getter

@@ -1,25 +1,5 @@
 package com.nashtech.rookies.services.impl;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import com.nashtech.rookies.dto.request.assignment.CreateAssignmentDto;
 import com.nashtech.rookies.dto.request.assignment.UpdateAssignmentDto;
 import com.nashtech.rookies.dto.response.assignment.AssignmentDetailResponseDto;
@@ -35,6 +15,25 @@ import com.nashtech.rookies.repository.AssignmentRepository;
 import com.nashtech.rookies.repository.UsersRepository;
 import com.nashtech.rookies.security.userprincal.UserPrinciple;
 import com.nashtech.rookies.utils.UserUtil;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class AssignmentServiceImplTest {
 	AssignmentRepository assignmentRepository;
@@ -103,7 +102,7 @@ public class AssignmentServiceImplTest {
 		Date assignedDate = mock(Date.class);
 		Date nowDate = mock(Date.class);
 
-		CreateAssignmentDto dto = CreateAssignmentDto.builder().assignedDate("28/02/2022").userId(2l).build();
+		CreateAssignmentDto dto = CreateAssignmentDto.builder().assignedDate("28/02/2022").userId(2L).build();
 
 		when(userUtil.isValidDate("28/02/2022")).thenReturn(true);
 
@@ -128,7 +127,7 @@ public class AssignmentServiceImplTest {
 		Date nowDate = mock(Date.class);
 		Users user = Users.builder().disabled(true).build();
 
-		CreateAssignmentDto dto = CreateAssignmentDto.builder().assignedDate("28/02/2022").userId(2l).build();
+		CreateAssignmentDto dto = CreateAssignmentDto.builder().assignedDate("28/02/2022").userId(2L).build();
 
 		when(userUtil.isValidDate("28/02/2022")).thenReturn(true);
 
@@ -154,7 +153,7 @@ public class AssignmentServiceImplTest {
 
 		Users user = mock(Users.class);
 
-		CreateAssignmentDto dto = CreateAssignmentDto.builder().assignedDate("28/02/2022").userId(2l).assetId(2l)
+		CreateAssignmentDto dto = CreateAssignmentDto.builder().assignedDate("28/02/2022").userId(2L).assetId(2L)
 				.build();
 
 		when(userUtil.isValidDate("28/02/2022")).thenReturn(true);
@@ -165,7 +164,7 @@ public class AssignmentServiceImplTest {
 
 		when(assignedDate.before(nowDate)).thenReturn(false);
 
-		when(usersRepository.findById(2l)).thenReturn(Optional.of(user));
+		when(usersRepository.findById(2L)).thenReturn(Optional.of(user));
 
 		when(assetRepository.findById(dto.getAssetId())).thenReturn(Optional.empty());
 
@@ -184,7 +183,7 @@ public class AssignmentServiceImplTest {
 		Users user = mock(Users.class);
 		Asset asset = Asset.builder().state("ABC").build();
 
-		CreateAssignmentDto dto = CreateAssignmentDto.builder().assignedDate("28/02/2022").userId(2l).assetId(2l)
+		CreateAssignmentDto dto = CreateAssignmentDto.builder().assignedDate("28/02/2022").userId(2L).assetId(2L)
 				.build();
 
 		when(userUtil.isValidDate("28/02/2022")).thenReturn(true);
@@ -195,7 +194,7 @@ public class AssignmentServiceImplTest {
 
 		when(assignedDate.before(nowDate)).thenReturn(false);
 
-		when(usersRepository.findById(2l)).thenReturn(Optional.of(user));
+		when(usersRepository.findById(2L)).thenReturn(Optional.of(user));
 
 		when(assetRepository.findById(dto.getAssetId())).thenReturn(Optional.of(asset));
 
@@ -224,7 +223,7 @@ public class AssignmentServiceImplTest {
 
 		AssignmentResponseDto expectAssignment = mock(AssignmentResponseDto.class);
 
-		CreateAssignmentDto dto = CreateAssignmentDto.builder().assignedDate("28/02/2022").userId(2l).assetId(2l)
+		CreateAssignmentDto dto = CreateAssignmentDto.builder().assignedDate("28/02/2022").userId(2L).assetId(2L)
 				.build();
 
 		when(userUtil.isValidDate("28/02/2022")).thenReturn(true);
@@ -235,13 +234,13 @@ public class AssignmentServiceImplTest {
 
 		when(assignedDate.before(nowDate)).thenReturn(false);
 
-		when(usersRepository.findById(2l)).thenReturn(Optional.of(user));
+		when(usersRepository.findById(2L)).thenReturn(Optional.of(user));
 
 		when(assetRepository.findById(dto.getAssetId())).thenReturn(Optional.of(asset));
 
-		when(userUtil.getIdFromUserPrinciple()).thenReturn(2l);
+		when(userUtil.getIdFromUserPrinciple()).thenReturn(2L);
 
-		when(usersRepository.findUsersById(2l)).thenReturn(admin);
+		when(usersRepository.findUsersById(2L)).thenReturn(admin);
 
 		when(assignmentMapper.mapToAssignment(asset, admin, user, dto.getNote(), state, assignedDate, nowDate))
 				.thenReturn(assignment);
@@ -287,32 +286,27 @@ public class AssignmentServiceImplTest {
 		when(assignmentRepository.getAllAssignmentOfUser(Mockito.any(Timestamp.class), Mockito.any()))
 				.thenReturn(assignmentList);
 
-		List<AssignmentResponseDto> assignmentResponseDtos = new ArrayList<>();
-		when(assignmentMapper.mapListAssignmentEntityToDto(assignmentList)).thenReturn(assignmentResponseDtos);
-		assertEquals(assignmentResponseDtos, assignmentServiceImpl.getListAssignmentofUser());
+		List<AssignmentResponseDto> assignmentResponseDto = new ArrayList<>();
+		when(assignmentMapper.mapListAssignmentEntityToDto(assignmentList)).thenReturn(assignmentResponseDto);
+		assertEquals(assignmentResponseDto, assignmentServiceImpl.getListAssignmentofUser());
 
 	}
 
 	@Test
 	void whenGetAssignmentDetailNotFoundShouldReturnException() {
 		Long id = 1L;
-//		Assignment assignment = new Assignment();
-//		Optional<Assignment> checkAssignment= Optional.of(assignment);
-//		when( assignmentRepository.findById(id)).thenReturn(checkAssignment);
 		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
 			assignmentServiceImpl.getAssignmentDetail(id);
 		});
 		assertEquals("Not found this assignment", actualException.getMessage());
-
 	}
 
 	@Test
 	void whenFoundAsmValid() {
 		Long id = 1L;
-		Assignment assignment = new Assignment();
-		Optional<Assignment> checkAssignment = Optional.of(assignment);
-		when(assignmentRepository.findById(id)).thenReturn(checkAssignment);
-		assignment = checkAssignment.get();
+		Assignment assignment = mock(Assignment.class);
+
+		when(assignmentRepository.findById(id)).thenReturn(Optional.of(assignment));
 		assignment.setComplete(false);
 		AssignmentDetailResponseDto dto = new AssignmentDetailResponseDto();
 		when(assignmentMapper.mapToResponseAssigmentDetail(assignment)).thenReturn(dto);
@@ -321,50 +315,37 @@ public class AssignmentServiceImplTest {
 
 	@Test
 	void getUpdateAssignmentById_ShouldThrowInvalidDataInputException_WhenIdInValid() {
-
-		when(assignmentRepository.findById(2l)).thenReturn(Optional.empty());
-
+		when(assignmentRepository.findById(2L)).thenReturn(Optional.empty());
 		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
-			assignmentServiceImpl.getUpdateAssignmentById(2l);
+			assignmentServiceImpl.getUpdateAssignmentById(2L);
 		});
 		assertEquals("Assignment not found", actualException.getMessage());
 	}
 
 	@Test
 	void getUpdateAssignmentById_ShouldThrowInvalidDataInputException_WhenStatusInValid() {
-
 		Assignment assignment = Assignment.builder().state("Hello state").build();
-
-		when(assignmentRepository.findById(2l)).thenReturn(Optional.of(assignment));
-
+		when(assignmentRepository.findById(2L)).thenReturn(Optional.of(assignment));
 		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
-			assignmentServiceImpl.getUpdateAssignmentById(2l);
+			assignmentServiceImpl.getUpdateAssignmentById(2L);
 		});
 		assertEquals("Assignment state must be Waiting for acceptance", actualException.getMessage());
 	}
 
 	@Test
 	void getUpdateAssignmentById_ShouldReturnData_WhenDataValid() {
-
 		Assignment assignment = Assignment.builder().state("Waiting for acceptance").build();
 		AssignmentUpdateResponseDto expectedAssignment = mock(AssignmentUpdateResponseDto.class);
-		when(assignmentRepository.findById(2l)).thenReturn(Optional.of(assignment));
-
+		when(assignmentRepository.findById(2L)).thenReturn(Optional.of(assignment));
 		when(assignmentMapper.mapToUpdateResponseAssignment(assignment)).thenReturn(expectedAssignment);
-
-		AssignmentUpdateResponseDto actualAssignment = assignmentServiceImpl.getUpdateAssignmentById(2l);
-
+		AssignmentUpdateResponseDto actualAssignment = assignmentServiceImpl.getUpdateAssignmentById(2L);
 		assertThat(expectedAssignment, is(actualAssignment));
-
 	}
 
 	@Test
 	void updateAssignment_ShouldThrowInvalidDataInputException_WhenAssignedDateInValid() {
-
 		UpdateAssignmentDto dto = UpdateAssignmentDto.builder().assignedDate("26/02/2022").build();
-
 		when(userUtil.isValidDate("26/02/2022")).thenReturn(false);
-
 		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
 			assignmentServiceImpl.updateAssignment(dto);
 		});
@@ -431,7 +412,7 @@ public class AssignmentServiceImplTest {
 		Assignment assignment = mock(Assignment.class);
 		Users user = mock(Users.class);
 
-		UpdateAssignmentDto dto = UpdateAssignmentDto.builder().assignedDate("26/02/2022").assetId(2l).build();
+		UpdateAssignmentDto dto = UpdateAssignmentDto.builder().assignedDate("26/02/2022").assetId(2L).build();
 
 		when(userUtil.isValidDate("26/02/2022")).thenReturn(true);
 
@@ -449,13 +430,13 @@ public class AssignmentServiceImplTest {
 
 	@Test
 	void updateAssignment_ShouldThrowInvalidDataInputException_WhenAssetStateInValid() {
-		Asset ass = Asset.builder().id(10l).build();
+		Asset ass = Asset.builder().id(10L).build();
 
 		Assignment assignment = Assignment.builder().asset(ass).build();
 		Users user = mock(Users.class);
-		Asset asset = Asset.builder().state("Not Available").id(1l).build();
+		Asset asset = Asset.builder().state("Not Available").id(1L).build();
 
-		UpdateAssignmentDto dto = UpdateAssignmentDto.builder().assignedDate("26/02/2022").assetId(2l).build();
+		UpdateAssignmentDto dto = UpdateAssignmentDto.builder().assignedDate("26/02/2022").assetId(2L).build();
 
 		when(userUtil.isValidDate("26/02/2022")).thenReturn(true);
 
@@ -473,30 +454,30 @@ public class AssignmentServiceImplTest {
 
 	@Test
 	void updateAssignment_ShouldReturnData_WhenDataValid() {
-		Asset ass = Asset.builder().id(1l).build();
+		Asset ass = Asset.builder().id(1L).build();
 
 		Assignment assignment = Assignment.builder().asset(ass).build();
 		Users user = mock(Users.class);
-		Asset asset = Asset.builder().state("Available").id(1l).build();
+		Asset asset = Asset.builder().state("Available").id(1L).build();
 
 		Users admin = mock(Users.class);
 		Date assignedDate = mock(Date.class);
 		AssignmentResponseDto expected = mock(AssignmentResponseDto.class);
 
-		UpdateAssignmentDto dto = UpdateAssignmentDto.builder().assignedDate("26/02/2022").assetId(1l).userId(2l)
-				.note("Note").id(3l).build();
+		UpdateAssignmentDto dto = UpdateAssignmentDto.builder().assignedDate("26/02/2022").assetId(1L).userId(2L)
+				.note("Note").id(3L).build();
 
 		when(userUtil.isValidDate("26/02/2022")).thenReturn(true);
 
-		when(assignmentRepository.findById(3l)).thenReturn(Optional.of(assignment));
+		when(assignmentRepository.findById(3L)).thenReturn(Optional.of(assignment));
 
-		when(usersRepository.findById(2l)).thenReturn(Optional.of(user));
+		when(usersRepository.findById(2L)).thenReturn(Optional.of(user));
 
-		when(assetRepository.findById(1l)).thenReturn(Optional.of(asset));
+		when(assetRepository.findById(1L)).thenReturn(Optional.of(asset));
 
-		when(userUtil.getIdFromUserPrinciple()).thenReturn(3l);
+		when(userUtil.getIdFromUserPrinciple()).thenReturn(3L);
 
-		when(usersRepository.findUsersById(3l)).thenReturn(admin);
+		when(usersRepository.findUsersById(3L)).thenReturn(admin);
 
 		when(userUtil.convertStrDateToObDate(dto.getAssignedDate())).thenReturn(assignedDate);
 
@@ -510,13 +491,10 @@ public class AssignmentServiceImplTest {
 	}
 
 	@Test
-	void getListAssignmentofAdmin_ShouldThrowInvalidDataInputException_WhenAssignmentIsEmpty() {
+	void getListAssignmentOfAdmin_ShouldThrowInvalidDataInputException_WhenAssignmentIsEmpty() {
 		List<Assignment> assignmentList = new ArrayList<Assignment>();
-
 		when(userUtil.getAddressFromUserPrinciple()).thenReturn("HCM");
-
 		when(assignmentRepository.findByAssetLocation("HCM")).thenReturn(assignmentList);
-
 		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
 			assignmentServiceImpl.getListAssignmentofAdmin();
 		});
@@ -524,36 +502,29 @@ public class AssignmentServiceImplTest {
 	}
 
 	@Test
-	void getListAssignmentofAdmin_ShouldReturnAssignmentList_WhenDatavalid() {
-
+	void getListAssignmentOfAdmin_ShouldReturnAssignmentList_WhenDataValid() {
 		List<Assignment> assignmentList = new ArrayList<Assignment>();
 		List<AssignmentResponseDto> expected = new ArrayList<AssignmentResponseDto>();
 
-		Assignment assignment = Assignment.builder().id(2l).build();
+		Assignment assignment = Assignment.builder().id(2L).build();
 		assignmentList.add(assignment);
 
 		when(userUtil.getAddressFromUserPrinciple()).thenReturn("HCM");
-
 		when(assignmentRepository.findByAssetLocation("HCM")).thenReturn(assignmentList);
-
 		when(assignmentMapper.mapListAssignmentEntityToDto(assignmentList)).thenReturn(expected);
 
 		List<AssignmentResponseDto> actual = assignmentServiceImpl.getListAssignmentofAdmin();
-
 		assertThat(expected, is(actual));
-
 	}
 
 	@Test
 	void acceptAssignment_ShouldChangeStateToAccept_WhenChangeStateSuccess() {
 		Long idCheck = 4L;
-
 		Assignment initAsm = Assignment.builder().id(idCheck).note("XCXC").state("Waiting for acceptance").build();
 
 		AssignmentResponseDto expectedDto = mock(AssignmentResponseDto.class);
 
 		when(assignmentRepository.findById(idCheck)).thenReturn(Optional.of((initAsm)));
-
 		when(assignmentRepository.save(initAsm)).thenReturn(initAsm);
 		when(assignmentMapper.mapToResponseAssignment(initAsm)).thenReturn(expectedDto);
 
@@ -568,16 +539,13 @@ public class AssignmentServiceImplTest {
 		Long idCheck = 4L;
 
 		Assignment initAsm = Assignment.builder().id(idCheck).note("XCXC").state("Waiting for acceptance").build();
-
 		AssignmentResponseDto expectedDto = mock(AssignmentResponseDto.class);
 
 		when(assignmentRepository.findById(idCheck)).thenReturn(Optional.of((initAsm)));
-
 		when(assignmentRepository.save(initAsm)).thenReturn(initAsm);
 		when(assignmentMapper.mapToResponseAssignment(initAsm)).thenReturn(expectedDto);
 
 		AssignmentResponseDto actual = assignmentServiceImpl.declinedAssignment(idCheck);
-
 		assertThat(expectedDto, is(actual));
 		assertEquals("Declined", initAsm.getState());
 	}
@@ -587,7 +555,6 @@ public class AssignmentServiceImplTest {
 		Long idCheck = 4L;
 
 		when(assignmentRepository.findById(idCheck)).thenReturn(Optional.empty());
-
 		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
 			assignmentServiceImpl.acceptAssignment(idCheck);
 		});
@@ -599,7 +566,6 @@ public class AssignmentServiceImplTest {
 		Long idCheck = 4L;
 
 		when(assignmentRepository.findById(idCheck)).thenReturn(Optional.empty());
-
 		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
 			assignmentServiceImpl.declinedAssignment(idCheck);
 		});
@@ -612,7 +578,6 @@ public class AssignmentServiceImplTest {
 		Assignment initAssignment = Assignment.builder().id(idCheck).state("Accepted").build();
 
 		when(assignmentRepository.findById(idCheck)).thenReturn(Optional.of(initAssignment));
-
 		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
 			assignmentServiceImpl.acceptAssignment(idCheck);
 		});
@@ -625,7 +590,6 @@ public class AssignmentServiceImplTest {
 		Assignment initAssignment = Assignment.builder().id(idCheck).state("Accepted").build();
 
 		when(assignmentRepository.findById(idCheck)).thenReturn(Optional.of(initAssignment));
-
 		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
 			assignmentServiceImpl.declinedAssignment(idCheck);
 		});

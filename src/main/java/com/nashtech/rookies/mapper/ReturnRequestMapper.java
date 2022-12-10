@@ -2,11 +2,10 @@ package com.nashtech.rookies.mapper;
 
 import com.nashtech.rookies.dto.response.returnRequest.ReturnRequestDto;
 import com.nashtech.rookies.entity.ReturnRequest;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Component;
 
 @Component
 public class ReturnRequestMapper {

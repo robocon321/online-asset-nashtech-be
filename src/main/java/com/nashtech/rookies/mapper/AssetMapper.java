@@ -1,16 +1,12 @@
 package com.nashtech.rookies.mapper;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import com.nashtech.rookies.dto.response.report.ReportCategoryResponseDto;
-import org.springframework.stereotype.Component;
-
 import com.nashtech.rookies.dto.response.asset.AssetDetailResponseDto;
 import com.nashtech.rookies.dto.response.asset.AssetResponseDto;
 import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Category;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 @Component
 public class AssetMapper {
