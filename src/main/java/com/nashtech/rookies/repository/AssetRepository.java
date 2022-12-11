@@ -20,7 +20,7 @@ public interface AssetRepository extends JpaRepository<Asset, Long>, JpaSpecific
     
     List<Asset> findByStateAndUsers(String state, Users users);
 
-    @Query(value = "select c.name as catename ,count(c.name) as total,count(c.name) filter (where a.state='Assigned') as assigned,count(c.name) filter (where a.state='Available') as available,count(c.name) filter (where a.state='Not available') as notAvailable,count(c.name) filter (where a.state='Waiting for recycling') as waitingForRecycling, count(c.name) filter (where a.state='Recycled') as recycled from asset a join category c ON a.category_id = c.id group by c.name \n",nativeQuery = true)
+    @Query(value = "select c.name as catename ,count(c.name) as total,count(c.name) filter (where a.state='Assigned') as assigned,count(c.name) filter (where a.state='Available') as available,count(c.name) filter (where a.state='Not available') as notAvailable,count(c.name) filter (where a.state='Waiting for recycling') as waitingForRecycling, count(c.name) filter (where a.state='Recycled') as recycled from asset a join category c ON a.category_id = c.id group by c.name order by c.name \n",nativeQuery = true)
     List<ReportCategoryResponseDto> getReport();
 //    Create assets
 
