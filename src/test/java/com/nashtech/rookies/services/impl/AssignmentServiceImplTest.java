@@ -595,4 +595,49 @@ public class AssignmentServiceImplTest {
 		});
 		assertEquals("Assignment state must be Waiting for acceptance", actualException.getMessage());
 	}
+	
+	@Test
+	void deleteAssignment_ShouldThrowException_WhenAssignmentNotValid() {
+		Long idCheck = 4L;
+		
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.deleteAssignment(idCheck);
+		});
+		assertEquals("Assignment not found", actualException.getMessage());
+	}
+	
+	@Test
+	void deleteAssignment_ShouldThrowException_WhenAssignmentStateNotValid() {
+		Long idCheck = 4L;
+		Assignment initAssignment = Assignment.builder().id(idCheck).state("Accepted").build();
+		
+		when(assignmentRepository.findAssignmentById(idCheck)).thenReturn(initAssignment);
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.deleteAssignment(idCheck);
+		});
+		assertEquals("State of assignment is accepted", actualException.getMessage());
+	}
+	
+	@Test
+	void deleteAssignment_ShouldThrowException_WhenAssignmentCheckReturnNotValid() {
+		Long idCheck = 4L;
+		Assignment initAssignment = Assignment.builder().id(idCheck).state("Not Accepted").checkReturn(true).build();
+		
+		when(assignmentRepository.findAssignmentById(idCheck)).thenReturn(initAssignment);
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			assignmentServiceImpl.deleteAssignment(idCheck);
+		});
+		
+		assertEquals("Assignment is in return request table", actualException.getMessage());
+	}
+	
+	@Test
+	void deleteAssignment_ShouldDeleteAssignment_WhenChangeStateSuccess() {
+		Long idCheck = 4L;
+		Assignment initAssignment = Assignment.builder().id(idCheck).state("Not Accepted").checkReturn(false).build();
+		
+		when(assignmentRepository.findAssignmentById(idCheck)).thenReturn(initAssignment);
+	}
 }
