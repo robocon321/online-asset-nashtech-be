@@ -78,75 +78,9 @@ public class initDatabase {
                 ));
             }
 
-//          endregion
-
-            //            region Category
-            for (int i = 1; i <= 5; i++){
-                categoryRepository.save(new Category(
-                        "category" + i,
-                        "CATEGORY" + i + "_"
-                ));
-            }
-//            endregion
-
-            //            region    Assets
-            for (int i = 1; i <= 30; i++){
-            	Asset asset = new Asset(
-                        "asset" + i,
-                        "ASSETS" + i,
-                        "Day la asset, ahihi :v",
-                        "HCM",
-                        randomStateAsset(),
-                        categoryRepository.findById((long) new Random().nextInt(5) + 1).get(),
-                        usersRepository.findById((long) new Random().nextInt(30) + 1).get()
-                );
-            	asset.setCode(asset.getCategory().getCode() + i);
-                assetRepository.save(asset);
-            }
-//            endregion
-
-            //            region    Assignment
-            for(int i = 0; i <= 30; i++){
-                assignmentRepository.save(new Assignment(
-                        "Note something blabla ...",
-                        randomStateAssignment(),
-                        new Date(),
-                        new Date(),
-                        new Date(),
-                        usersRepository.findById((long) new Random().nextInt(30) + 1 ).get(),
-                        usersRepository.findById((long) new Random().nextInt(30) + 1 ).get(),
-                        assetRepository.findById((long) new Random().nextInt(30) + 1 ).get(),
-                        false
-                ));
-            }
-            //            endregion
-
-            //            region    ReturnRequest
-
-            for(int i = 1; i <= 30; i++){
-                String[] resultRandom = randomStateRequestReturn();
-                returnRequestRepository.save(new ReturnRequest(
-                        convertStringToDate(resultRandom[2]),
-                        resultRandom[0],
-                        usersRepository.findById((long) new Random().nextInt(30) + 1 ).get().getUsername(),
-                        resultRandom[1],
-                        assignmentRepository.findById((long) new Random().nextInt(30) + 1 ).get()
-                ));
-            }
-//            endregion
-
         };
     }
 
-    private String randomStateAsset() {
-    	String[] states = {"Available", "Not available", "Assigned", "Waiting for recycling", "Recycled"};
-    	return states[new Random().nextInt(states.length)];
-    }
-
-    private String randomStateAssignment() {
-    	String[] states = {"Accepted", "Waiting for acceptance", "Declined"};
-    	return states[new Random().nextInt(states.length)];
-    }
 
     private String renderCodeUser(int i){
         if(i < 10){
@@ -172,16 +106,6 @@ public class initDatabase {
         return states[new Random().nextInt(states.length)];
     }
 
-    private Date randomDateReturn(){
-        Random random = new Random();
-        int minDay = (int) LocalDate.of(2020, 1, 1).toEpochDay();
-        int maxDay = (int) LocalDate.of(2022, 1, 1).toEpochDay();
-        long randomDay = minDay + random.nextInt(maxDay - minDay);
-
-        LocalDate randomBirthDate = LocalDate.ofEpochDay(randomDay);
-        return java.sql.Date.valueOf(randomBirthDate);
-    }
-
     private Date randomDob(){
         Random random = new Random();
         int minDay = (int) LocalDate.of(1990, 1, 1).toEpochDay();
@@ -191,29 +115,4 @@ public class initDatabase {
         LocalDate randomBirthDate = LocalDate.ofEpochDay(randomDay);
         return java.sql.Date.valueOf(randomBirthDate);
     }
-
-    private String[] randomStateRequestReturn(){
-    	String[] states = {"Completed", "Waiting for returning"};
-    	String randomState = states[new Random().nextInt(states.length)];
-        String username;
-        Date date;
-        if(randomState.equals("Completed")){
-            username = usersRepository.findById((long) new Random().nextInt(30) + 1 ).get().getUsername();
-            date = randomDateReturn();
-        }else{
-            username = null;
-            date = null;
-        }
-        return new String[]{randomState, username, String.valueOf(date)};
-    }
-
-    private Date convertStringToDate(String input) throws ParseException {
-        if(Objects.equals(input, "null")){
-            return null;
-        }else{
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            return formatter.parse(input);
-        }
-    }
-
 }
