@@ -110,9 +110,13 @@ public class ReturnRequestServiceImpl implements com.nashtech.rookies.services.i
 		if (!"Waiting for returning".equals(returnRequest.getState())) {
 			throw new InvalidDataInputException("ReturnRequest State must be Waiting for returning");
 		}
+		UserPrinciple userPrinciple = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();
+		Users users = usersRepository.findUsersById(userPrinciple.getId());
 		
 		returnRequest.setState("Completed");
 		returnRequest.setReturnDate( new Date());
+		returnRequest.setAcceptedBy(users.getUsername());
 		returnRequest.getAssignment().setComplete(true);
 		returnRequest.getAssignment().setCheckReturn(true);
 		returnRequestRepository.save(returnRequest);
