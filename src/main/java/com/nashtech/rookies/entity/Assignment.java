@@ -23,9 +23,6 @@ public class Assignment {
     private Date assignedDate;
     private Date returnedDate;
     private Date createdDate;
-
-    private boolean adminAccept = false;
-
     private boolean checkReturn = false;
 
     private boolean isComplete = false;
