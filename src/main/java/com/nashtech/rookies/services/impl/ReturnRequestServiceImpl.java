@@ -118,6 +118,7 @@ public class ReturnRequestServiceImpl implements com.nashtech.rookies.services.i
 		returnRequest.setAcceptedBy(userPrinciple.getUsername());
 		returnRequest.getAssignment().setComplete(true);
 		returnRequest.getAssignment().setCheckReturn(true);
+		returnRequest.getAssignment().getAsset().setState("Available");
 		returnRequestRepository.save(returnRequest);
 		
 		return returnRequestMapper.mapToReturnRequestDto(returnRequest);
