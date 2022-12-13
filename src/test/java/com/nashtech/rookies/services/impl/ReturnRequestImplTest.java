@@ -1,6 +1,7 @@
 package com.nashtech.rookies.services.impl;
 
 import com.nashtech.rookies.dto.response.returnRequest.ReturnRequestDto;
+import com.nashtech.rookies.entity.Asset;
 import com.nashtech.rookies.entity.Assignment;
 import com.nashtech.rookies.entity.ReturnRequest;
 import com.nashtech.rookies.entity.Users;
@@ -12,11 +13,13 @@ import com.nashtech.rookies.repository.UsersRepository;
 import com.nashtech.rookies.security.userprincal.UserPrinciple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -190,5 +193,64 @@ public class ReturnRequestImplTest {
 
 		verify(returnRequestRepository).delete(returnRequest);
 	}
+	
+	@Test
+	void updateReturnRequest_ShouldThrowInvalidDataInputException_WhenReturnRequestInvalid() {
+		when(returnRequestRepository.findById(2l)).thenReturn(Optional.empty());
 
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			returnRequestServiceImpl.updateReturnRequest(2l);
+		});
+		assertEquals("ReturnRequest not found", actualException.getMessage());	
+	}
+
+	@Test
+	void updateReturnRequest_ShouldThrowInvalidDataInputException_WhenStateInvalid() {
+		ReturnRequest returnRequest = ReturnRequest.builder().state("ABC").build();
+
+		when(returnRequestRepository.findById(2l)).thenReturn(Optional.of(returnRequest));
+
+		InvalidDataInputException actualException = assertThrows(InvalidDataInputException.class, () -> {
+			returnRequestServiceImpl.updateReturnRequest(2l);
+		});
+		assertEquals("ReturnRequest State must be Waiting for returning", actualException.getMessage());
+	}
+	
+	@Test
+	void updateReturnRequests_ShouldReturnData_WhenDataValid() {
+		ReturnRequest returnRequest = mock(ReturnRequest.class);
+		Assignment assignment = mock(Assignment.class);
+		Asset asset = mock(Asset.class);
+		ReturnRequestDto expected = mock(ReturnRequestDto.class);
+	
+		Authentication authentication = mock(Authentication.class);
+		SecurityContext securityContext = mock(SecurityContext.class);
+		UserPrinciple userPrinciple1 = new UserPrinciple();
+		SecurityContextHolder.setContext(securityContext);
+		
+		ArgumentCaptor<Date> dateCaptor = ArgumentCaptor.forClass(Date.class);
+		
+		when(returnRequestRepository.findById(2l)).thenReturn(Optional.of(returnRequest));
+		when(returnRequest.getState()).thenReturn("Waiting for returning");
+		when(securityContext.getAuthentication()).thenReturn(authentication);
+		when(authentication.getPrincipal()).thenReturn(userPrinciple1);
+		when(returnRequest.getAssignment()).thenReturn(assignment);
+		when(returnRequest.getAssignment().getAsset()).thenReturn(asset);
+		when(returnRequestMapper.mapToReturnRequestDto(returnRequest)).thenReturn(expected);
+		
+		ReturnRequestDto actual = returnRequestServiceImpl.updateReturnRequest(2l);
+		
+		verify(returnRequest).setState("Completed");
+		verify(returnRequest).setReturnDate(dateCaptor.capture());
+		verify(returnRequest).setAcceptedBy(userPrinciple1.getUsername());
+		verify(assignment).setComplete(true);
+		verify(assignment).setCheckReturn(true);
+		verify(asset).setState("Available");
+		verify(returnRequestRepository).save(returnRequest);
+		
+		assertThat(actual, is(expected));
+		
+		
+		
+	}
 }
