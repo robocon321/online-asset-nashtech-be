@@ -21,7 +21,7 @@ public class UpdateAssignmentDto {
 	@NotNull(message = "Asset is required.")
 	private Long assetId;
 
-	@NotBlank(message = "Note is required.")
+//	@NotBlank(message = "Note is required.")
 	private String note;
 
 	@NotBlank(message = "AssignedDate is required.")

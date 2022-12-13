@@ -54,9 +54,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.cors().and().csrf().disable().authorizeRequests()
 				.antMatchers("/api/v1/auth/login").permitAll()
-				.antMatchers("/api/v1/users/**").hasAuthority("ADMIN")
-				.antMatchers("/api/v1/assets/**").hasAuthority("ADMIN")
-				.antMatchers( "/api/v1/categories/**").hasAuthority("ADMIN")
+
+				.antMatchers(
+						"/api/v1/users/**",
+						"/api/v1/assets/**",
+						"/api/v1/categories/**",
+						"/api/v1/assignments/admin"
+				).hasAnyAuthority("ADMIN")
+
 				.antMatchers( HttpMethod.POST,"/api/v1/assignments/**").hasAnyAuthority("ADMIN")
 				.antMatchers( HttpMethod.DELETE,"/api/v1/return-requests/**").hasAnyAuthority("ADMIN")
 				.anyRequest().authenticated().and().exceptionHandling().authenticationEntryPoint(jwtEntryPoint).and()

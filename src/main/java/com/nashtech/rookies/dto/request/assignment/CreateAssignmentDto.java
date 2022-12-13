@@ -22,6 +22,6 @@ public class CreateAssignmentDto {
 
 	private String note;
 
-	@NotBlank(message = "AssignedDate is required.")
+	@NotBlank(message = "Assigned Date is required.")
 	private String assignedDate;
 }
